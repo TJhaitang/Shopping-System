@@ -1,4 +1,3 @@
-miaomiaoxiaogou
 # Shopping-System
 
 ## 更新日志demo 10.24徐京洲
