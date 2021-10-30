@@ -5,7 +5,7 @@
                 <img src="../assets/xiaogougou.png" alt="">
             </div>
             <!-- 登录表单  -->
-            <el-form :model="loginForm" :rules="loginFormRules" label-width="40px" class="login_form">
+            <el-form :model="loginForm" ref="loginFormRef" :rules="loginFormRules" label-width="40px" class="login_form">
                 <el-form-item prop="username" label="邮箱">
                     <el-input type="e-mail" v-model="loginForm.username"></el-input>
                 </el-form-item>
@@ -13,7 +13,7 @@
                     <el-input type="password" v-model="loginForm.password"></el-input>
                 </el-form-item>
                 <el-form-item class="btns">
-                    <el-button type="primary">登录</el-button>
+                    <el-button type="primary" @click="login">登录</el-button>
                     <el-button type="primary">验证码登录</el-button>
                 </el-form-item>
             </el-form>
@@ -32,13 +32,22 @@ export default {
             },
             loginFormRules: {
                 username: [ 
-                    { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                    { required: false, message: '请输入邮箱地址', trigger: 'blur' },
                     { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
                 ],
                 password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' }
+                    { required: false, message: '请输入密码', trigger: 'blur' }
                 ]
             }
+        }
+    },
+    methods: {
+        login() {
+            this.$refs.loginFormRef.validate(async valid => {
+                if(!valid) return; //如果预验证失败就返回
+                const result = await this.$http.post('路径？', this.loginForm); //用post方法向后端发登陆表单的数据
+                console.log(result);
+            });
         }
     }
 }

@@ -4,6 +4,12 @@ import router from './router'
 import './plugins/element.js'
 // 设置全局样式
 import './assets/css/global.css'
+
+import axios from 'axios'
+//配置请求根路径在这里填  👇
+axios.defaults.baseURL = ''
+Vue.prototype.$http = axios
+
 Vue.config.productionTip = false
 
 new Vue({
