@@ -1,0 +1,7 @@
+/* 全局样式表在这里 */
+/* 都让他们占满 */
+html, body, #app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
