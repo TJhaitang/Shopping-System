@@ -5,11 +5,11 @@
                 <img src="../assets/xiaogougou.png" alt="">
             </div>
             <!-- 登录表单  -->
-            <el-form :model="loginForm" label-width="40px" class="login_form">
-                <el-form-item label="邮箱">
-                    <el-input v-model="loginForm.username"></el-input>
+            <el-form :model="loginForm" :rules="loginFormRules" label-width="40px" class="login_form">
+                <el-form-item prop="username" label="邮箱">
+                    <el-input type="e-mail" v-model="loginForm.username"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
+                <el-form-item prop="password" label="密码">
                     <el-input type="password" v-model="loginForm.password"></el-input>
                 </el-form-item>
                 <el-form-item class="btns">
@@ -27,8 +27,17 @@ export default {
         return {
             //登录表单数据绑定
             loginForm: {
-                username: '徐京洲大傻冒',
-                password: 'lll123',
+                username: '',
+                password: '',
+            },
+            loginFormRules: {
+                username: [ 
+                    { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ]
             }
         }
     }
