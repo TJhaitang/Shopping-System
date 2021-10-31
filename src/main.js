@@ -7,7 +7,7 @@ import './assets/css/global.css'
 
 import axios from 'axios'
 //配置请求根路径在这里填  👇
-axios.defaults.baseURL = ''
+axios.defaults.baseURL = '/api'
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
