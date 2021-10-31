@@ -6,4 +6,10 @@ if ($conn == false) {
 }
 $params = json_decode(file_get_contents("php://input"), true);
 $user = $params['username'];
-echo json_encode(array("123" => "qwe", "456" => "dpp"));
+$pswd = $params['password'];
+$pswd = md5($pswd, false);
+$code = $params['emailcode'];
+
+//查询数据库
+
+echo array("1" => "success", "2" => $pswd);
