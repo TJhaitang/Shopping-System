@@ -21,7 +21,7 @@
         </el-form-item>
         <el-form-item class="btns">
           <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="primary">验证码登录</el-button>
+          <el-button type="primary" @click="getCode">获取验证码</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -56,6 +56,16 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/loginCheck.php",
+          this.loginForm
+        ); //用post方法向后端发登陆表单的数据
+        console.log(result);
+      });
+    },
+    getCode() {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return; //如果预验证失败就返回
+        const result = await this.$http.post(
+          "/login/getMail.php",
           this.loginForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
