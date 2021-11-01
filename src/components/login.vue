@@ -19,7 +19,11 @@
         <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="loginForm.password"></el-input>
         </el-form-item>
+        <el-form-item prop="emailcode" label="验证码">
+          <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
+        </el-form-item>
         <el-form-item class="btns">
+          <el-button type="primary">发送验证码</el-button>
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="primary" @click="getCode">获取验证码</el-button>
         </el-form-item>
@@ -36,6 +40,8 @@ export default {
       loginForm: {
         username: "",
         password: "",
+        emailcode: "",
+
       },
       loginFormRules: {
         username: [
@@ -47,6 +53,7 @@ export default {
           },
         ],
         password: [{ required: false, message: "请输入密码", trigger: "blur" }],
+        emailcode: [{ required: false, message: "请输入验证码", trigger: "blur" }],
       },
     };
   },
@@ -56,7 +63,7 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/loginCheck.php",
-          this.loginForm
+          [this.loginForm.username, this.loginForm.password,this.loginForm.emailcode]
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
@@ -83,7 +90,7 @@ export default {
 
 .login_box {
   width: 450px;
-  height: 300px;
+  height: 400px;
   background-color: #fff;
   border-radius: 10px;
   position: absolute;
