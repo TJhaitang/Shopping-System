@@ -41,6 +41,7 @@ export default {
         username: "",
         password: "",
         emailcode: "",
+        type: 'S'
 
       },
       loginFormRules: {
@@ -63,7 +64,7 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/loginCheck.php",
-          [this.loginForm.username, this.loginForm.password,this.loginForm.emailcode]
+          this.loginForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
