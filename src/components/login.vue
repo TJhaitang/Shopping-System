@@ -25,10 +25,27 @@
         <el-form-item class="btns">
           <el-button type="primary">发送验证码</el-button>
           <el-button type="primary" @click="login">登录</el-button>
-          <el-button type="primary" @click="getCode">获取验证码</el-button>
+          <el-button type="primary" @click="dialogVisible = true"
+            >注册</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
+    <!-- 注册的弹框内容 -->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :before-close="handleClose"
+    >
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogVisible = false"
+          >确定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -41,7 +58,7 @@ export default {
         username: "",
         password: "",
         emailcode: "",
-
+        type: "S",
       },
       loginFormRules: {
         username: [
@@ -53,8 +70,12 @@ export default {
           },
         ],
         password: [{ required: false, message: "请输入密码", trigger: "blur" }],
-        emailcode: [{ required: false, message: "请输入验证码", trigger: "blur" }],
+        emailcode: [
+          { required: false, message: "请输入验证码", trigger: "blur" },
+        ],
       },
+      //注册对话框默认不显示
+      dialogVisible: false,
     };
   },
   methods: {
@@ -63,19 +84,13 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/loginCheck.php",
-          [this.loginForm.username, this.loginForm.password,this.loginForm.emailcode]
-        ); //用post方法向后端发登陆表单的数据
-        console.log(result);
-      });
-    },
-    getCode() {
-      this.$refs.loginFormRef.validate(async (valid) => {
-        if (!valid) return; //如果预验证失败就返回
-        const result = await this.$http.post(
-          "/login/getMail.php",
           this.loginForm
         ); //用post方法向后端发登陆表单的数据
-        console.log(result);
+        //弹窗提示
+        if (result.status == "success")
+          return this.$message.success("登录成功啦");
+        this.$message.error("登录失败/(ㄒoㄒ)/~~");
+        //window.sessionStorage.setItem("token" , "结果里的token值")
       });
     },
   },
