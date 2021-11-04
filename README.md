@@ -20,3 +20,6 @@
 - **请大家在本次pull之后更改vue.config.js中的内容，并将这个文件加入到.gitignore文件中**
 - 更改方法见vue.config.js中的注释
 - 加入方法为在.gitignore中写上vue.config.js
+
+### 1104范碧珂
+- 增加了发送验证码按钮的触发事件（向后端发送邮箱/login.vue）
