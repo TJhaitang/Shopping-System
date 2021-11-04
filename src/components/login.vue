@@ -23,7 +23,7 @@
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary" @click="sendmc">发送验证码</el-button>
+          <el-button type="primary" @click="getCode">发送验证码</el-button>
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="primary" @click="dialogVisible = true"
             >注册</el-button
@@ -94,23 +94,15 @@ export default {
         //window.sessionStorage.setItem("token" , "结果里的token值")
       });
     },
-    sendmc(){
+    getCode(){
       this.$refs.loginFormRef.validate(async (valid) => {
         const result = await this.$http.post(
-          "/login/sendmail.php",
+          "/login/getMail.php",
           this.loginForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
 
-
-
-      //axios({
-      //  method: 'post',
-      //  url: '/api/email',
-      //  data: this.loginForm
-      //})
-      //发送验证码
     },
   },
 };
