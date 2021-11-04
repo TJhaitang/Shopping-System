@@ -1,15 +1,16 @@
 <?php
+
 function sendmail($to, $subject, $body)
 {
     $smtp_host = "smtp.qq.com"; //smtp服务器
     $user = "691518421@qq.com"; //发信邮箱
-    $pass = "gomiittvotphbfid"; //邮箱密码、授权码
+    $pass = "fvkgdigsoyovbcgd"; //邮箱密码、授权码
     $charset = "utf-8"; //根据自己的网页编码选择
 
     $header = "MIME-Version:1.0\r\n";
     $header .= "Content-Type:text/html; charset=" . $charset . "\r\n";
     $header .= "To: " . $to . "\r\n";
-    $header .= "From: 商城验证码\r\n";
+    $header .= "From:登录验证码\r\n";
     $header .= "Subject: " . "=?" . strtoupper($charset) . "?B?" . base64_encode($subject) . "?=" . "\r\n";
     $header .= "Date: " . date("r") . "\r\n";
     $header .= "X-Mailer: By PHP(" . phpversion() . ")\r\n";
@@ -39,23 +40,30 @@ function sendmail($to, $subject, $body)
                     }
                 }
             }
+
             fclose($sock);
         }
     }
     return $sent;
 }
+
+
 function smtp_cmd($sock, $cmd)
 {
     fputs($sock, $cmd . "\r\n");
     echo htmlspecialchars($cmd);
     return smtp_ok($sock);
 }
+
+
 function smtp_data($sock, $header, $body)
 {
     fputs($sock, $header . "\r\n");
     fputs($sock, $body . "\r\n.\r\n");
     return smtp_ok($sock);
 }
+
+
 function smtp_ok($sock)
 {
     $response = fgets($sock, 512);
