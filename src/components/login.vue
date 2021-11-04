@@ -23,7 +23,7 @@
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary">发送验证码</el-button>
+          <el-button type="primary" @click="sendmc">发送验证码</el-button>
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="primary">验证码登录</el-button>
         </el-form-item>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -63,10 +64,28 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/loginCheck.php",
-          [this.loginForm.username, this.loginForm.password,this.loginForm.emailcode]
+          [this.loginForm.username, this.loginForm.password]
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
+    },
+    sendmc(){
+      this.$refs.loginFormRef.validate(async (valid) => {
+        const result = await this.$http.post(
+          "/login/sendmail.php",
+          this.loginForm
+        ); //用post方法向后端发登陆表单的数据
+        console.log(result);
+      });
+
+
+
+      //axios({
+      //  method: 'post',
+      //  url: '/api/email',
+      //  data: this.loginForm
+      //})
+      //发送验证码
     },
   },
 };
