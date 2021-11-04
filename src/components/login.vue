@@ -29,11 +29,8 @@
           <el-button type="primary" @click="dialogVisible = true"
             >注册</el-button
           >
-<<<<<<< HEAD
-=======
           <el-button type="primary" @click="test">test</el-button>
           <el-button type="primary" @click="goHome">跳转</el-button>
->>>>>>> 184306357a45fad0d8bfe5ba416192bb0d556260
         </el-form-item>
       </el-form>
     </div>
@@ -43,6 +40,7 @@
       :visible.sync="dialogVisible"
       width="50%"
       :before-close="handleClose"
+      @close="dialogClosed"
     >
       <!-- 在此添加注册表单内容 -->
       <el-form
@@ -102,7 +100,7 @@ export default {
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.registerForm.pass) {
+        } else if (value !== this.registerForm.password) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
@@ -154,7 +152,7 @@ export default {
         ],
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在3到10个字符', trigger: 'blur' }
+          { min: 3, max: 20, message: '长度在3到20个字符', trigger: 'blur' }
         ],
        //设置密码时的动态校验规则
         pass: [
@@ -164,7 +162,7 @@ export default {
           { required: true, validator: validatePass2, trigger: 'blur' }
         ],
         id: [
-          { required: true, validator: checkIdNum, trigger: 'blur' }
+          { required: true, trigger: 'blur' }
         ],
         name: [
           { required: true, message: '请输入真实姓名', trigger: 'blur'},
@@ -210,15 +208,15 @@ export default {
     //注册方法：
     register() {
       //先预校验
-      this.$refs.registerFormRef.validate(valid => {
+      this.$refs.registerFormRef.validate(async(valid) => {
         if (!valid) return //如果预验证失败就返回
         const result = await this.$http.post(
-          "/login/signUp.php",
+          "/login/getMail.php",
           this.registerForm
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
-        console.log(result);
         if (result.status == "success")
+          
           return this.$message.success("注册成功啦");
         this.$message.error("注册失败(T_T)检查下哪里写错错了");
       })
@@ -240,11 +238,15 @@ export default {
           .catch(_ => {});
     },
     
-  },
+    
     goHome() {
-        this.$router.push("/home");
+      this.$router.push("/home")
     },
-};
+    dialogClosed() {
+      this.$refs.registerFormRef.resetFields()
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
