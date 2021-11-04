@@ -23,7 +23,7 @@
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
         </el-form-item>
         <el-form-item class="btns">
-          <el-button type="primary">发送验证码</el-button>
+          <el-button type="primary" @click="getCode">发送验证码</el-button>
           <el-button type="primary" @click="login">登录</el-button>
           <el-button type="primary" @click="dialogVisible = true"
             >注册</el-button
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -93,10 +94,10 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return; //如果预验证失败就返回
-        const result = await this.$http.post(
-          "/login/loginCheck.php",
-          this.loginForm
-        ); //用post方法向后端发登陆表单的数据
+        const result = await this.$http.post("/login/loginCheck.php", [
+          this.loginForm.username,
+          this.loginForm.password,
+        ]); //用post方法向后端发登陆表单的数据
         //弹窗提示
         if (result.status == "success")
           return this.$message.success("登录成功啦");
@@ -112,6 +113,15 @@ export default {
           this.testForm
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
+        console.log(result);
+      });
+    },
+    getCode() {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        const result = await this.$http.post(
+          "/login/getMail.php",
+          this.loginForm
+        ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
     },
