@@ -29,6 +29,11 @@
           <el-button type="primary" @click="dialogVisible = true"
             >注册</el-button
           >
+<<<<<<< HEAD
+=======
+          <el-button type="primary" @click="test">test</el-button>
+          <el-button type="primary" @click="goHome">跳转</el-button>
+>>>>>>> 184306357a45fad0d8bfe5ba416192bb0d556260
         </el-form-item>
       </el-form>
     </div>
@@ -227,6 +232,7 @@ export default {
         console.log(result);
       });
     },
+<<<<<<< HEAD
     handleClose(done) {
         this.$confirm('确认取消注册？')
           .then(_ => {
@@ -236,6 +242,12 @@ export default {
     },
     
   }
+=======
+    goHome() {
+        this.$router.push("/home");
+    },
+  },
+>>>>>>> 184306357a45fad0d8bfe5ba416192bb0d556260
 };
 </script>
 
