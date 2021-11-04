@@ -232,7 +232,6 @@ export default {
         console.log(result);
       });
     },
-<<<<<<< HEAD
     handleClose(done) {
         this.$confirm('确认取消注册？')
           .then(_ => {
@@ -241,13 +240,10 @@ export default {
           .catch(_ => {});
     },
     
-  }
-=======
+  },
     goHome() {
         this.$router.push("/home");
     },
-  },
->>>>>>> 184306357a45fad0d8bfe5ba416192bb0d556260
 };
 </script>
 
