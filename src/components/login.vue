@@ -29,6 +29,7 @@
             >注册</el-button
           >
           <el-button type="primary" @click="test">test</el-button>
+          <el-button type="primary" @click="goHome">跳转</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -124,6 +125,9 @@ export default {
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
+    },
+    goHome() {
+        this.$router.push("/home");
     },
   },
 };
