@@ -28,6 +28,7 @@
           <el-button type="primary" @click="dialogVisible = true"
             >注册</el-button
           >
+          <el-button type="primary" @click="test">test</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -76,6 +77,16 @@ export default {
       },
       //注册对话框默认不显示
       dialogVisible: false,
+      testForm: {
+        type: "S",
+        password: "123456",
+        name: "xxx",
+        email: "1319377413@qq.com",
+        province: "SD",
+        identity: "37000020333068366",
+        username: "TJhat",
+        gender: "F",
+      },
     };
   },
   methods: {
@@ -91,6 +102,17 @@ export default {
           return this.$message.success("登录成功啦");
         this.$message.error("登录失败/(ㄒoㄒ)/~~");
         //window.sessionStorage.setItem("token" , "结果里的token值")
+      });
+    },
+    test() {
+      this.$refs.loginFormRef.validate(async (valid) => {
+        if (!valid) return; //如果预验证失败就返回
+        const result = await this.$http.post(
+          "/login/signUp.php",
+          this.testForm
+        ); //用post方法向后端发登陆表单的数据
+        //弹窗提示
+        console.log(result);
       });
     },
   },
