@@ -1,5 +1,9 @@
 # 数据库大作业-更新日志
 
+## 1106范碧珂
+### 增加
+- 在element.js里import了很多element，之后应该会用到
+- My.vue里简单的一个侧边显示的Container，预计之后不会用到Home.vue和Message.vue了。。。
 
 ## 1104范碧珂
 ### 增加
