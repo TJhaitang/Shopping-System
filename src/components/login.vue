@@ -14,9 +14,9 @@
         class="login_form"
         :label-position="left"
       >
-        <el-form-item prop="email" label="邮箱">
+        <el-form-item prop="email" label="邮箱" style="position:relative;top:40px">
           <el-input type="e-mail" v-model="loginForm.email"></el-input>
-          <el-button type="primary" @click="getCode">发送验证码</el-button>
+          <el-button type="primary" @click="getCode" style="position:relative;top:84px;z-index:99;left:120px">发送验证码</el-button>
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="loginForm.password"></el-input>
