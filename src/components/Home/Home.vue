@@ -14,7 +14,9 @@
                 <span>我的</span>
             </router-link>
         </ul>
+        <h1>首页</h1> 
     </div>
+    
 </template>
 
 <script>
