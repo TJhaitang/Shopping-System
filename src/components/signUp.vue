@@ -8,17 +8,16 @@
         :rules="Rules"
         label-width="90px"
         class="signup_form"
-        :label-position="left"
       >
         <el-form-item label="商家名" prop="username">
           <el-input v-model="signupForm.username"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email" >
           <el-input v-model="signupForm.email"></el-input>
+          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item prop="code" label="验证码">
           <el-input type="emailcode" v-model="signupForm.code"></el-input>
-          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="signupForm.password" autocomplete="off"></el-input>
@@ -56,7 +55,7 @@ export default {
           callback(new Error('请输入密码'));
         } else {
           if (this.signupForm.checkPass !== '') {
-            this.$refs.signupForm.validateField('checkPass');
+            this.$refs.signupFormRef.validateField('checkPass');
           }
           callback();
         }
@@ -82,10 +81,10 @@ export default {
 		 }};
     return {
       //注册表单数据绑定
-      signupForm: {
+      /*signupForm: {
         username: "",
         email: "",
-        pass: "",
+        password: "",
         name: "",
         identity: "",
         type: "S",
@@ -95,7 +94,7 @@ export default {
         addr: "",
         gender: "",
         signature: "",
-      },
+      },*/
 
       Rules: {
         email: [
@@ -106,9 +105,9 @@ export default {
             trigger: ["blur", "change"],
           },
         ],
-        code: [
+        /*code: [
           { required: true, message: "请输入验证码", trigger: "blur" },
-        ],
+        ],*/
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 20, message: '长度在3到20个字符', trigger: 'blur' }
@@ -131,24 +130,24 @@ export default {
         province: [
           { required: true,message: '请输入你所在的省份',trigger:'blur'}
         ],
-        phone: [{ required: false}],
-        addr: [{ required: false}],
-        //gender: [{ required: true}],
-        signature: [{ required: false}],
     
       },
    
       
-      /*testForm: {
-        type: "S",
-        password: "123456",
-        name: "xxx",
-        email: "1319377413@qq.com",
-        province: "SD",
-        identity: "37000020333068366",
-        username: "TJhat",
-        gender: "F",
-      }*/
+      signupForm: {
+        type: "",
+        password: "",
+        name: "",
+        email: "",
+        province: "",
+        identity: "",
+        username: "",
+        gender: "",
+        phone: "",
+        addr: "",
+        gender: "",
+        signature: "",
+      },
 
     }
   },
@@ -164,7 +163,6 @@ export default {
         //弹窗提示
         console.log(result);
         if (result.status == "success")
-          
           return this.$message.success("注册成功啦");
         this.$message.error("注册失败(T_T)检查下哪里写错错了");
       })

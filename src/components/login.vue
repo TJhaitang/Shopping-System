@@ -12,17 +12,16 @@
         :rules="Rules"
         label-width="60px"
         class="login_form"
-        :label-position="left"
       >
         <el-form-item prop="username" label="邮箱" style="position:relative;top:40px">
           <el-input type="e-mail" v-model="loginForm.username"></el-input>
-          <el-button type="primary" @click="getCode" style="position:relative;top:84px;z-index:99;left:120px">发送验证码</el-button>
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="loginForm.password"></el-input>
         </el-form-item>
         <el-form-item prop="emailcode" label="验证码">
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
+          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item class="btns">
           <el-button type="primary" @click="login">登录</el-button>
@@ -78,10 +77,11 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return; //如果预验证失败就返回
-        const result = await this.$http.post("s/login/loginCheck.php", 
+        const result = await this.$http.post("/login/loginCheck.php", 
           this.loginForm
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
+        console.log(result);
         if (result.status == "success")
           return this.$message.success("登录成功啦");
         this.$message.error("登录失败/(ㄒoㄒ)/~~");
@@ -98,13 +98,13 @@ export default {
         console.log(result);
       });
     },
-    handleClose(done) {
+    /*handleClose(done) {
         this.$confirm('确认取消注册？')
           .then(_ => {
             done();
           })
           .catch(_ => {});
-    },
+    },*/
     
     
     goHome() {
