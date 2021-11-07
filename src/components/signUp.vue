@@ -14,10 +14,10 @@
         </el-form-item>
         <el-form-item label="邮箱" prop="email" >
           <el-input v-model="signupForm.email"></el-input>
-          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item prop="code" label="验证码">
           <el-input type="emailcode" v-model="signupForm.code"></el-input>
+          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="signupForm.password" autocomplete="off"></el-input>

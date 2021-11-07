@@ -13,7 +13,7 @@
         label-width="60px"
         class="login_form"
       >
-        <el-form-item prop="username" label="邮箱" style="position:relative;top:40px">
+        <el-form-item prop="username" label="邮箱" >
           <el-input type="e-mail" v-model="loginForm.username"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
