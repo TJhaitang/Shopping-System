@@ -2,7 +2,7 @@
 node_modules
 /dist
 
-/package-lock.json
+package-lock.json
 
 # vue包
 /src/vue.global.js
