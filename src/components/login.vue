@@ -14,17 +14,17 @@
         class="login_form"
       >
         <el-form-item prop="username" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.username"></el-input>
+          <el-input type="e-mail" v-model="loginForm.username" suffix-icon="el-icon-message"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input type="password" v-model="loginForm.password"></el-input>
+          <el-input type="password" v-model="loginForm.password" suffix-icon="el-icon-key"></el-input>
         </el-form-item>
         <el-form-item prop="emailcode" label="验证码">
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
           <el-button
             type="primary"
             @click="getCode"
-            style="position: absolute; top: 0px; z-index: 99; right: 0px"
+            style="position: absolute; top: 0px; z-index: 99; right: 0px" icon="el-icon-s-promotion"
             >发送验证码</el-button
           >
         </el-form-item>
@@ -159,4 +159,5 @@ export default {
   box-sizing: border-box;
   padding: 0 20px;
 }
+
 </style>

@@ -10,29 +10,65 @@
         class="signup_form"
       >
         <el-form-item label="商家名" prop="username">
-          <el-input v-model="signupForm.username"></el-input>
+          <el-input v-model="signupForm.username" suffix-icon="el-icon-eleme"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email" >
-          <el-input v-model="signupForm.email"></el-input>
+          <el-input v-model="signupForm.email" suffix-icon="el-icon-message"></el-input>
         </el-form-item>
         <el-form-item prop="code" label="验证码">
           <el-input type="emailcode" v-model="signupForm.code"></el-input>
           <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="signupForm.password" autocomplete="off"></el-input>
+          <el-input type="password" v-model="signupForm.password" autocomplete="off" suffix-icon="el-icon-key"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="signupForm.checkPass" autocomplete="off"></el-input>
+          <el-input type="password" v-model="signupForm.checkPass" autocomplete="off" suffix-icon="el-icon-key"></el-input>
         </el-form-item>
         <el-form-item prop="name" label="真实姓名">
-          <el-input  v-model="signupForm.name" autocomplete="off"></el-input>
+          <el-input  v-model="signupForm.name" autocomplete="off" suffix-icon="el-icon-s-custom"></el-input>
         </el-form-item>
         <el-form-item prop="identity" label="身份证号">
-          <el-input v-model="signupForm.identity"></el-input>
+          <el-input v-model="signupForm.identity" suffix-icon="el-icon-s-opportunity"></el-input>
         </el-form-item>
         <el-form-item prop="province" label="所在省份">
-          <el-input v-model="signupForm.province"></el-input>
+          <el-input v-model="signupForm.province" suffix-icon="el-icon-s-home" list="province_list"></el-input>
+          <datalist id="province_list">
+              <option value="河北省"/>
+              <option value="山西省"/>
+              <option value="辽宁省"/>
+              <option value="吉林省"/>
+              <option value="黑龙江省"/>
+              <option value="江苏省"/>
+              <option value="浙江省"/>
+              <option value="安徽省"/>
+              <option value="福建省"/>
+              <option value="江西省"/>
+              <option value="山东省"/>
+              <option value="河南省"/>
+              <option value="湖北省"/>
+              <option value="湖南省"/>
+              <option value="广东省"/>
+              <option value="海南省"/>
+              <option value="四川省"/>
+              <option value="贵州省"/>
+              <option value="云南省"/>
+              <option value="陕西省"/>
+              <option value="甘肃省"/>
+              <option value="青海省"/>
+              <option value="台湾省"/>
+              <option value="内蒙古自治区"/>
+              <option value="广西壮族自治区"/>
+              <option value="西藏自治区"/>
+              <option value="宁夏回族自治区"/>
+              <option value="新疆维吾尔自治区"/>
+              <option value="北京市"/>
+              <option value="天津市"/>
+              <option value="上海市"/>
+              <option value="重庆市"/>
+              <option value="香港特别行政区"/>
+              <option value="澳门特别行政区"/>
+          </datalist>
         </el-form-item>
         <!-- 按钮位置 -->
         <el-form-item class="btns">
