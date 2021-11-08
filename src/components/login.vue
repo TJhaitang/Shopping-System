@@ -13,8 +13,8 @@
         label-width="60px"
         class="login_form"
       >
-        <el-form-item prop="username" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.username"></el-input>
+        <el-form-item prop="email" label="邮箱">
+          <el-input type="e-mail" v-model="loginForm.email"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="loginForm.password"></el-input>
@@ -46,14 +46,14 @@ export default {
     return {
       //登录表单数据绑定
       loginForm: {
-        username: "",
+        email: "",
         password: "",
         emailcode: "",
         type: "S",
       },
 
       Rules: {
-        username: [
+        email: [
           { required: true, message: "请输入邮箱地址", trigger: "blur" },
           {
             type: "email",
@@ -90,7 +90,7 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/getMail.php",
-          this.loginForm.username
+          this.loginForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
