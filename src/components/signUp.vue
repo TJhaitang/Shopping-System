@@ -32,21 +32,6 @@
         </el-form-item>
         <el-form-item prop="name" label="真实姓名">
           <el-input  v-model="signupForm.name" autocomplete="off" suffix-icon="el-icon-s-custom"></el-input>
-          <el-input
-            type="password"
-            v-model="signupForm.password"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-          <el-input
-            type="password"
-            v-model="signupForm.checkPass"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item prop="name" label="真实姓名">
-          <el-input v-model="signupForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="identity" label="身份证号">
           <el-input v-model="signupForm.identity" suffix-icon="el-icon-s-opportunity"></el-input>

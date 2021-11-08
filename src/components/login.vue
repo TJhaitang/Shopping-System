@@ -13,10 +13,8 @@
         label-width="60px"
         class="login_form"
       >
-        <el-form-item prop="username" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.username" suffix-icon="el-icon-message"></el-input>
         <el-form-item prop="email" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.email"></el-input>
+          <el-input type="e-mail" v-model="loginForm.email" suffix-icon="el-icon-message"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="loginForm.password" suffix-icon="el-icon-key"></el-input>
