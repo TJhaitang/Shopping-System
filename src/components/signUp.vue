@@ -17,7 +17,12 @@
         </el-form-item>
         <el-form-item prop="code" label="验证码">
           <el-input type="emailcode" v-model="signupForm.code"></el-input>
-          <el-button type="primary" @click="getCode" style="position:absolute;top:0px;z-index:99;right:0px">发送验证码</el-button>
+          <el-button
+            type="primary"
+            @click="getCode"
+            style="position: absolute; top: 0px; z-index: 99; right: 0px"
+            >发送验证码</el-button
+          >
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="signupForm.password" autocomplete="off" suffix-icon="el-icon-key"></el-input>
@@ -27,6 +32,21 @@
         </el-form-item>
         <el-form-item prop="name" label="真实姓名">
           <el-input  v-model="signupForm.name" autocomplete="off" suffix-icon="el-icon-s-custom"></el-input>
+          <el-input
+            type="password"
+            v-model="signupForm.password"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input
+            type="password"
+            v-model="signupForm.checkPass"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="name" label="真实姓名">
+          <el-input v-model="signupForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="identity" label="身份证号">
           <el-input v-model="signupForm.identity" suffix-icon="el-icon-s-opportunity"></el-input>
@@ -84,37 +104,38 @@
 <script>
 import axios from "axios";
 export default {
-    data() {
+  data() {
     //确认密码的校验规则
-     var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.signupForm.checkPass !== '') {
-            this.$refs.signupFormRef.validateField('checkPass');
-          }
-          callback();
+    var validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (this.signupForm.checkPass !== "") {
+          this.$refs.signupFormRef.validateField("checkPass");
         }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.signupForm.password) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      var checkIdNum = (rule, value, callback) => {
-		    const reg =
-		      /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)/
-		     if (!value) {
-		      return callback(new Error('证件号码不能为空'))
-		    } else if (!reg.test(value)) {
-		      return callback(new Error('证件号码不正确'))
-		    } else {
-		      callback()
-		 }};
+        callback();
+      }
+    };
+    var validatePass2 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.signupForm.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
+    var checkIdNum = (rule, value, callback) => {
+      const reg =
+        /(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)/;
+      if (!value) {
+        return callback(new Error("证件号码不能为空"));
+      } else if (!reg.test(value)) {
+        return callback(new Error("证件号码不正确"));
+      } else {
+        callback();
+      }
+    };
     return {
       //注册表单数据绑定
       /*signupForm: {
@@ -145,33 +166,29 @@ export default {
           { required: true, message: "请输入验证码", trigger: "blur" },
         ],*/
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 20, message: '长度在3到20个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 20, message: "长度在3到20个字符", trigger: "blur" },
         ],
-       //设置密码时的动态校验规则
+        //设置密码时的动态校验规则
         password: [
-          { required: true, validator: validatePass, trigger: 'blur' }
+          { required: true, validator: validatePass, trigger: "blur" },
         ],
         checkPass: [
-          { required: true, validator: validatePass2, trigger: 'blur' }
+          { required: true, validator: validatePass2, trigger: "blur" },
         ],
-        identity: [
-          { required: true, trigger: 'blur' ,validator: checkIdNum}
-        ],
+        identity: [{ required: true, trigger: "blur", validator: checkIdNum }],
         name: [
-          { required: true, message: '请输入真实姓名', trigger: 'blur'},
-          { min: 2, max: 3, trigger: 'blur'}
+          { required: true, message: "请输入真实姓名", trigger: "blur" },
+          { min: 2, max: 3, trigger: "blur" },
         ],
         //省份是否用自动生成的方式替代，或者用下拉框优化
         province: [
-          { required: true,message: '请输入你所在的省份',trigger:'blur'}
+          { required: true, message: "请输入你所在的省份", trigger: "blur" },
         ],
-    
       },
-   
-      
+
       signupForm: {
-        type: "",
+        type: "S",
         password: "",
         name: "",
         email: "",
@@ -184,42 +201,41 @@ export default {
         gender: "",
         signature: "",
       },
-
-    }
+    };
   },
   methods: {
-      signup() {
+    signup() {
       //先预校验
-      this.$refs.signupFormRef.validate(async(valid) => {
-        if (!valid) return //如果预验证失败就返回
+      this.$refs.signupFormRef.validate(async (valid) => {
+        if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/signUp.php",
           this.signupForm
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
         console.log(result);
-        if (result.status == "success")
+        if (result.data.status == "success")
           return this.$message.success("注册成功啦");
         this.$message.error("注册失败(T_T)检查下哪里写错错了");
-      })
+      });
     },
     getCode() {
       this.$refs.signupFormRef.validate(async (valid) => {
         const result = await this.$http.post(
           "/login/getMail.php",
-          this.signupForm.email
+          this.signupForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
     },
     tologin() {
-      this.$router.push("/login")
+      this.$router.push("/login");
     },
     reset() {
-        this.$refs.signupFormRef.resetFields();
-    }
-  }
-}
+      this.$refs.signupFormRef.resetFields();
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -227,16 +243,15 @@ export default {
   background-color: #22476d;
   height: 100%;
   .signup_box {
-  width: 50%;
-  height: 100%;
-  background-color: #fff;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+    width: 50%;
+    height: 100%;
+    background-color: #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
-}
-
 
 .btns {
   display: flex;
