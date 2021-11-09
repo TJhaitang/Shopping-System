@@ -14,17 +14,17 @@
         class="login_form"
       >
         <el-form-item prop="email" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.email"></el-input>
+          <el-input type="e-mail" v-model="loginForm.email" suffix-icon="el-icon-message"></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input type="password" v-model="loginForm.password"></el-input>
+          <el-input type="password" v-model="loginForm.password" suffix-icon="el-icon-key"></el-input>
         </el-form-item>
         <el-form-item prop="emailcode" label="验证码">
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
           <el-button
             type="primary"
             @click="getCode"
-            style="position: absolute; top: 0px; z-index: 99; right: 0px"
+            style="position: absolute; top: 0px; z-index: 99; right: 0px" icon="el-icon-s-promotion"
             >发送验证码</el-button
           >
         </el-form-item>
@@ -78,9 +78,15 @@ export default {
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
         console.log(result);
-        if (result.data.status == "success")
-          return this.$message.success("登录成功啦");
-        this.$message.error("登录失败/(ㄒoㄒ)/~~");
+        if (result.data.status == "success"){
+          //token放在本地中,先清空再存放。
+          localStorage.clear();
+          localStorage.setItem('token',result.data.token);
+          this.$router.push('/my');
+          this.$message.success("登录成功啦");
+        }
+          
+        else return this.$message.error("登录失败/(ㄒoㄒ)/~~");
         //window.sessionStorage.setItem("token" , "结果里的token值")
       });
     },
@@ -90,7 +96,7 @@ export default {
         if (!valid) return; //如果预验证失败就返回
         const result = await this.$http.post(
           "/login/getMail.php",
-          this.loginForm.username
+          this.loginForm
         ); //用post方法向后端发登陆表单的数据
         console.log(result);
       });
@@ -104,7 +110,7 @@ export default {
     },*/
 
     goHome() {
-      this.$router.push("/home");
+      this.$router.push("/my");
     },
     toSignUp() {
       this.$router.push("/signUp");
@@ -159,4 +165,5 @@ export default {
   box-sizing: border-box;
   padding: 0 20px;
 }
+
 </style>
