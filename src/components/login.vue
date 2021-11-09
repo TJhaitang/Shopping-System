@@ -14,17 +14,26 @@
         class="login_form"
       >
         <el-form-item prop="email" label="邮箱">
-          <el-input type="e-mail" v-model="loginForm.email" suffix-icon="el-icon-message"></el-input>
+          <el-input
+            type="e-mail"
+            v-model="loginForm.email"
+            suffix-icon="el-icon-message"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
-          <el-input type="password" v-model="loginForm.password" suffix-icon="el-icon-key"></el-input>
+          <el-input
+            type="password"
+            v-model="loginForm.password"
+            suffix-icon="el-icon-key"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="emailcode" label="验证码">
           <el-input type="emailcode" v-model="loginForm.emailcode"></el-input>
           <el-button
             type="primary"
             @click="getCode"
-            style="position: absolute; top: 0px; z-index: 99; right: 0px" icon="el-icon-s-promotion"
+            style="position: absolute; top: 0px; z-index: 99; right: 0px"
+            icon="el-icon-s-promotion"
             >发送验证码</el-button
           >
         </el-form-item>
@@ -109,6 +118,25 @@ export default {
     toSignUp() {
       this.$router.push("/signUp");
     },
+    test() {
+      let jwt = localStorage.getItem("jwt");
+      if (jwt) {
+        this.$http.defaults.headers.common["X-token"] = jwt;
+        this.$http.get("/test.php").then(function (response) {
+          console.log(response);
+        });
+      } else {
+        this.$http
+          .post("/login/loginCheck.php", this.loginForm)
+          .then(function (response) {
+            console.log(response);
+            if (response.data.status == "success") {
+              localStorage.setItem("jwt", response.data.token);
+              this.$http.defaults.common["X-token"] = response.data.token;
+            }
+          });
+      }
+    },
   },
 };
 </script>
@@ -159,5 +187,4 @@ export default {
   box-sizing: border-box;
   padding: 0 20px;
 }
-
 </style>
