@@ -162,7 +162,7 @@ export default {
         ); //用post方法向后端发登陆表单的数据
         //弹窗提示
         console.log(result);
-        if (result.status == "success")
+        if (result.data.status == "success")
           return this.$message.success("注册成功啦");
         this.$message.error("注册失败(T_T)检查下哪里写错错了");
       })
