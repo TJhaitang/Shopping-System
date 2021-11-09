@@ -20,7 +20,7 @@ router.beforeEach((to, from, next) => {
   // from: 从哪个路径跳转而来
   // next: 放行函数
   // next() 放行； next('/login') 强制跳转（没有token的时候）
-  if(to.path === '/login') return next();
+  if(to.path === '/login' || to.path === '/signUp') return next();
   //拿出token
   const tokenString = localStorage.getItem('token')
   if (!tokenString) return next('/login');
