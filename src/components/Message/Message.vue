@@ -1,31 +1,24 @@
 <template>
-    <div>
-        <ul>
-            <router-link to="/home">
-                <i></i>
-                <span>首页</span>
-            </router-link>
-            <router-link to="/message">
-                <i></i>
-                <span>消息</span>
-            </router-link>
-            <router-link to="/my">
-                <i></i>
-                <span>我的</span>
-            </router-link>
-        </ul>
-       <h1>消息</h1> 
-       
-    </div>
-    
+  <el-row class="demo-avatar demo-basic">
+    <el-col :span="12">
+      <div class="sub-title">circle</div>
+      <div class="demo-basic--circle">
+        <div class="block"><el-avatar :size="50" :src="circleUrl"></el-avatar></div>
+        <div class="block" v-for="size in sizeList" :key="size">
+          <el-avatar :size="size" :src="circleUrl"></el-avatar>
+        </div>
+      </div>
+    </el-col>  
+  </el-row>
 </template>
-
 <script>
-export default {
-    
-}
+  export default {
+    data () {
+      return {
+        circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+        squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
+        sizeList: ["large", "medium", "small"]
+      }
+    }
+  }
 </script>
-
-<style>
-
-</style>
