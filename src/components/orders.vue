@@ -14,7 +14,7 @@
               </el-col>
           </el-row>
           
-          <el-table :data="userlist" border style="top: 10px;">
+          <el-table :data="userlist" border style="top: 10px; button: 10px;">
             <el-table-column label="#" type="index"></el-table-column>
             <el-table-column label="姓名" prop="username"></el-table-column>
             <el-table-column label="邮箱" prop="email"></el-table-column>
@@ -46,7 +46,8 @@
             :page-sizes="[1, 2, 5, 10]"
             :page-size="queryInfo.pagesize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
+            :total="total"
+            style="top: 10px;">
           </el-pagination>
         </el-card>
         <!-- 添加用户的对话框 -->
@@ -147,17 +148,7 @@ export default {
           mobile: '1313145678',
           role_name: 'xiaohua'
           
-      },
-      {  username: 'hahaha1',
-          email: 'hahaha2',
-          mobile: '1313145678',
-          role_name: 'xiaohua'
-          },
-      { username: 'hahaha1',
-          email: 'hahaha2',
-          mobile: '1313145678',
-          role_name: 'xiaohua'
-          }], //先增添一些默认的user
+      }], //先增添一些默认的user
       total: 3,
       addDialogVisible: false,
       // 添加用户的表单数据
