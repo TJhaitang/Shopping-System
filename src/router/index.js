@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import login from '../components/login.vue'
 import My from '../components/My/My.vue'
 import signUp from '../components/signUp.vue'
+import information from '../components/My/information.vue'
 
 Vue.use(VueRouter)
 
@@ -10,7 +11,11 @@ const router = new VueRouter( {
   routes: [
   { path: '/login', component: login },
   { path: '/', redirect: '/login' },
-  { path: '/my',component: My},
+  { 
+    path: '/my',
+    component: My,
+  },
+  {path:'/5',component:information},
   { path: '/signUp',component: signUp},
 ]})
 
