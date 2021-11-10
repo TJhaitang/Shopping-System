@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import login from '../components/login.vue'
-import My from '../components/My/My.vue'
-import signUp from '../components/signUp.vue'
-import orders from '../components/orders.vue'
+import login from '../components/Merchant/login.vue'
+import My from '../components/Merchant/My/My.vue'
+import signUp from '../components/Merchant/signUp.vue'
+import Commodity from  '../components/Merchant/My/Commodity.vue'
+import orders from '../components/Merchant/My/orders.vue'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter( {
@@ -11,9 +13,8 @@ const router = new VueRouter( {
   { path: '/login', component: login },
   { path: '/', redirect: '/login' },
   { path: '/my',component: My,
-  children: [{
-    path: '/orders',component:orders,
-  }]
+  children: [{path: '/orders',component:orders},
+  { path: '/Commodity',component:Commodity}]
 },
   { path: '/signUp',component: signUp},
 ]})

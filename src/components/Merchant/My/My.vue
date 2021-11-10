@@ -2,8 +2,8 @@
  <el-container style="height: 100%; border: 1px solid #eee">
    <!-- 侧菜单栏  -->
   <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-    <el-menu :default-openeds="['orders']" :router='true'> 
-     <el-menu-item index="1">商品管理</el-menu-item> 
+    <el-menu :default-openeds="['1', '3']" router> 
+     <el-menu-item index="/Commodity">商品管理</el-menu-item>
      <el-menu-item index="2">我的消息</el-menu-item>
      <el-menu-item index="3">系统消息</el-menu-item>
      <el-menu-item index="/orders">订单管理</el-menu-item>
@@ -32,8 +32,8 @@
       <span style="display:inline-block;font-size:20px">王小虎</span>
     </el-header>
     <el-main>
-    <router-view>
-    </router-view>
+      <router-view>
+      </router-view>
     </el-main>
     
   </el-container>
