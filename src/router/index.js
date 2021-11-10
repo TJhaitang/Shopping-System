@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import login from '../components/login.vue'
-import My from '../components/My/My.vue'
-import signUp from '../components/signUp.vue'
+import login from '../components/Merchant/login.vue'
+import My from '../components/Merchant/My/My.vue'
+import signUp from '../components/Merchant/signUp.vue'
+import Commodity from  '../components/Merchant/My/Commodity.vue'
+
 
 Vue.use(VueRouter)
 
@@ -10,8 +12,13 @@ const router = new VueRouter( {
   routes: [
   { path: '/login', component: login },
   { path: '/', redirect: '/login' },
-  { path: '/my',component: My},
-  { path: '/signUp',component: signUp},
+  { 
+    path: '/my',
+    component: My,
+
+    children: [{ path: '/Commodity',component:Commodity}],
+  },
+  { path: '/signUp',component: signUp}
 ]})
 
 //挂载路由导航守卫之后再暴露路由
