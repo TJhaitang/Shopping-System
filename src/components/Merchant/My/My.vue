@@ -2,11 +2,11 @@
  <el-container style="height: 100%; border: 1px solid #eee">
    <!-- 侧菜单栏  -->
   <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-    <el-menu :default-openeds="['1', '3']" :router="true"> 
-     <el-menu-item index="1">商品管理</el-menu-item>
+    <el-menu :default-openeds="['1', '3']" router> 
+     <el-menu-item index="/Commodity">商品管理</el-menu-item>
      <el-menu-item index="2">我的消息</el-menu-item>
      <el-menu-item index="3">系统消息</el-menu-item>
-     <el-menu-item index="4">订单管理</el-menu-item>
+     <el-menu-item index="/orders">订单管理</el-menu-item>
      <el-menu-item index="5">设置</el-menu-item>
     </el-menu>
   </el-aside>
@@ -31,19 +31,11 @@
       </el-dropdown>
       <span style="display:inline-block;font-size:20px">王小虎</span>
     </el-header>
-
     <el-main>
-      <el-table :data="tableData">
-        <el-table-column prop="id" label="商品id" width="100">
-        </el-table-column>
-        <el-table-column prop="name" label="商品名称" width="200">
-        </el-table-column>
-        <el-table-column prop="category" label="商品种类" width="150">
-        </el-table-column>
-        <el-table-column prop="price" label="商品价格" width="100">
-        </el-table-column>
-      </el-table>
+      <router-view>
+      </router-view>
     </el-main>
+    
   </el-container>
  </el-container>
     
@@ -96,16 +88,6 @@
 
 <script>
   export default {
-    data() {
-      const item = {
-        id: '***',
-        name: '数据库大作业代写',
-        category: '服务类',
-        price: '999'
-      };
-      return {
-        tableData: Array(20).fill(item)
-      }
-    }
+    
   };
 </script>
