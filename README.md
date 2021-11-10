@@ -1,6 +1,14 @@
 # 数据库大作业-更新日志
 ## 1109wsr
 ### 增加
+- token令牌放在了config.headers.authorization里
+- 
+### 删除
+- 
+### 其他
+- 
+## 1109wsr
+### 增加
 - 增加了登录成功后的token存储（localStorage）以及基于token的路由导航守卫
 - 增加了基于token的退出功能
 

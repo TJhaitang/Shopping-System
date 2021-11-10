@@ -3,14 +3,18 @@ import VueRouter from 'vue-router'
 import login from '../components/login.vue'
 import My from '../components/My/My.vue'
 import signUp from '../components/signUp.vue'
-
+import orders from '../components/orders.vue'
 Vue.use(VueRouter)
 
 const router = new VueRouter( {
   routes: [
   { path: '/login', component: login },
   { path: '/', redirect: '/login' },
-  { path: '/my',component: My},
+  { path: '/my',component: My,
+  children: [{
+    path: '/orders',component:orders,
+  }]
+},
   { path: '/signUp',component: signUp},
 ]})
 
