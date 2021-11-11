@@ -1,56 +1,3 @@
-<!--<template>
- <div style="margin-top: 15px;">
-  <span>商品管理</span>
-  
-  <el-row>
-      <el-col :span="15">
-       <el-input placeholder="请输入内容">
-        <el-button slot="append" icon="el-icon-search"></el-button>
-       </el-input>
-      </el-col>
-      <el-col :span="5">
-       <el-button type="primary">添加商品</el-button>
-      </el-col>
-  </el-row>
-  
-  <el-table :data="tableData">
-        <el-table-column prop="id" label="商品id" width="100">
-        </el-table-column>
-        <el-table-column prop="name" label="商品名称" width="200">
-        </el-table-column>
-        <el-table-column prop="category" label="商品种类" width="150">
-        </el-table-column>
-        <el-table-column prop="price" label="商品价格" width="100">
-        </el-table-column>
-        <el-table-column prop="picture" label="商品图片" width="50">
-        </el-table-column>
-        <el-table-column prop="inventory" label="商品库存" width="">
-        </el-table-column>
-        <el-table-column prop="price" label="商品价格" width="100">
-        </el-table-column>
-      </el-table>
- </div>
-</template>
-
-<script>
-export default {
-    data() {
-      const item = {
-        id: '***',
-        name: '数据库大作业代写',
-        category: '服务类',
-        price: '999'
-      };
-      return {
-        tableData: Array(20).fill(item)
-      }
-    }
-}
-</script>
-
-<style lang="less">
-
-</style>-->
 <template>
     <div>
     
@@ -68,30 +15,43 @@ export default {
           </el-row>
           
           <el-table :data="userlist" border stripe>
-            <el-table-column label="#" type="index"></el-table-column>
-            <el-table-column label="姓名" prop="username"></el-table-column>
-            <el-table-column label="邮箱" prop="email"></el-table-column>
-            <el-table-column label="电话" prop="mobile"></el-table-column>
-            <el-table-column label="角色" prop="role_name"></el-table-column>  
-            <el-table-column prop="id" label="商品id" width="100">
+            <el-table-column prop="id" label="商品id" width="60">
             </el-table-column>
-            <el-table-column prop="name" label="商品名称" width="200">
+            <el-table-column prop="name" label="商品名称" width="150">
             </el-table-column>
-            <el-table-column prop="category" label="商品种类" width="150">
+            <el-table-column prop="category" label="商品种类" width="60">
             </el-table-column>
-            <el-table-column prop="price" label="商品价格" width="100">
+            <el-table-column prop="price" label="商品价格" width="60">
             </el-table-column>
-            <el-table-column prop="picture" label="商品图片" width="50">
+            <el-table-column prop="picture" label="商品图片" width="100">
             </el-table-column>
-            <el-table-column prop="inventory" label="商品库存" width="">
+            <el-table-column prop="inventory" label="商品库存" width="60">
             </el-table-column>
-            <el-table-column prop="price" label="商品价格" width="100">
+            <el-table-column prop="information" label="商品详细信息" width="200">
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column prop="comment" label="商品评论" width="100">
+            </el-table-column>
+            <el-table-column label="活动" width="250">
               <template slot-scope="scope">
-
-                <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
-                </el-switch>
+                <el-row>
+                 <el-col>
+                  <span>是否参加满300-60活动</span>
+                  <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
+                  </el-switch>
+                 </el-col>
+                 <el-col>
+                   <span>是否参加满200-30活动</span>
+                  <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
+                  </el-switch>
+                 </el-col>
+                </el-row>
+              </template>
+            </el-table-column>
+            <el-table-column label="售卖状态" width="100">
+              <template slot-scope="scope">
+               <span>售卖中</span>
+               <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
+               </el-switch>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="180px">
@@ -101,9 +61,9 @@ export default {
                 <!-- 删除按钮 -->
                 <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
                 <!-- 分配角色按钮 -->
-                <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+                <!--<el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                   <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
-                </el-tooltip>                
+                </el-tooltip>  -->              
               </template>
             </el-table-column>
           </el-table>
@@ -116,20 +76,23 @@ export default {
             :total="total">
           </el-pagination>
         </el-card>
-        <!-- 添加用户的对话框 -->
-        <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
+        <!-- 添加商品的对话框 -->
+        <el-dialog title="添加商品" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
           <!-- 内容主体 -->
           <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
-            <el-form-item label="用户名" prop="username">
+            <el-form-item label="商品id" prop="id">
               <el-input v-model="addForm.username"></el-input>
             </el-form-item>
-            <el-form-item label="密码" prop="password">
+            <el-form-item label="商品价格" prop="price">
               <el-input v-model="addForm.password"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱" prop="email">
+            <el-form-item label="商品图片" prop="picture">
               <el-input v-model="addForm.email"></el-input>
             </el-form-item>
-            <el-form-item label="手机" prop="mobile">
+            <el-form-item label="商品库存" prop="inventory">
+              <el-input v-model="addForm.mobile"></el-input>
+            </el-form-item>
+            <el-form-item label="详细信息" prop="information">
               <el-input v-model="addForm.mobile"></el-input>
             </el-form-item>
           </el-form>
@@ -143,14 +106,20 @@ export default {
         <el-dialog title="修改用户信息" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
           <!-- 内容主体区域 -->
           <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-            <el-form-item label="用户名">
+            <el-form-item label="商品id">
               <el-input v-model="editForm.username" disabled></el-input>
             </el-form-item>  
-            <el-form-item label="邮箱" prop="email">
-              <el-input v-model="editForm.email"></el-input>
+            <el-form-item label="商品价格" prop="price">
+              <el-input v-model="addForm.password"></el-input>
             </el-form-item>
-            <el-form-item label="手机" prop="mobile">
-              <el-input v-model="editForm.mobile"></el-input>
+            <el-form-item label="商品图片" prop="picture">
+              <el-input v-model="addForm.email"></el-input>
+            </el-form-item>
+            <el-form-item label="商品库存" prop="inventory">
+              <el-input v-model="addForm.mobile"></el-input>
+            </el-form-item>
+            <el-form-item label="详细信息" prop="information">
+              <el-input v-model="addForm.mobile"></el-input>
             </el-form-item>
           </el-form>
           <!-- 底部区域 -->
@@ -159,7 +128,7 @@ export default {
               <el-button type="primary" @click="editUserInfo">确 定</el-button>
           </span>
         </el-dialog>
-        <!-- 分配角色的对话框 -->
+        <!-- 分配角色的对话框 
         <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%"  @close="setRoleDialogClosed">
           <div>
             <p>当前的用户：{{userInfo.username}}</p>
@@ -168,17 +137,17 @@ export default {
               <el-select v-model="selectedRoleId" placeholder="请选择">
                 <el-option v-for="item in rolesList" :key="item.id"
                   :label="item.roleName" :value="item.id">
-                  <!-- label是文本值，绑定的是角色名称；value绑定的实际上是id值，v-model绑定的是当前选中的id值 -->
+                  <! label是文本值，绑定的是角色名称；value绑定的实际上是id值，v-model绑定的是当前选中的id值 
                 </el-option>
               </el-select>
             </p>
           </div>
-          <!-- 底部区域 -->
+          
           <span slot="footer" class="dialog-footer">
               <el-button @click="setRoleDialogVisible = false">取 消</el-button>
               <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
           </span>
-        </el-dialog> 
+        </el-dialog> -->
     </div>
 </template>
 
@@ -209,21 +178,32 @@ export default {
           pagesize: 2
       },
       userlist: [{
-          username: 'hahaha1',
-          email: 'hahaha2',
-          mobile: '1313145678',
-          role_name: 'xiaohua'
-          
+          id: '***',
+          name: '数据库大作业代写',
+          category: '服务类',
+          price: '999',
+          picture: '点击查看',
+          inventory: '999',
+          information: '代写大作业，质量保证',
+          comment: '点击查看'
       },
-      {  username: 'hahaha1',
-          email: 'hahaha2',
-          mobile: '1313145678',
-          role_name: 'xiaohua'
+      {  id: '***',
+          name: '强力生发水',
+          category: '洗护类',
+          price: '888',
+          picture: '点击查看',
+          inventory: '999',
+          information: '还你茂密头发',
+          comment: '点击查看'
           },
-      { username: 'hahaha1',
-          email: 'hahaha2',
-          mobile: '1313145678',
-          role_name: 'xiaohua'
+      { id: '***',
+          name: '上课代答到',
+          category: '服务类',
+          price: '666',
+          picture: '点击查看',
+          inventory: '999',
+          information: '声音学谁像谁',
+          comment: '点击查看'
           }], //先增添一些默认的user
       total: 3,
       addDialogVisible: false,
@@ -319,7 +299,7 @@ export default {
         this.getUserList()
       })
     },
-    //编辑用户
+    //编辑商品
     async showEditDialog(id) {
       this.editDialogVisible = true
       console.log(id)
