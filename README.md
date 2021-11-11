@@ -1,12 +1,10 @@
 # 数据库大作业-更新日志
-## 1109wsr
+## 1109wsr，fbk，zq
 ### 增加
 - token令牌放在了config.headers.authorization里
-- 
-### 删除
-- 
-### 其他
-- 
+- 增加了商品管理页和订单管理页的大致框架
+- 增加了路由嵌套跳转
+- 增加了merchant文件夹存放商家相关
 ## 1109wsr
 ### 增加
 - 增加了登录成功后的token存储（localStorage）以及基于token的路由导航守卫
