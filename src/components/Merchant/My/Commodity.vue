@@ -14,7 +14,7 @@
               </el-col>
           </el-row>
           
-          <el-table :data="userlist" border stripe>
+          <el-table :data="goodslist" border stripe>
             <el-table-column prop="id" label="商品id" width="60">
             </el-table-column>
             <el-table-column prop="name" label="商品名称" width="150">
@@ -102,8 +102,8 @@
               <el-button type="primary" @click="addUser">确 定</el-button>
           </span>
         </el-dialog>
-        <!-- 修改用户的对话框 -->
-        <el-dialog title="修改用户信息" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
+        <!-- 修改商品的对话框 -->
+        <el-dialog title="修改商品信息" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
           <!-- 内容主体区域 -->
           <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
             <el-form-item label="商品id">
@@ -155,21 +155,21 @@
 export default {
   data () {
     // 验证邮箱的规则
-    var checkEmail = (rule, value, cb) => {
-      const regEmail = /^[a-zA-Z0-9_-]+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-      if (regEmail.test(value)) {
-        return cb()
-      }
-      cb(new Error('请输入合法的邮箱'))
-    }
+    //var checkEmail = (rule, value, cb) => {
+    //  const regEmail = /^[a-zA-Z0-9_-]+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+    //  if (regEmail.test(value)) {
+    //    return cb()
+    //  }
+    //  cb(new Error('请输入合法的邮箱'))
+    //}
     // 验证手机号的规则
-    var checkMobile = (rule, value, cb) => {
-      const regMobile = /^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$/
-      if(regMobile.test(value)) {
-        return cb()
-      }
-      cb (new Error('请输入合法的手机号'))
-    }
+    //var checkMobile = (rule, value, cb) => {
+    //  const regMobile = /^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$/
+    //  if(regMobile.test(value)) {
+    //    return cb()
+    //  }
+    //  cb (new Error('请输入合法的手机号'))
+    //}
     return {
       // 获取用户列表的参数
       queryInfo: {
@@ -177,7 +177,7 @@ export default {
           pagenum: 1,
           pagesize: 2
       },
-      userlist: [{
+      goodslist: [{
           id: '***',
           name: '数据库大作业代写',
           category: '服务类',
@@ -209,41 +209,55 @@ export default {
       addDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
-        username: '',
-        password: '',
-        email: '',
-        mobile: ''
+        id: '',
+        price: '',
+        picture: '',
+        inventory: '',
+        information: ''
       },
       // 添加表单的验证规则对象
       addFormRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        id: [
+          { required: true, message: '请输入商品id', trigger: 'blur' },
+          //{ min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+        price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' },
+          //{ min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
         ],
-        email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { validator: checkEmail, trigger: 'blur' }
+        picture: [
+          { required: true, message: '请输入图片', trigger: 'blur' },
+          //{ validator: checkEmail, trigger: 'blur' }
         ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: checkMobile, trigger: 'blur' }
+        inventory: [
+          { required: true, message: '请输入商品库存', trigger: 'blur' },
+          //{ validator: checkMobile, trigger: 'blur' }
+        ],
+        information: [
+          { required: true, message: '请输入商品详细信息', trigger: 'blur' },
+          { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
         ]
       },
       editDialogVisible: false,
       editForm: {},
       // 修改表单的验证规则对象
       editFormRules: {
-        email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { validator: checkEmail, trigger: 'blur' }
+        price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' },
+          //{ validator: checkEmail, trigger: 'blur' }
         ],
-        mobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: checkMobile, trigger: 'blur' }
+        picture: [
+          { required: true, message: '请输入商品图片', trigger: 'blur' },
+          //{ validator: checkMobile, trigger: 'blur' }
+        ],
+        inventory: [
+          { required: true, message: '请输入商品库存', trigger: 'blur' },
+          //{ validator: checkMobile, trigger: 'blur' }
+        ],
+        information: [
+          { required: true, message: '请输入商品详细信息', trigger: 'blur' },
+          { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
+          //{ validator: checkMobile, trigger: 'blur' }
         ]
       },
       setRoleDialogVisible: false,
@@ -253,14 +267,23 @@ export default {
     }
   },
   created() {
-    this.getUserList()
+    //this.getUserList()
+    this.getGoodsList()
   },
   methods: {
-    async getUserList() {
-      const { data: res } = await this.$http.get('users', { params: this.queryInfo })
+    //async getUserList() {
+    //  const { data: res } = await this.$http.get('users', { params: this.queryInfo })
       // console.log(res)
-      if (res.meta.status !== 200) return this.$message.error('获取用户列表失败！')
-      this.userlist = res.data.users
+    //  if (res.meta.status !== 200) return this.$message.error('获取用户列表失败！')
+    //  this.userlist = res.data.users
+    //  this.total = res.data.total
+    //},
+    async getGoodsList() {
+      const { data: res } = await this.$http.get('goods', { params: this.queryInfo })
+      // console.log(res)
+      if (res.meta.status !== 200) return this.$message.error('获取商品列表失败！')
+      this.goodslist = res.data.goods
+      //this.userlist = res.data.users
       this.total = res.data.total
     },
     handleSizeChange(newSize) {
