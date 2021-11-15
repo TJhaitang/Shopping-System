@@ -5,7 +5,7 @@ import My from '../components/Merchant/My/My.vue'
 import signUp from '../components/Merchant/signUp.vue'
 import Commodity from  '../components/Merchant/My/Commodity.vue'
 import orders from '../components/Merchant/My/orders.vue'
-import information from '../components/Merchant/My/information.vue'
+import information from '../view/information.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +16,11 @@ const router = new VueRouter( {
   { path: '/my',component: My,
   children: [{path: '/orders',component:orders},
   { path: '/Commodity',component:Commodity},
-  {path:'/5',component:information}]
+  {
+    path: '/5',
+    name: 'information',
+    component: information,
+  }]
 },
   { path: '/signUp',component: signUp},
 ]})
