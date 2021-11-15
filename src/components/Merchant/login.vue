@@ -3,7 +3,7 @@
     <div class="login_box">
       <div class="avatar_box">
         <!-- 头像 -->
-        <img src="src/assets/css/xiaogougou.png" alt="" />
+        <img src="./xiaogougou.png" alt="" />
       </div>
       <!-- 登录表单  -->
       <el-form
