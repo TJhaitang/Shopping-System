@@ -5,8 +5,8 @@
 
           <el-row :gutter="20">
               <el-col :span="8">
-                <el-input placeholder="请输入要搜索的商品" v-model="queryInfo.query" clearable @clear="getUserList">
-                  <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
+                <el-input placeholder="请输入要搜索的商品" v-model="queryInfo.query" clearable @clear="getGoodsList">
+                  <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
                 </el-input>
               </el-col>
               <el-col :span="4">
@@ -59,7 +59,7 @@
                 <!-- 修改按钮 -->
                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                 <!-- 删除按钮 -->
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
+                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeGoodsById(scope.row.id)"></el-button>
                 <!-- 分配角色按钮 -->
                 <!--<el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                   <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
@@ -81,19 +81,19 @@
           <!-- 内容主体 -->
           <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
             <el-form-item label="商品id" prop="id">
-              <el-input v-model="addForm.username"></el-input>
+              <el-input v-model="addForm.id"></el-input>
             </el-form-item>
             <el-form-item label="商品价格" prop="price">
-              <el-input v-model="addForm.password"></el-input>
+              <el-input v-model="addForm.price"></el-input>
             </el-form-item>
             <el-form-item label="商品图片" prop="picture">
-              <el-input v-model="addForm.email"></el-input>
+              <el-input v-model="addForm.picture"></el-input>
             </el-form-item>
             <el-form-item label="商品库存" prop="inventory">
-              <el-input v-model="addForm.mobile"></el-input>
+              <el-input v-model="addForm.inventory"></el-input>
             </el-form-item>
             <el-form-item label="详细信息" prop="information">
-              <el-input v-model="addForm.mobile"></el-input>
+              <el-input v-model="addForm.information"></el-input>
             </el-form-item>
           </el-form>
           <!-- 底部区域 -->
@@ -107,19 +107,19 @@
           <!-- 内容主体区域 -->
           <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
             <el-form-item label="商品id">
-              <el-input v-model="editForm.username" disabled></el-input>
+              <el-input v-model="editForm.id" disabled></el-input>
             </el-form-item>  
             <el-form-item label="商品价格" prop="price">
-              <el-input v-model="addForm.password"></el-input>
+              <el-input v-model="addForm.price"></el-input>
             </el-form-item>
             <el-form-item label="商品图片" prop="picture">
-              <el-input v-model="addForm.email"></el-input>
+              <el-input v-model="addForm.picture"></el-input>
             </el-form-item>
             <el-form-item label="商品库存" prop="inventory">
-              <el-input v-model="addForm.mobile"></el-input>
+              <el-input v-model="addForm.inventory"></el-input>
             </el-form-item>
             <el-form-item label="详细信息" prop="information">
-              <el-input v-model="addForm.mobile"></el-input>
+              <el-input v-model="addForm.information"></el-input>
             </el-form-item>
           </el-form>
           <!-- 底部区域 -->
@@ -260,10 +260,10 @@ export default {
           //{ validator: checkMobile, trigger: 'blur' }
         ]
       },
-      setRoleDialogVisible: false,
-      userInfo: {},
-      rolesList: [],
-      selectedRoleId: ''
+      //setRoleDialogVisible: false,
+      GoodsInfo: {},
+      //rolesList: [],
+      //selectedRoleId: ''
     }
   },
   created() {
@@ -309,17 +309,17 @@ export default {
       this.$refs.addFormRef.resetFields()
     },
     // 添加新用户
-    addUser() {
+    addGoods(){
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) 
         return 
-        const { data: res } = await this.$http.post('users', this.addForm)
+        const { data: res } = await this.$http.post("/merchant/insertCommodity.php", this.addForm)
          if(res.meta.status !== 201) {
-           return this.$message.error('添加用户失败！')
+           return this.$message.error('添加商品失败！')
         }
-        this.$message.success('添加用户成功！')
+        this.$message.success('添加商品成功！')
         this.addDialogVisible = false
-        this.getUserList()
+        this.getGoodsList()
       })
     },
     //编辑商品
@@ -328,7 +328,7 @@ export default {
       console.log(id)
       const { data: res } = await this.$http.get('users/' + id)
       if (res.meta.status !== 200) {
-        return this.$message.error('查询用户信息失败！')
+        return this.$message.error('查询商品信息失败！')
       }
       this.editForm = res.data
     },
@@ -336,25 +336,25 @@ export default {
     editDialogClosed() {
       this.$refs.editFormRef.resetFields()
     },
-    // 修改用户信息并提交
-    editUserInfo() {
+    // 修改信息并提交
+    editGoodsInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
         const { data: res } = await this.$http.put('users/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
+          price: this.editForm.price,
+          inventory: this.editForm.inventory
         })
         if (res.meta.status !== 200) {
-          return this.$message.error('更新用户信息失败！')
+          return this.$message.error('更新商品信息失败！')
         }
         this.editDialogVisible = false
-        this.getUserList()
-        this.$message.success('更新用户信息成功！')
+        this.getGoodsList()
+        this.$message.success('更新商品信息成功！')
       })
     },
     // 根据id删除对应的用户信息
-    async removeUserById(id) {
-      const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+    async removeGoodsById(id) {
+      const confirmResult = await this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -365,44 +365,44 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除')
       }
-      // 发起删除用户的请求
+      // 发起删除商品的请求
       const { data: res } = await this.$http.delete('users/' + id)
       if(res.meta.status !== 200) {
-        return this.$message.error('删除用户失败！')
+        return this.$message.error('删除商品失败！')
       }
-      this.$message.success('删除用户成功！')
-      this.getUserList()
+      this.$message.success('删除商品成功！')
+      this.getGoodsList()
     },
     // 展示分配角色的对话框
-    async setRole(userInfo) {
-      this.userInfo = userInfo
+    //async setRole(GoodsInfo) {
+    //  this.userInfo = userInfo
       // 在展示对话框之前，获取所有角色的列表
-      const { data: res } = await this.$http.get('roles')
-      if(res.meta.status !== 200) {
-        return this.$message.error('获取角色列表失败！')
-      }
-      this.rolesList = res.data
-      this.setRoleDialogVisible = true
-    },
+    //  const { data: res } = await this.$http.get('roles')
+    //  if(res.meta.status !== 200) {
+    //    return this.$message.error('获取角色列表失败！')
+    //  }
+    //  this.rolesList = res.data
+    //  this.setRoleDialogVisible = true
+    //},
     // 点击确定按钮，分配角色
-    async saveRoleInfo() {
-      if(!this.selectedRoleId) {
-        return this.$message.error('请选择要分配的角色')
-      }
+    //async saveRoleInfo() {
+    //  if(!this.selectedRoleId) {
+    //    return this.$message.error('请选择要分配的角色')
+    //  }
       // 发送分配用户角色的请求
-      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
-      if(res.meta.status !== 200) {
-        return this.$message.error('更新角色失败')
-      }
-      this.$message.success('更新角色成功')
-      this.getUserList()
-      this.setRoleDialogVisible = false
-    },
+    //  const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
+    //  if(res.meta.status !== 200) {
+    //    return this.$message.error('更新角色失败')
+    //  }
+    //  this.$message.success('更新角色成功')
+    //  this.getUserList()
+    //  this.setRoleDialogVisible = false
+    //},
     // 监听分配角色对话框的关闭事件
-    setRoleDialogClosed() {
-      this.selectedRoleId = ''
-      this.userInfo = {}
-    }
+    //setRoleDialogClosed() {
+    //  this.selectedRoleId = ''
+    //  this.userInfo = {}
+    //}
   }
 }
 </script>
