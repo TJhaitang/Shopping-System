@@ -89,37 +89,19 @@
     //每个卡片对应的状态参数
   
     data() {
-    return {
-      orderList: [{
-        id:'1234',
-        status:'待支付',
-        uid:'32543',
-        time:'2011-11-11',
-        addr:'北京中国人民大学小西门',
-        comName:'cookie',
-        cost:'845',
-        comQuantity:'3',
-        },
-      ],
-      editForm: {
-        id:'',
-        comName:'',
-        comQuantity:'',
-        cost:'',
-        addr:'',
-        ifChangeStatus:null
-      },
-      total: 0,
+    return { 
+      total: 9,
 
         orderQuery: {
         //查询数据预先设置
         id: undefined,
         uid: undefined,
         status: undefined,
-        pagenum: 1,
-        pagesize: 10,
+       
       },
-
+      pageNum: 1,
+      pageSize: 10,
+      maxPage: 1,
       loading: false,
       editDialogVisible: false
     }
@@ -134,11 +116,28 @@
       const {data:result} = await this.$http.get('路径',
           this.orderQuery
       )
-      if(result.meta.status !== 200){
+     if(result.meta.status !== 200){
           return this.$message.error('获取订单失败惹（╥﹏╥）')
-      }
+      }  
+     
+      //分页
+      //总页数
+      this.total = result.orderNum 
+       if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
+            this.maxpage=parseInt(this.total/this.pageSize)+1;   
+           
+       }else{   
+           this.maxpage=parseInt(this.total/this.pageSize);   
+       } 
+
+       //取出当前页面中应该显示的数据，赋值给orderList
+        var startRow = (this.pageNum - 1) * this.pageSize; 
+        var endRow = this.pageNum * this.pageSize; 
+        console.log(startRow)
+        endRow = (endRow > this.total)? this.total: endRow;  
+        this.orderList = this.orders.slice(startRow, endRow);
+        
       //map方法处理订单状态显示 
-      this.orderList = result.orders
       this.orderList.map(function (val){
         if(val.status == 1) {val.status = '待审核' }
         else if(val.status == 2){val.status = '待发货'}
@@ -177,11 +176,13 @@
       },
     //监听页面大小改变事件
     handleSizeChange(newsize) {
-   
+    this.pageSize = newsize;
+    this.getList();
     },
     //监听切换页面
     handleCurrentChange(newPage) {
-
+    this.pageNum = newPage;
+    this.getList(); //切换页面重新get一遍
     }
   }
 } 

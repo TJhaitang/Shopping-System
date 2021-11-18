@@ -111,7 +111,7 @@
 	        });
 	        return false;
 	      } else {
-	        // console.log((file.size / 1024).toFixed(1) + 'KB')
+	        console.log((file.size / 1024).toFixed(1) + 'KB')
 	      }
 	      return true;
 	    },
@@ -152,24 +152,24 @@
 	    //点击确定上传裁剪完的头像图片（blob类型）
 	    summitAvata() {
 	      this.$refs.cropper.getCropBlob(data => {
-	        // this.cropImgBlob = data;
+	        this.cropImgBlob = data;
 	        let params = {
 	          file: data
 	        };
 	        this.$emit("uploadAvatar", data);
 	        this.dialogVisible = !this.dialogVisible;
 	      });
-	    }
+	    },
 	    // 判断当前处于step1还是step2，切换step
-	    // isStep1() {
-	    //   if (!this.photo) {
-	    //     this.step = 1;
-	    //     return true;
-	    //   } else {
-	    //     this.step = 2;
-	    //     return false;
-	    //   }
-	    // }
+	    isStep1() {
+	       if (!this.photo) {
+	         this.step = 1;
+	         return true;
+	       } else {
+	         this.step = 2;
+	         return false;
+	       }
+	     }
 	    /* -------------------------------头像上传组件end--------------------------------*/
 	  },
 	  watch: {
@@ -186,7 +186,94 @@
 	};
 </script>
 
-
+<style lang="less" scoped>
+@area-height: 280px;
+	.avatar-uploader {
+	  &-wrap {
+	    display: flex;
+	    justify-content: space-between;
+	    width: 100%;
+	    height: 100%;
+	  }
+	  &_left {
+	    height: @area-height;
+	    width: @area-height;
+	    font-size: 13px;
+	    color: #999999;
+	    position: relative;
+	    background: #ecf2f6;
+	    &__btn {
+	      color: #999999;
+	      width: 88px;
+	      height: 34px;
+	      border: none;
+	      background: #fff;
+	      outline: none;
+	      border: 1px solid #cecece;
+	      border-radius: 82px;
+	    }
+	  }
+	  &__choose {
+	    p {
+	      margin-top: 59%;
+	      width: 100%;
+	      text-align: center;
+	    }
+	    button {
+	      position: absolute;
+	      top: 50%;
+	      left: 50%;
+	      transform: translate(-50%, -50%);
+	    }
+	  }
+	  &__edit {
+	    &-area {
+	      overflow: hidden;
+	      &-img {
+	        object-fit: cover; 
+	      }
+	    }
+	    button {
+	      margin-top: 13px;
+	    }
+	    button:last-child {
+	      float: right;
+	    }
+	  }
+	  @top: 30px;
+	  &__preview {
+	    background: #ecf2f6;
+	    text-align: center;
+	    width: 158px;
+	    padding-top: @top;
+	    height: @area-height - @top;
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    font-size: 13px;
+	    &-title {
+	      color: #999999;
+	    }
+	    img {
+	      background: #fff;
+	      margin-top: 5px;
+	      border-radius: 200px;
+	    }
+	    &-120 {
+	      height: 60px;
+	      width: 60px;
+	    }
+	    &-65 {
+	      height: 45px;
+	      width: 45px;
+	    }
+	    &-40 {
+	      height: 30px;
+	      width: 30px;
+	    }
+	  }
+	}
+</style>
 
 <style lang="less">
 	// 小的弹窗用el-messagebox，大弹窗有复杂交互的用el-dialog
