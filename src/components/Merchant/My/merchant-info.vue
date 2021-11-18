@@ -1,40 +1,32 @@
 <template>
     <div>
-	<section>
-		<button @click="dialogVisible = true">点我上传头像</button>
-		<uploadAvatar :dialogVisible="dialogVisible" @on-close="closeDialog"></uploadAvatar>
-	</section>
-	<!--显示商家当前的个人信息-->
 	<el-row :gutter="20" style="margin-top:10px;">
+        <!--显示商家当前的个人信息-->
         <el-col :span="8">
             <div class="grid-content bg-purple">
                  <el-card class="box-card">
-        <div slot="header" class="clearfix">
-          <span>个人中心</span>
-        </div>
-          <div class="name-role">
-          <span class="sender">Admin - {{dataForm.nickName}}</span>  
-        </div>
-        <div class="registe-info">
-          <span class="registe-info">
-            注册时间：
-            <li class="fa fa-clock-o"></li>
-             2020/4/10 9:40:33
-          </span>
-        </div>
+        		<div slot="header" class="clearfix">
+          			<span>个人中心</span>
+        		</div>
+          		<div class="name-role">
+          			<span class="sender">名称 - {{dataForm.nickName}}</span>  
+        		</div>
+       			 <div class="registe-info">
+          		<span class="registe-info">注册时间：<li class="fa fa-clock-o"></li>2020/4/10 9:40:33</span>
+        		</div>
         <el-divider></el-divider>
         <div class="personal-relation">
         <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
     </div>
     <div class="personal-relation">
-      <div class="relation-item">所属企业:  <div style="float: right; padding-right:20px;">杭州诚聚</div></div> 
+      <div class="relation-item">所属企业:  <div style="float: right; padding-right:20px;">良心资本家</div></div> 
     </div>
        <div class="personal-relation">
       <div class="relation-item">首页链接:  <div style="float: right; padding-right:20px;">{{dataForm.homeUrl}}</div></div>      
     </div>
-      </el-card>
-        </div>
-        </el-col>
+    </el-card>
+    </div>
+       </el-col>
     <el-col :span="16">
         <div class="grid-content bg-purple">
        <el-card class="box-card">
@@ -43,7 +35,17 @@
         </div>
         <div>
           <el-form label-width="80px" v-model="dataFrom" size="small" label-position="right">
-          <el-form-item label="商家名" prop="nickName">
+		<!-- 头像 -->
+		<el-form-item label="头像" prop="homeUrl">
+		  	<div class="avatar_box">
+        	<img src="../xiaogougou.png" alt="" />
+      		</div>
+		  	<section>
+				<button @click="dialogVisible = true">点我上传头像</button>
+				<uploadAvatar :dialogVisible="dialogVisible" @on-close="closeDialog"></uploadAvatar>
+		  	</section>
+        </el-form-item>
+		<el-form-item label="商家名" prop="nickName">
           <el-input  auto-complete="off" v-model="dataForm.nickName"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="phone">
@@ -75,7 +77,7 @@
 		data() {
 			return {
 				dialogVisible: false,
-				dataForm:{nickname:'超级管理员',phone: '173567777777',homeUrl: 'http://www.baidu.com'}
+				dataForm:{nickName:'超级管理员',phone: '173567777777',homeUrl: 'http://www.baidu.com'}
 			}
 		},
 		components: {
@@ -166,4 +168,28 @@
     padding: 10px 0;
     background-color: #f9fafc;
   }
+  //调节分割线样式
+  .el-divider{
+    margin: 18px 0;
+    background: 0 0;
+    border-top: 1px solid #0d0d0e;
+  }
+  //头像显示设置
+  .avatar_box {
+  height: 130px;
+  width: 130px;
+  border: 1px solid #eee;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 0 15px rgb(166, 164, 168);
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+  }
+}
 </style>
