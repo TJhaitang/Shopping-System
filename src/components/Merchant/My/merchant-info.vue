@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import uploadAvatar from "../components/uploadAvatar.vue"
+	import uploadAvatar from "../../uploadAvatar.vue"
 	export default {
 		data() {
 			return {

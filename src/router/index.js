@@ -5,7 +5,7 @@ import My from '../components/Merchant/My/My.vue'
 import signUp from '../components/Merchant/signUp.vue'
 import Commodity from  '../components/Merchant/My/Commodity.vue'
 import orders from '../components/Merchant/My/orders.vue'
-import information from '../view/information.vue'
+import information from '../components/Merchant/My/merchant-info.vue'
 
 Vue.use(VueRouter)
 
