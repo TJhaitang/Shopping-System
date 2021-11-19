@@ -12,7 +12,7 @@
           			<span class="sender">名称 - {{dataForm.nickName}}</span>  
         		</div>
        			<div class="avatar_box">
-        	    <img src="../xiaogougou.png" alt="" />
+        	    <img src="../xiyangyang.png" alt="" />
       	    </div> 
             <div class="uploadphoto">
 				      <el-button type="primary" @click="dialogVisible = true">点我上传头像</el-button>
