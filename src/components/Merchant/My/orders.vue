@@ -103,7 +103,15 @@
       pageSize: 10,
       maxPage: 1,
       loading: false,
-      editDialogVisible: false
+      editDialogVisible: false,
+      editForm: {
+        id: '',
+        comName: '',
+        comQuantity: '',
+        cost: '',
+        addr: '',
+        ifChangeStatus: ''
+      }
     }
   },
   created() {
