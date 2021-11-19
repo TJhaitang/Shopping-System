@@ -1,39 +1,36 @@
 <template>
     <div>
 	<el-row :gutter="20" style="margin-top:10px;">
-        <!--显示商家当前的个人信息-->
-        <el-col :span="8" >
-            <div class="grid-content bg-purple">
-            <el-card class="box-card" style="width:1000px">
-        		<div slot="header" class="clearfix">
-          			<span>个人中心</span>
-        		</div>
-          		<div class="name-role">
-          			<span class="sender">名称 - {{dataForm.nickName}}</span>  
-        		</div>
-       			<div class="avatar_box">
-        	    <img src="../xiyangyang.png" alt="" />
-      	    </div> 
-            <div class="uploadphoto">
-				      <el-button type="primary" @click="dialogVisible = true">点我上传头像</el-button>
-				      <uploadAvatar :dialogVisible="dialogVisible" @on-close="closeDialog"></uploadAvatar>
-            </div>
+  <!--显示商家当前的个人信息-->
+    <el-col :span="8" >
+      <div class="grid-content bg-purple">
+        <el-card class="box-card" style="width:1000px">
+        <div slot="header" class="clearfix">
+          <span>个人中心</span>
+        </div>
+        <div class="name-role">
+          <span class="sender">名称 - {{dataForm.nickName}}</span>  
+        </div>
+       	<div class="avatar_box">
+        	<img src="../xiyangyang.png" alt="" />
+      	</div> 
         <el-divider></el-divider>
         <div class="personal-relation">
-        <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
-    </div>
-    <div class="personal-relation">
-      <div class="relation-item">个性签名： <div style="float: right; padding-right:20px;">{{dataForm.self}}</div></div> 
-    </div>
-       <div class="personal-relation">
-      <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{dataForm.addr}}</div></div>      
-    </div>
-    <!-- 修改按钮 -->
-    <el-button type="primary" @click="changeinfo=true">修改</el-button>
-    </el-card>
-    </div>
-       </el-col>
-      </el-row>
+          <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
+        </div>
+        <div class="personal-relation">
+          <div class="relation-item">个性签名： <div style="float: right; padding-right:20px;">{{dataForm.self}}</div></div> 
+        </div>
+        <div class="personal-relation">
+          <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{dataForm.addr}}</div></div>      
+        </div>
+        <!-- 修改按钮 -->
+        <el-button type="primary" @click="changeinfo=true">修改个人信息</el-button>
+        <el-button type="primary" @click="changephoto = true">点我修改头像</el-button>
+        </el-card>
+      </div>
+    </el-col>
+  </el-row>
 
       <!--修改商家信息对话框-->
       <el-dialog title="修改个人信息" :visible.sync="changeinfo" width="50%">
@@ -58,18 +55,38 @@
           <el-button type="primary" @click="changeinfo = false">提 交</el-button>
           </span>
       </el-dialog>
+
+      <!--修改头像对话框-->
+      <el-dialog title="修改头像" :visible.sync="changephoto" width="70%">
+        <div class="avatar_select">
+        	<img src="../xiyangyang.png" alt="" />
+      	</div>
+        <div class="avatar_select">
+        	<img src="../meiyangyang.png" alt="" />
+      	</div>
+        <div class="avatar_select">
+        	<img src="../lanyangyang.png" alt="" />
+      	</div>
+        <div class="avatar_select">
+        	<img src="../feiyangyang.png" alt="" />
+      	</div>
+        <div class="avatar_select">
+        	<img src="../nuanyangyang.png" alt="" />
+      	</div>
+        
+      </el-dialog>
     </div>
 </template>
 
 <script>
-	import uploadAvatar from "../../uploadAvatar.vue"
 	export default {
 		data() {
 			return {
-				dialogVisible: false,
 				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板'},
         //控制修改商家信息对话框的显示与隐藏
         changeinfo:false,
+        //控制修改头像对话框的显示与隐藏
+        changephoto:false,
 
         editInfo:{},
         // 修改个人信息的验证规则
@@ -96,7 +113,7 @@
 			}
 		},
 		components: {
-			uploadAvatar
+			
 		},
 		methods: {
 			closeDialog() {
@@ -224,7 +241,7 @@
     border-top: 1px solid #0d0d0e;
   }
 
-  //头像显示设置
+  //外部头像显示设置
   .avatar_box {
   height: 130px;
   width: 130px;
@@ -234,7 +251,7 @@
   box-shadow: 0 0 15px rgb(166, 164, 168);
   position: absolute;
   left: 80%;
-  top:18%;
+  top:13%;
   transform: translate(-50%, -50%);
   background-color: #fff;
   img {
@@ -242,11 +259,24 @@
     width: 100%;
     border-radius: 50%;
   }
-
-  //上传图片的按钮设置
-  .uploadphoto button{
-    position: relative;
-    text-align: right;
+  }
+  //选择头像时的样式
+  .avatar_select{
+    height: 130px;
+    width: 130px;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 0 15px rgb(166, 164, 168);
+    position: absolute;
+    //left: 10%;
+    top:123%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(250, 248, 248);
+    img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
   }
 }
 </style>
