@@ -23,10 +23,10 @@
         <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
     </div>
     <div class="personal-relation">
-      <div class="relation-item">所属企业:  <div style="float: right; padding-right:20px;">良心资本家</div></div> 
+      <div class="relation-item">个性签名： <div style="float: right; padding-right:20px;">{{dataForm.self}}</div></div> 
     </div>
        <div class="personal-relation">
-      <div class="relation-item">首页链接:  <div style="float: right; padding-right:20px;">{{dataForm.homeUrl}}</div></div>      
+      <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{dataForm.addr}}</div></div>      
     </div>
     <!-- 修改按钮 -->
     <el-button type="primary" @click="changeinfo=true">修改</el-button>
@@ -38,18 +38,18 @@
       <!--修改商家信息对话框-->
       <el-dialog title="修改个人信息" :visible.sync="changeinfo" width="50%">
           <!--内容主体区域-->
-          <el-form label-width="80px" v-model="dataFrom" size="small" label-position="right">
+          <el-form :model="editForm" :rules="editInfoRules" ref="editInfoRef" label-width="80px" size="small" label-position="right">
           <el-form-item label="商家名" prop="nickName">
-            <el-input  auto-complete="off" v-model="dataForm.nickName"></el-input>
+            <el-input  v-model="editForm.nickName"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱" prop="phone">
-            <el-input auto-complete="off" v-model="dataForm.phone"></el-input>
+          <el-form-item label="联系电话" prop="phone">
+            <el-input v-model="editForm.phone"></el-input>
           </el-form-item>
           <el-form-item label="真实姓名" prop="homeUrl">
-            <el-input  maxlength="18" v-model="dataForm.homeUrl" disabled></el-input>
+            <el-input  maxlength="18" disabled></el-input>
           </el-form-item>
           <el-form-item label="所在省份" prop="homeUrl">
-            <el-input  maxlength="18" v-model="dataForm.homeUrl"></el-input>
+            <el-input  maxlength="18" v-model="editForm.addr"></el-input>
           </el-form-item>
           </el-form>
           <!--底部区域-->
@@ -67,9 +67,32 @@
 		data() {
 			return {
 				dialogVisible: false,
-				dataForm:{nickName:'超级管理员',phone: '173567777777',homeUrl: 'http://www.baidu.com'},
+				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板'},
         //控制修改商家信息对话框的显示与隐藏
-        changeinfo:false
+        changeinfo:false,
+
+        editInfo:{},
+        // 修改个人信息的验证规则
+        editInfoRules: {
+          nickName: [
+            { required: true, message: '请输入修改后的商家昵称', trigger: 'blur' },
+          ],
+          phone: [
+            { required: true, message: '请输入修改后的电话', trigger: 'blur' },
+            //{ validator: checkMobile, trigger: 'blur' }
+          ],
+          addr: [
+            { required: true, message: '请输入修改后的省份', trigger: 'blur' },
+            //{ validator: checkMobile, trigger: 'blur' }
+          ],
+        },
+
+        //定义修改后的表单
+        editForm:{
+          nickName:'',
+          phone:'',
+          addr:'',
+        }
 			}
 		},
 		components: {
@@ -78,7 +101,40 @@
 		methods: {
 			closeDialog() {
 			this.dialogVisible = false
-			}
+			},
+
+      //获取当前用户信息，显示在我们的界面上
+      async getinfo(){
+        this.loading = true
+        const {data:result} = await this.$http.get('/merchant/getInfo.php')
+
+        //检验获取数据是否成功
+        if(result.meta.status !== 200){
+          return this.$message.error('获取信息失败惹（╥﹏╥）')
+        }
+
+        //读取得到用户信息
+        this.nickName=result.username
+        this.phone=result.phone
+        this.addr=result.addr
+      },
+
+      //修改信息并提交
+      editInfo(){
+        this.$http.post('/merchant/getInfo.php',
+        {
+          addr:this.editForm.addr,
+          username:this.editForm.nickName,
+          phone:this.editForm.phone
+        }).then(function(result) {
+          if(result.data.status == 'success') {
+            //关闭对话框
+            this.editDialogVisible = false;
+            this.getinfo();//修改之后再次获取一下用户信息
+            this.$message.success('修改成功o(*￣▽￣*)ブ')}
+          else return this.$message.error('修改失败了！')
+        })
+      }
 		}
 	};
 </script>
