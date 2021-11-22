@@ -12,7 +12,8 @@
           <span class="sender">名称 - {{dataForm.nickName}}</span>  
         </div>
        	<div class="avatar_select" id="img0">
-        	<img src="../xiyangyang.png" alt="" />
+        	<img :src="userphoto" alt="" />
+          <!--图片地址动态绑定-->
       	</div> 
         <el-divider></el-divider>
         <div class="personal-relation">
@@ -39,14 +40,23 @@
           <el-form-item label="商家名" prop="nickName">
             <el-input  v-model="editForm.nickName"></el-input>
           </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input  v-model="editForm.email"></el-input>
+          </el-form-item>
           <el-form-item label="联系电话" prop="phone">
             <el-input v-model="editForm.phone"></el-input>
           </el-form-item>
           <el-form-item label="真实姓名" prop="homeUrl">
             <el-input  maxlength="18" disabled></el-input>
           </el-form-item>
+          <el-form-item label="性别" prop="homeUrl">
+            <el-input  maxlength="18" disabled></el-input>
+          </el-form-item>
           <el-form-item label="所在省份" prop="homeUrl">
             <el-input  maxlength="18" v-model="editForm.addr"></el-input>
+          </el-form-item>
+          <el-form-item label="个性签名">
+            <el-input  maxlength="18" v-model="editForm.self"></el-input>
           </el-form-item>
           </el-form>
           <!--底部区域-->
@@ -59,38 +69,46 @@
       <!--修改头像对话框-->
       <el-dialog class="dialogstyle" title="修改头像" :visible.sync="changephoto" width="70%">
         <div id="img1" class="avatar_select">
-        	<img src="../xiyangyang.png" alt="" />
+        	<img :src="userPhotolist.url1" alt="" />
       	</div>
         <div class="avatar_select" id="img2">
-        	<img src="../meiyangyang.png" alt="" />
+        	<img :src="userPhotolist.url2" alt="" />
       	</div>
         <div class="avatar_select" id="img3">
-        	<img src="../lanyangyang.png" alt="" />
+        	<img :src="userPhotolist.url3" alt="" />
       	</div>
         <div class="avatar_select" id="img4">
-        	<img src="../feiyangyang.png" alt="" />
+        	<img :src="userPhotolist.url4" alt="" />
       	</div>
         <div class="avatar_select" id="img5">
-        	<img src="../nuanyangyang.png" alt="" />
+        	<img :src="userPhotolist.url5" alt="" />
       	</div>
-        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url1">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url2">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url3">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url4">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url5">选它</el-button>
       </el-dialog>
     </div>
 </template>
 
 <script>
+  import url1 from '../xiyangyang.png';
+  import url2 from '../meiyangyang.png';
+  import url3 from '../lanyangyang.png';
+  import url4 from '../feiyangyang.png';
+  import url5 from '../nuanyangyang.png';
 	export default {
 		data() {
 			return {
-				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板'},
+				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板',email:'88888@qq.com',gender:'女'},
         //控制修改商家信息对话框的显示与隐藏
         changeinfo:false,
         //控制修改头像对话框的显示与隐藏
         changephoto:false,
+        userPhotolist:{url1:url1,url2:url2,url3:url3,url4:url4,url5:url5},
+        //初始头像
+        userphoto:url4,
 
         editInfo:{},
         // 修改个人信息的验证规则
@@ -104,7 +122,9 @@
           ],
           addr: [
             { required: true, message: '请输入修改后的省份', trigger: 'blur' },
-            //{ validator: checkMobile, trigger: 'blur' }
+          ],
+          email: [
+            { required: true, message: '请输入修改后的邮箱', trigger: 'blur' },
           ],
         },
 
@@ -113,6 +133,8 @@
           nickName:'',
           phone:'',
           addr:'',
+          email:'',
+          self:''
         }
 			}
 		},
@@ -138,6 +160,9 @@
         this.nickName=result.username
         this.phone=result.phone
         this.addr=result.addr
+        this.email=result.email
+        this.gender=result.gender
+        this.self=result.signature
       },
 
       //修改信息并提交
@@ -146,7 +171,9 @@
         {
           addr:this.editForm.addr,
           username:this.editForm.nickName,
-          phone:this.editForm.phone
+          phone:this.editForm.phone,
+          email:this.editForm.email,
+          signature:this.editForm.self
         }).then(function(result) {
           if(result.data.status == 'success') {
             //关闭对话框
@@ -300,7 +327,7 @@
 
   //选择头像的按钮样式
   .buttonPos{
-    margin-left: 13px;
-    margin-right: 12px;
+    margin-left: 20px;
+    margin-right: 18px;
   }
 </style>
