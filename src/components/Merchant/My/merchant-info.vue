@@ -12,7 +12,7 @@
           <span class="sender">名称 - {{dataForm.nickName}}</span>  
         </div>
        	<div class="avatar_select" id="img0">
-        	<img :src="userphoto" alt="" />
+        	<img :src="dataForm.userphoto" alt="" />
           <!--图片地址动态绑定-->
       	</div> 
         <el-divider></el-divider>
@@ -26,7 +26,7 @@
           <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{dataForm.addr}}</div></div>      
         </div>
         <!-- 修改按钮 -->
-        <el-button type="primary" @click="changeinfo=true">修改个人信息</el-button>
+        <el-button type="primary" @click="showCurrent()">修改个人信息</el-button>
         <el-button type="primary" @click="changephoto = true">点我修改头像</el-button>
         </el-card>
       </div>
@@ -50,7 +50,7 @@
             <el-input  maxlength="18" disabled></el-input>
           </el-form-item>
           <el-form-item label="性别" prop="homeUrl">
-            <el-input  maxlength="18" disabled></el-input>
+            <el-input  maxlength="18" v-model="editForm.gender" disabled></el-input>
           </el-form-item>
           <el-form-item label="所在省份" prop="homeUrl">
             <el-input  maxlength="18" v-model="editForm.addr"></el-input>
@@ -83,11 +83,11 @@
         <div class="avatar_select" id="img5">
         	<img :src="userPhotolist.url5" alt="" />
       	</div>
-        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url1">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url2">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url3">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url4">选它</el-button>
-        <el-button class="buttonPos" type="primary" style="width:140px" @click="userphoto=userPhotolist.url5">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="dataForm.userphoto=userPhotolist.url1">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="dataForm.userphoto=userPhotolist.url2">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="dataForm.userphoto=userPhotolist.url3">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="dataForm.userphoto=userPhotolist.url4">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px" @click="dataForm.userphoto=userPhotolist.url5">选它</el-button>
       </el-dialog>
     </div>
 </template>
@@ -101,14 +101,12 @@
 	export default {
 		data() {
 			return {
-				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板',email:'88888@qq.com',gender:'女'},
+				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板',email:'88888@qq.com',userphoto:url4,gender:'女'},
         //控制修改商家信息对话框的显示与隐藏
         changeinfo:false,
         //控制修改头像对话框的显示与隐藏
         changephoto:false,
-        userPhotolist:{url1:url1,url2:url2,url3:url3,url4:url4,url5:url5},
-        //初始头像
-        userphoto:url4,
+        userPhotolist:{url1:url1,url2:url2,url3:url3,url4:url4,url5:url5},       
 
         editInfo:{},
         // 修改个人信息的验证规则
@@ -134,7 +132,9 @@
           phone:'',
           addr:'',
           email:'',
-          self:''
+          self:'',
+          gender:'',
+          name:''
         }
 			}
 		},
@@ -163,6 +163,18 @@
         this.email=result.email
         this.gender=result.gender
         this.self=result.signature
+        this.userphoto=result.avatar
+      },
+
+      //点击修改按钮后要显示当前信息
+      showCurrent(){
+        this.editForm.gender=this.dataForm.gender,
+        this.editForm.nickName=this.dataForm.nickName,
+        this.editForm.phone=this.dataForm.phone,
+        this.editForm.addr=this.dataForm.addr,
+        this.editForm.email=this.dataForm.email,
+        this.editForm.self=this.dataForm.self,
+        this.changeinfo=true
       },
 
       //修改信息并提交
@@ -173,7 +185,8 @@
           username:this.editForm.nickName,
           phone:this.editForm.phone,
           email:this.editForm.email,
-          signature:this.editForm.self
+          signature:this.editForm.self,
+          avatar:this.editForm.userphoto
         }).then(function(result) {
           if(result.data.status == 'success') {
             //关闭对话框
