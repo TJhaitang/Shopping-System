@@ -11,7 +11,7 @@
         <div class="name-role">
           <span class="sender">名称 - {{dataForm.nickName}}</span>  
         </div>
-       	<div class="avatar_box">
+       	<div class="avatar_select" id="img0">
         	<img src="../xiyangyang.png" alt="" />
       	</div> 
         <el-divider></el-divider>
@@ -33,7 +33,7 @@
   </el-row>
 
       <!--修改商家信息对话框-->
-      <el-dialog title="修改个人信息" :visible.sync="changeinfo" width="50%">
+      <el-dialog title="修改个人信息" :visible.sync="changeinfo" width="50%" style="height=50%">
           <!--内容主体区域-->
           <el-form :model="editForm" :rules="editInfoRules" ref="editInfoRef" label-width="80px" size="small" label-position="right">
           <el-form-item label="商家名" prop="nickName">
@@ -57,23 +57,27 @@
       </el-dialog>
 
       <!--修改头像对话框-->
-      <el-dialog title="修改头像" :visible.sync="changephoto" width="70%">
-        <div class="avatar_select">
+      <el-dialog class="dialogstyle" title="修改头像" :visible.sync="changephoto" width="70%">
+        <div id="img1" class="avatar_select">
         	<img src="../xiyangyang.png" alt="" />
       	</div>
-        <div class="avatar_select">
+        <div class="avatar_select" id="img2">
         	<img src="../meiyangyang.png" alt="" />
       	</div>
-        <div class="avatar_select">
+        <div class="avatar_select" id="img3">
         	<img src="../lanyangyang.png" alt="" />
       	</div>
-        <div class="avatar_select">
+        <div class="avatar_select" id="img4">
         	<img src="../feiyangyang.png" alt="" />
       	</div>
-        <div class="avatar_select">
+        <div class="avatar_select" id="img5">
         	<img src="../nuanyangyang.png" alt="" />
       	</div>
-        
+        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
+        <el-button class="buttonPos" type="primary" style="width:140px">选它</el-button>
       </el-dialog>
     </div>
 </template>
@@ -240,26 +244,13 @@
     background: 0 0;
     border-top: 1px solid #0d0d0e;
   }
+  
+  //选择图像对话框的样式
+  .dialogstyle {
+    display: flex;
+    height: 80%;
+  }     
 
-  //外部头像显示设置
-  .avatar_box {
-  height: 130px;
-  width: 130px;
-  border: 1px solid #eee;
-  border-radius: 50%;
-  padding: 10px;
-  box-shadow: 0 0 15px rgb(166, 164, 168);
-  position: absolute;
-  left: 80%;
-  top:13%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  img {
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-  }
-  }
   //选择头像时的样式
   .avatar_select{
     height: 130px;
@@ -267,10 +258,7 @@
     border: 1px solid #eee;
     border-radius: 50%;
     padding: 10px;
-    box-shadow: 0 0 15px rgb(166, 164, 168);
-    position: absolute;
-    //left: 10%;
-    top:123%;
+    box-shadow: 0 0 15px rgb(166, 164, 168);    
     transform: translate(-50%, -50%);
     background-color: rgb(250, 248, 248);
     img {
@@ -278,5 +266,41 @@
     width: 100%;
     border-radius: 50%;
   }
-}
+  }
+  #img0{
+    position: absolute;
+    left: 80%;
+    top:13%;
+  }
+  #img1{
+    position: absolute;
+    left: 10%;
+    top:73%;
+  }
+  #img2{
+    position: absolute;
+    left: 30%;
+    top:73%;
+  }
+  #img3{
+    position: absolute;
+    left: 50%;
+    top:73%;
+  }
+  #img4{
+    position: absolute;
+    left: 70%;
+    top:73%;
+  }
+  #img5{
+    position: absolute;
+    left: 90%;
+    top:73%;
+  }
+
+  //选择头像的按钮样式
+  .buttonPos{
+    margin-left: 13px;
+    margin-right: 12px;
+  }
 </style>
