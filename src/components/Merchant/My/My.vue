@@ -23,10 +23,10 @@
     </el-header>
      
     <el-header style="font-size: 12px;position:absolute;right:30px;height:50px;top:30px">
-      <el-dropdown>
+      <el-dropdown trigger="click">
         <i class="el-icon-setting" style="margin-right: 15px;text-align: right;width:50px"></i>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="quit">退出</el-dropdown-item>
+          <el-dropdown-item  @click.native="quit">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <span style="display:inline-block;font-size:20px">王小虎</span>

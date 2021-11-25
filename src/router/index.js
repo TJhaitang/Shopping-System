@@ -9,6 +9,9 @@ import information from '../components/Merchant/My/merchant-info.vue'
 
 import login_u from '../components/users/login_u.vue'
 import signUp_u from '../components/users/signUp_u.vue'
+import home from '../components/users/home.vue'
+import order_u from '../components/users/order.vue'
+import collect_u from '../components/users/collect.vue'
 
 Vue.use(VueRouter)
 
@@ -23,7 +26,10 @@ const router = new VueRouter( {
   {path: '/5',component: information}]
 },
   { path: '/signUp',component: signUp},
-  { path: '/signUp_u',component: signUp_u}
+  { path: '/signUp_u',component: signUp_u},
+  { path: '/home',component: home},
+  { path: '/order_u',component: order_u},
+  { path: '/collect_u',component: collect_u}
 ]})
 
 //挂载路由导航守卫之后再暴露路由
