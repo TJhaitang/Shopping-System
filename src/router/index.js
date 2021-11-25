@@ -23,7 +23,7 @@ const router = new VueRouter( {
   { path: '/my',component: My,
   children: [{path: '/orders',component:orders},
   { path: '/Commodity',component:Commodity},
-  {path: '/5',component: information}]
+  {path: '/info',component: information}]
 },
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},

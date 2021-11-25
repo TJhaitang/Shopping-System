@@ -7,7 +7,7 @@
      <el-menu-item index="2">我的消息</el-menu-item>
      <el-menu-item index="3">系统消息</el-menu-item>
      <el-menu-item index="/orders">订单管理</el-menu-item>
-     <el-menu-item index="5">设置</el-menu-item>
+     <el-menu-item index="info">设置</el-menu-item>
     </el-menu>
   </el-aside>
   

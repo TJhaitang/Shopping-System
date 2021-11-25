@@ -5,8 +5,8 @@
 
           <el-row :gutter="20">
               <el-col :span="8">
-                <el-input placeholder="请输入要搜索的商品" v-model="queryInfo.query" clearable @clear="getUserList">
-                  <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
+                <el-input placeholder="请输入要搜索的商品" v-model="queryInfo.query" clearable @clear="getGoodsList">
+                  <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
                 </el-input>
               </el-col>
               <el-col :span="4">
@@ -15,7 +15,7 @@
           </el-row>
           
           <el-table :data="goodslist" border stripe>
-            <el-table-column prop="id" label="商品id" width="60">
+            <el-table-column prop="id" label="商品id" width="100">
             </el-table-column>
             <el-table-column prop="name" label="商品名称" width="150">
             </el-table-column>
@@ -31,39 +31,22 @@
             </el-table-column>
             <el-table-column prop="comment" label="商品评论" width="100">
             </el-table-column>
-            <el-table-column label="活动" width="250">
-              <template slot-scope="scope">
-                <el-row>
-                 <el-col>
-                  <span>是否参加满300-60活动</span>
-                  <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
-                  </el-switch>
-                 </el-col>
-                 <el-col>
-                   <span>是否参加满200-30活动</span>
-                  <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
-                  </el-switch>
-                 </el-col>
-                </el-row>
-              </template>
+            <el-table-column prop="activity" label="商品活动" width="100">
             </el-table-column>
-            <el-table-column label="售卖状态" width="100">
+            <!--<el-table-column label="售卖状态" width="100">
               <template slot-scope="scope">
                <span>售卖中</span>
-               <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
+               <el-switch v-model="scope.row.status">
                </el-switch>
               </template>
-            </el-table-column>
-            <el-table-column label="操作" width="180px">
+            </el-table-column>-->
+            <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <!-- 修改按钮 -->
                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                 <!-- 删除按钮 -->
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
-                <!-- 分配角色按钮 -->
-                <!--<el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
-                </el-tooltip>  -->              
+                <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeGoodsById(scope.row.id)"></el-button>
+                           
               </template>
             </el-table-column>
           </el-table>
@@ -79,22 +62,64 @@
         <!-- 添加商品的对话框 -->
         <el-dialog title="添加商品" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
           <!-- 内容主体 -->
-          <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="70px">
-            <el-form-item label="商品id" prop="id">
-              <el-input v-model="addForm.username"></el-input>
+          <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
+            <!--<el-form-item label="商品id" prop="id" label-width="100px">
+              <el-input v-model="addForm.id"></el-input>
+            </el-form-item>-->
+            <el-form-item label="商品名称" prop="name" label-width="100px">
+              <el-input v-model="addForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="商品价格" prop="price">
-              <el-input v-model="addForm.password"></el-input>
+            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
+              <el-input v-model="addForm.price"></el-input>
             </el-form-item>
-            <el-form-item label="商品图片" prop="picture">
-              <el-input v-model="addForm.email"></el-input>
+            <el-form-item label="商品图片" prop="picture" label-width="100px">
+              <el-input v-model="addForm.picture"></el-input>
+            </el-form-item>-->
+            <el-form-item label="商品标签" prop="label" label-width="100px">
+              <el-input v-model="addForm.label"></el-input>
             </el-form-item>
-            <el-form-item label="商品库存" prop="inventory">
-              <el-input v-model="addForm.mobile"></el-input>
+            <!--<el-form-item label="商品库存" prop="inventory" label-width="100px">
+              <el-input v-model="addForm.inventory"></el-input>
+            </el-form-item>-->
+            <el-form-item label="详细信息" prop="information" label-width="100px">
+              <el-input v-model="addForm.information"></el-input>
             </el-form-item>
-            <el-form-item label="详细信息" prop="information">
-              <el-input v-model="addForm.mobile"></el-input>
+            <el-row>
+              <el-form-item
+             v-for="(domain, index) in addForm.domains"
+             :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
+             :key="domain.key"
+             :prop="'domains.' + index + '.value'"
+             :rules="{
+             required: true, message: '类别名不能为空', trigger: 'blur' 
+             }"
+             label-width="300px"
+            >
+             <el-input v-model="domain.value"></el-input>
+             <el-input v-model="domain.price"></el-input>
+             <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain1(domain)">删除</el-button>
             </el-form-item>
+            <el-form-item>
+             <el-button @click="addDomain1">新增类别</el-button>
+            </el-form-item>
+            <el-switch
+             v-model="addForm.ifActivity1"
+             active-color="#13ce66"
+             inactive-color="#eee"
+             active-text="不参与满300-60活动"
+             inactive-text="参与满300-60活动">
+            </el-switch> 
+            </el-row>
+            <el-row></el-row>
+            <el-row>
+            <el-switch
+             v-model="addForm.ifActivity2"
+             active-color="#13ce66"
+             inactive-color="#eee"
+             active-text="不参与满200-30活动"
+             inactive-text="参与满200-30活动">
+            </el-switch> 
+            </el-row>
           </el-form>
           <!-- 底部区域 -->
           <span slot="footer" class="dialog-footer">
@@ -106,21 +131,63 @@
         <el-dialog title="修改商品信息" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
           <!-- 内容主体区域 -->
           <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-            <el-form-item label="商品id">
-              <el-input v-model="editForm.username" disabled></el-input>
+            <el-form-item label="商品id" label-width="100px">
+              <el-input v-model="editForm.id" disabled></el-input>
             </el-form-item>  
-            <el-form-item label="商品价格" prop="price">
-              <el-input v-model="addForm.password"></el-input>
+            <el-form-item label="商品名称" prop="name" label-width="100px">
+              <el-input v-model="editForm.name"></el-input>
+            </el-form-item> 
+            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
+              <el-input v-model="editForm.price"></el-input>
             </el-form-item>
-            <el-form-item label="商品图片" prop="picture">
-              <el-input v-model="addForm.email"></el-input>
+            <el-form-item label="商品图片" prop="picture" label-width="100px">
+              <el-input v-model="editForm.picture"></el-input>
             </el-form-item>
-            <el-form-item label="商品库存" prop="inventory">
-              <el-input v-model="addForm.mobile"></el-input>
+            <el-form-item label="商品标签" prop="label" label-width="100px">
+              <el-input v-model="editForm.label"></el-input>
             </el-form-item>
-            <el-form-item label="详细信息" prop="information">
-              <el-input v-model="addForm.mobile"></el-input>
+            <el-form-item label="商品库存" prop="inventory" label-width="100px">
+              <el-input v-model="editForm.inventory"></el-input>
+            </el-form-item>-->
+            <el-form-item label="详细信息" prop="information" label-width="100px">
+              <el-input v-model="editForm.information"></el-input>
             </el-form-item>
+            <el-form-item
+             v-for="(domain, index) in editForm.domains"
+             :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
+             :key="domain.key"
+             :prop="'domains.' + index + '.value'"
+             :rules="{
+             required: true, message: '类别名不能为空', trigger: 'blur' 
+             }"
+             label-width="300px"
+            >
+             <el-input v-model="domain.value"></el-input>
+             <el-input v-model="domain.price"></el-input>
+             <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+            </el-form-item>
+            <el-form-item>
+             <el-button @click="addDomain">新增类别</el-button>
+            </el-form-item>
+            <el-row>
+            <el-switch
+             v-model="editForm.ifActivity1"
+             active-color="#13ce66"
+             inactive-color="#eee"
+             active-text="不参与满300-60活动"
+             inactive-text="参与满300-60活动">
+            </el-switch> 
+            </el-row>
+            <el-row>
+            <el-switch
+             v-model="editForm.ifActivity2"
+             active-color="#13ce66"
+             inactive-color="#eee"
+             active-text="不参与满200-30活动"
+             inactive-text="参与满200-30活动">
+            </el-switch> 
+            </el-row>
+            
           </el-form>
           <!-- 底部区域 -->
           <span slot="footer" class="dialog-footer">
@@ -128,48 +195,12 @@
               <el-button type="primary" @click="editUserInfo">确 定</el-button>
           </span>
         </el-dialog>
-        <!-- 分配角色的对话框 
-        <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%"  @close="setRoleDialogClosed">
-          <div>
-            <p>当前的用户：{{userInfo.username}}</p>
-            <p>当前的角色：{{userInfo.role_name}}</p>
-            <p>分配新角色：
-              <el-select v-model="selectedRoleId" placeholder="请选择">
-                <el-option v-for="item in rolesList" :key="item.id"
-                  :label="item.roleName" :value="item.id">
-                  <! label是文本值，绑定的是角色名称；value绑定的实际上是id值，v-model绑定的是当前选中的id值 
-                </el-option>
-              </el-select>
-            </p>
-          </div>
-          
-          <span slot="footer" class="dialog-footer">
-              <el-button @click="setRoleDialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
-          </span>
-        </el-dialog> -->
     </div>
 </template>
 
 <script>
 export default {
   data () {
-    // 验证邮箱的规则
-    //var checkEmail = (rule, value, cb) => {
-    //  const regEmail = /^[a-zA-Z0-9_-]+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-    //  if (regEmail.test(value)) {
-    //    return cb()
-    //  }
-    //  cb(new Error('请输入合法的邮箱'))
-    //}
-    // 验证手机号的规则
-    //var checkMobile = (rule, value, cb) => {
-    //  const regMobile = /^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$/
-    //  if(regMobile.test(value)) {
-    //    return cb()
-    //  }
-    //  cb (new Error('请输入合法的手机号'))
-    //}
     return {
       // 获取用户列表的参数
       queryInfo: {
@@ -177,6 +208,8 @@ export default {
           pagenum: 1,
           pagesize: 2
       },
+      pageNum: 1,
+      pageSize: 10,
       goodslist: [{
           id: '***',
           name: '数据库大作业代写',
@@ -185,7 +218,8 @@ export default {
           picture: '点击查看',
           inventory: '999',
           information: '代写大作业，质量保证',
-          comment: '点击查看'
+          comment: '点击查看',
+          activity: '满300-60'
       },
       {  id: '***',
           name: '强力生发水',
@@ -194,7 +228,8 @@ export default {
           picture: '点击查看',
           inventory: '999',
           information: '还你茂密头发',
-          comment: '点击查看'
+          comment: '点击查看',
+          activity: '满200-30'
           },
       { id: '***',
           name: '上课代答到',
@@ -203,158 +238,204 @@ export default {
           picture: '点击查看',
           inventory: '999',
           information: '声音学谁像谁',
-          comment: '点击查看'
+          comment: '点击查看',
+          activity: '满200-30'
           }], //先增添一些默认的user
+      //value1:true,
       total: 3,
       addDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
-        id: '',
-        price: '',
+        //id: '',
+        //price: '',
         picture: '',
-        inventory: '',
-        information: ''
+        //inventory: '',
+        information: '',
+        name: '',
+        label: '',
+        ifActivity1: '',
+        ifActivity2: '',
+        domains: [{
+          value: '',
+          sort_inventory: '',
+          sort_price: '',
+        }],
       },
       // 添加表单的验证规则对象
       addFormRules: {
-        id: [
-          { required: true, message: '请输入商品id', trigger: 'blur' },
+        //id: [
+          //{ required: true, message: '请输入商品id', trigger: 'blur' },
           //{ min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        //],
+        name: [
+          { required: true, message: '请输入商品名称', trigger: 'blur' },
         ],
-        price: [
-          { required: true, message: '请输入商品价格', trigger: 'blur' },
+        //price: [
+          //{ required: true, message: '请输入商品价格', trigger: 'blur' },
           //{ min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
-        ],
+        //],
         picture: [
           { required: true, message: '请输入图片', trigger: 'blur' },
           //{ validator: checkEmail, trigger: 'blur' }
         ],
-        inventory: [
-          { required: true, message: '请输入商品库存', trigger: 'blur' },
-          //{ validator: checkMobile, trigger: 'blur' }
+        label: [
+          { required: true, message: '请输入商品标签', trigger: 'blur' },
         ],
+        //inventory: [
+          //{ required: true, message: '请输入商品库存', trigger: 'blur' },
+          //{ validator: checkMobile, trigger: 'blur' }
+        //],
         information: [
           { required: true, message: '请输入商品详细信息', trigger: 'blur' },
           { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
         ]
       },
       editDialogVisible: false,
-      editForm: {},
+      editForm: {
+        id: '',
+        //price: '',
+        picture: '',
+        name: '',
+        label: '',
+        inventory: '',
+        information: '',
+        ifActivity1: '',
+        ifActivity2: '',
+        domains: [{
+          value: '',
+          sort_inventory: '',
+          sort_price: ''
+        }],
+      },
       // 修改表单的验证规则对象
       editFormRules: {
-        price: [
+        name:[
+          { required: true, message: '请输入商品名称', trigger: 'blur' },
+        ],
+        /*price: [
           { required: true, message: '请输入商品价格', trigger: 'blur' },
           //{ validator: checkEmail, trigger: 'blur' }
-        ],
+        ],*/
         picture: [
           { required: true, message: '请输入商品图片', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
         ],
-        inventory: [
+        /*inventory: [
           { required: true, message: '请输入商品库存', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
+        ],*/
+        label: [
+          { required: true, message: '请输入商品标签', trigger: 'blur' },
+          //{ validator: checkEmail, trigger: 'blur' }
         ],
         information: [
           { required: true, message: '请输入商品详细信息', trigger: 'blur' },
           { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
           //{ validator: checkMobile, trigger: 'blur' }
-        ]
+        ],
       },
-      setRoleDialogVisible: false,
-      userInfo: {},
-      rolesList: [],
-      selectedRoleId: ''
+      GoodsInfo: {},
     }
   },
   created() {
-    //this.getUserList()
     this.getGoodsList()
   },
   methods: {
-    //async getUserList() {
-    //  const { data: res } = await this.$http.get('users', { params: this.queryInfo })
-      // console.log(res)
-    //  if (res.meta.status !== 200) return this.$message.error('获取用户列表失败！')
-    //  this.userlist = res.data.users
-    //  this.total = res.data.total
-    //},
     async getGoodsList() {
-      const { data: res } = await this.$http.get('goods', { params: this.queryInfo })
+      const { data: res } = await this.$http.get('getComIist.php', { params: this.queryInfo })
       // console.log(res)
       if (res.meta.status !== 200) return this.$message.error('获取商品列表失败！')
       this.goodslist = res.data.goods
-      //this.userlist = res.data.users
-      this.total = res.data.total
+
+      this.total = res.comNum
+      if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
+            this.maxpage=parseInt(this.total/this.pageSize)+1;   
+           
+       }else{   
+           this.maxpage=parseInt(this.total/this.pageSize);   
+       } 
+
+       //取出当前页面中应该显示的数据，赋值给orderList
+        var startRow = (this.pageNum - 1) * this.pageSize; 
+        var endRow = this.pageNum * this.pageSize; 
+        console.log(startRow)
+        endRow = (endRow > this.total)? this.total: endRow;  
+        this.GoodsList = this.goods.slice(startRow,endRow)
+
+        //this.orders.slice(startRow, endRow);
+      console.log(res) 
+
     },
     handleSizeChange(newSize) {
       // console.log(newSize)
-      this.queryInfo.pagesize = newSize
-      this.getUserList()
+      this.Pagesize = newSize
+      this.getGoodsList()
     },
     handleCurrentChange(newPage) {
       // console.log(newPage)
-      this.queryInfo.pagenum = newPage
-      this.getUserList()
-    },
-    async userStateChanged(userInfo) {
-      const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
-      if (res.meta.status !== 200) {
-        // 修改用户状态失败
-        userInfo.mg_state = !userInfo.mg_state
-        return this.$message.error('更新用户状态失败！')
-      }
-      this.$message.success('更新用户状态成功！')
+      this.Pagenum = newPage
+      this.getGoodsList()
     },
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
     },
-    // 添加新用户
-    addUser() {
-      this.$refs.addFormRef.validate(async valid => {
-        if (!valid) 
-        return 
-        const { data: res } = await this.$http.post('users', this.addForm)
-         if(res.meta.status !== 201) {
-           return this.$message.error('添加用户失败！')
-        }
-        this.$message.success('添加用户成功！')
-        this.addDialogVisible = false
-        this.getUserList()
+    // 添加新商品
+    addGoods(){
+      this.$http.post('/merchant/insertCommodity.php',
+      {
+        name: this.addForm.name,
+        discription: this.addForm.information,
+        sort:this.addForm.domains
+      }).then(function(result) {
+        if(result.data.status == 'success') {
+          //关闭对话框
+          this.editDialogVisible = false;
+          this.getList();//添加之后再次获取一下订单列表
+          this.$message.success('添加成功o(*￣▽￣*)ブ')}
+        else return this.$message.error('添加失败了！')
       })
     },
-    //编辑商品
-    async showEditDialog(id) {
-      this.editDialogVisible = true
-      console.log(id)
-      const { data: res } = await this.$http.get('users/' + id)
-      if (res.meta.status !== 200) {
-        return this.$message.error('查询用户信息失败！')
+    async showEditDialog(row) {
+      this.editForm.id = row.id
+      this.editForm.price = row.price
+      this.editForm.picture = row.picture
+      this.editForm.inventory = row.inventory
+      this.editForm.information = row.information
+      this.editForm.ifActivity1 = row.ifActivity1
+      this.editForm.ifActivity2 = row.ifActivity2
+      //this.editForm.domains = row.domains
+      for (const index in row.domains) {
+        this.editForm.domains[index] = row.domains[index]
       }
-      this.editForm = res.data
+      console.log(this.editForm.ifActivity1)
+      this.editDialogVisible = true;
     },
     // 监听修改用户对话框的关闭事件
     editDialogClosed() {
       this.$refs.editFormRef.resetFields()
     },
-    // 修改用户信息并提交
-    editUserInfo() {
-      this.$refs.editFormRef.validate(async valid => {
-        if (!valid) return
-        const { data: res } = await this.$http.put('users/' + this.editForm.id, {
-          email: this.editForm.email,
-          mobile: this.editForm.mobile
-        })
-        if (res.meta.status !== 200) {
-          return this.$message.error('更新用户信息失败！')
-        }
-        this.editDialogVisible = false
-        this.getUserList()
-        this.$message.success('更新用户信息成功！')
+    // 修改信息并提交
+    editGoodsInfo() {
+      
+      this.$http.post('/merchant/updateCommodity.php',
+      {
+        operation: "update",
+        comId: this.editForm.id,
+        name: this.editForm.name,
+        description: this.editForm.information,
+        sort: this.editForm.domains
+      }).then(function(result) {
+        if(result.data.status == 'success') {
+          //关闭对话框
+          this.editDialogVisible = false;
+          this.getList();//修改之后再次获取一下订单列表
+          this.$message.success('修改成功o(*￣▽￣*)ブ')}
+        else return this.$message.error('修改失败了！')
       })
     },
     // 根据id删除对应的用户信息
-    async removeUserById(id) {
-      const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+    async removeGoodsById(id) {
+      const confirmResult = await this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -365,43 +446,51 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除')
       }
-      // 发起删除用户的请求
-      const { data: res } = await this.$http.delete('users/' + id)
-      if(res.meta.status !== 200) {
-        return this.$message.error('删除用户失败！')
-      }
-      this.$message.success('删除用户成功！')
-      this.getUserList()
+      // 发起删除商品的请求
+      //const { data: res } = await this.$http.delete('users/' + id)
+      //if(res.meta.status !== 200) {
+      //  return this.$message.error('删除商品失败！')
+      //}
+      this.$http.post('/merchant/updateCommodity.php',
+      {
+        operation: "delete",
+        comId: this.editForm.id
+      }).then(function(result) {
+        if(result.data.status == 'success') {
+          //关闭对话框
+          this.editDialogVisible = false;
+          this.getList();//删除之后再次获取一下订单列表
+          this.$message.success('删除成功o(*￣▽￣*)ブ')}
+        else return this.$message.error('删除失败了！')
+      })
+      //this.$message.success('删除商品成功！')
+      //this.getGoodsList()
     },
-    // 展示分配角色的对话框
-    async setRole(userInfo) {
-      this.userInfo = userInfo
-      // 在展示对话框之前，获取所有角色的列表
-      const { data: res } = await this.$http.get('roles')
-      if(res.meta.status !== 200) {
-        return this.$message.error('获取角色列表失败！')
+    removeDomain(item) {
+      var index = this.editForm.domains.indexOf(item)
+      if (index !== -1) {
+        this.editForm.domains.splice(index, 1)
       }
-      this.rolesList = res.data
-      this.setRoleDialogVisible = true
+    },  
+    addDomain() {
+      this.editForm.domains.push({
+        value: '',
+        sort_inventory: '',
+        key: Date.now()
+      });
     },
-    // 点击确定按钮，分配角色
-    async saveRoleInfo() {
-      if(!this.selectedRoleId) {
-        return this.$message.error('请选择要分配的角色')
+    removeDomain1(item) {
+      var index = this.addForm.domains.indexOf(item)
+      if (index !== -1) {
+        this.addForm.domains.splice(index, 1)
       }
-      // 发送分配用户角色的请求
-      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, { rid: this.selectedRoleId })
-      if(res.meta.status !== 200) {
-        return this.$message.error('更新角色失败')
-      }
-      this.$message.success('更新角色成功')
-      this.getUserList()
-      this.setRoleDialogVisible = false
     },
-    // 监听分配角色对话框的关闭事件
-    setRoleDialogClosed() {
-      this.selectedRoleId = ''
-      this.userInfo = {}
+    addDomain1() {
+      this.addForm.domains.push({
+        value: '',
+        sort_inventory: '',
+        key: Date.now()
+      });
     }
   }
 }
