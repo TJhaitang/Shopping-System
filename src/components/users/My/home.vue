@@ -27,7 +27,7 @@
             <li>
               <router-link to="/collect">我的收藏</router-link>
             </li>
-            <li :class="info.> 0 ? 'shopCart-full' : 'shopCart'">
+            <li :class="info> 0 ? 'shopCart-full' : 'shopCart'">
               <router-link to="/shoppingCart">
                 <i class="el-icon-shopping-cart-full"></i> 购物车
                 <span class="num">({{cartNum}})</span>
@@ -36,6 +36,8 @@
           </ul>
         </div>
       </div>
+    </el-container>
+  </div>
 
 </template>
 
@@ -68,7 +70,7 @@ export default {
   created() {
     // 获取浏览器localStorage，判断用户是否已经登录
     this.getInfo();
-  }
+  },
   data() {
     return {
       visible: false, // 是否退出登录的显示
