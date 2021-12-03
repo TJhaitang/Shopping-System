@@ -14,10 +14,8 @@
   <!-- 右上设置 -->
   <el-container>
    <el-header style="height: 100px; border: 1px solid #eee;position:relative"> 
-    <p class="span1">昵称：{{nickname}}</p>
-    <p class="span2">个性签名：{{signature}}</p>
-    <p class="span3">实名：{{truename}}</p>
-    <p class="span4">邮箱：{{email}}</p>
+    <p class="span1">昵称：{{this.$store.getters.getnick}}</p>
+    <p class="span2">个性签名：{{this.$store.getters.getsig}}</p>
     </el-header>
     <div class="avatar_select">
     	<img :src="userphoto" alt="" />
@@ -51,11 +49,7 @@
   export default {
     data(){
       return{
-        nickname:'我不李姐',
-        signature:'销量冲冲冲',
-        email:'9999@qq.com',
-        truename:'李姐',
-        userphoto:url2
+        userphoto:url3
       }
     },
     methods: {
@@ -86,28 +80,14 @@
     position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -25px;
+    top: -10px;
     left: 100px;
   }
   p.span2{
     position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -5px;
-    left: 100px;
-  }
-  p.span3{
-    position: absolute;
-    z-index: 100;
-    font-size: 15px;
-    top: 15px;
-    left: 100px;
-  }
-  p.span4{
-    position: absolute;
-    z-index: 100;
-    font-size: 15px;
-    top: 35px;
+    top: 20px;
     left: 100px;
   }
 
