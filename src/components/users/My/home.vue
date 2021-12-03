@@ -6,6 +6,7 @@
         <div class="nav">
           <ul>
             <!-- 判断是否能获取到用户数据,如果能就显示 欢迎xx，不能就显示登录和注册按钮 -->
+            <!-- 不知道这个getters能不能用。可能这里出问题 -->
             <li v-if="!this.$store.getters.getUser">
               <el-button type="text" @click="login">登录</el-button>
               <span class="sep">|</span>
@@ -41,19 +42,19 @@
 
       <!-- 顶栏容器 -->
       <el-header>
+        <!-- 默认开启标签页：activeIndex -->
         <el-menu
           :default-active="activeIndex"
-          class="el-menu-demo"
           mode="horizontal"
           active-text-color="#409eff"
           router
         >
           <div class="logo">
-            <router-link to="/">
-              <img src="./assets/imgs/logo.png" alt />
+            <router-link to="/home">
+              <img src="./logo.png" alt />
             </router-link>
           </div>
-          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item index="/goods">全部商品</el-menu-item>
           <el-menu-item index="/about">关于我们</el-menu-item>
 
@@ -92,19 +93,19 @@
             </div>
           </div>
           <div class="github">
-            <a href="https://github.com/hai-27/vue-store" target="_blank">
+            <a href="https://github.com/wakarimasita/Shopping-System" target="_blank">
               <div class="github-but"></div>
             </a>
           </div>
           <div class="mod_help">
             <p>
-              <router-link to="/">首页</router-link>
+              <router-link to="/home">首页</router-link>
               <span>|</span>
               <router-link to="/goods">全部商品</router-link>
               <span>|</span>
               <router-link to="/about">关于我们</router-link>
             </p>
-            <p class="coty">商城版权所有 &copy; 2012-2021</p>
+            <p class="coty">商城版权所有:李老师 &copy; 2012-2021</p>
           </div>
         </div>
       </el-footer>
@@ -119,6 +120,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   beforeUpdate() {
+    //这个不知道能不能用，就是获取当前路径
     this.activeIndex = this.$route.path;
   },
   data() {
@@ -133,6 +135,7 @@ export default {
     // 获取浏览器localStorage，判断用户是否已经登录
     if (localStorage.getItem("user")) {
       // 如果已经登录，设置vuex登录状态
+      // 啊 为啥要用jason.parse呢
       this.setUser(JSON.parse(localStorage.getItem("user")));
     }
     /* window.setTimeout(() => {
@@ -155,12 +158,12 @@ export default {
     // 获取vuex的登录状态
     getUser: function(val) {
       if (val === "") {
-        // 用户没有登录
+        // 用户没有登录，设置购物车为空
         this.setShoppingCart([]);
       } else {
         // 用户已经登录,获取该用户的购物车信息
-        this.$axios
-          .post("/api/user/shoppingCart/getShoppingCart", {
+        this.$http
+          .post("获取购物车信息地址", {
             user_id: val.user_id
           })
           .then(res => {
@@ -169,11 +172,8 @@ export default {
               this.setShoppingCart(res.data.shoppingCartData);
             } else {
               // 提示失败信息
-              this.notifyError(res.data.msg);
+              this.$message.error('没获取到购物车信息 呜呜');
             }
-          })
-          .catch(err => {
-            return Promise.reject(err);
           });
       }
     }
@@ -182,6 +182,8 @@ export default {
     ...mapActions(["setUser", "setShowLogin", "setShoppingCart"]),
     login() {
       // 点击登录按钮, 通过更改vuex的showLogin值显示登录组件
+      // 啊 状态里为啥要设置登录组件的开闭呀？这个有必要记录么
+      // 这里的登录只是把登陆组件展示，登录的请求方法在MyLogin
       this.setShowLogin(true);
     },
     // 退出登录
@@ -191,7 +193,7 @@ export default {
       localStorage.setItem("user", "");
       // 清空vuex登录信息
       this.setUser("");
-      this.notifySucceed("成功退出登录");
+      this.$message.success("成功退出登录");
     },
     // 接收注册子组件传过来的数据
     isRegister(val) {
@@ -331,7 +333,7 @@ a:hover {
   display: inline-block;
   line-height: 40px;
   text-decoration: none;
-  background: url("./assets/imgs/us-icon.png") no-repeat left 0;
+  background: url("./us-icon.png") no-repeat left 0;
 }
 .footer .github {
   height: 50px;
@@ -342,7 +344,7 @@ a:hover {
   width: 50px;
   height: 50px;
   margin: 0 auto;
-  background: url("./assets/imgs/github.png") no-repeat;
+  background: url("./github.png") no-repeat;
 }
 .footer .mod_help {
   text-align: center;

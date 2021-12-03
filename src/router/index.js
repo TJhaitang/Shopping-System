@@ -7,11 +7,11 @@ import Commodity from  '../components/Merchant/My/Commodity.vue'
 import orders from '../components/Merchant/My/orders.vue'
 import information from '../components/Merchant/My/merchant-info.vue'
 
-import login_u from '../components/users/login_u.vue'
 import signUp_u from '../components/users/signUp_u.vue'
 import home from '../components/users/My/home.vue'
-import order_u from '../components/users/My/order.vue'
-import collect_u from '../components/users/My/collect.vue'
+import order from '../components/users/My/order.vue'
+import collect from '../components/users/My/collect.vue'
+import shoppingCart from '../components/users/My/shoppingCart.vue'
 
 Vue.use(VueRouter)
 
@@ -19,7 +19,6 @@ const router = new VueRouter( {
   routes: [ 
   { path: '/', redirect: '/login_u' },
   { path: '/login', component: login },
-  { path: '/login_u', component: login_u },
   { path: '/my',component: My,
   children: [{path: '/orders',component:orders},
   { path: '/Commodity',component:Commodity},
@@ -28,11 +27,13 @@ const router = new VueRouter( {
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},
   { path: '/home',component: home},
-  { path: '/order_u',component: order_u},
-  { path: '/collect_u',component: collect_u}
+  { path: '/order',component: order},
+  { path: '/collect',component: collect},
+  { path: '/shoppingCart',component: shoppingCart},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
+
 router.beforeEach((to, from, next) => {
   // to:将要访问的路径
   // from: 从哪个路径跳转而来
