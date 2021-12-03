@@ -33,13 +33,6 @@
             </el-table-column>
             <el-table-column prop="activity" label="商品活动" width="100">
             </el-table-column>
-            <!--<el-table-column label="售卖状态" width="100">
-              <template slot-scope="scope">
-               <span>售卖中</span>
-               <el-switch v-model="scope.row.status">
-               </el-switch>
-              </template>
-            </el-table-column>-->
             <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <!-- 修改按钮 -->
@@ -63,27 +56,29 @@
         <el-dialog title="添加商品" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
           <!-- 内容主体 -->
           <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
-            <!--<el-form-item label="商品id" prop="id" label-width="100px">
-              <el-input v-model="addForm.id"></el-input>
-            </el-form-item>-->
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="addForm.name"></el-input>
             </el-form-item>
-            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
-              <el-input v-model="addForm.price"></el-input>
-            </el-form-item>
-            <el-form-item label="商品图片" prop="picture" label-width="100px">
-              <el-input v-model="addForm.picture"></el-input>
-            </el-form-item>-->
             <el-form-item label="商品标签" prop="label" label-width="100px">
               <el-input v-model="addForm.label"></el-input>
             </el-form-item>
-            <!--<el-form-item label="商品库存" prop="inventory" label-width="100px">
-              <el-input v-model="addForm.inventory"></el-input>
-            </el-form-item>-->
             <el-form-item label="详细信息" prop="information" label-width="100px">
               <el-input v-model="addForm.information"></el-input>
             </el-form-item>
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              :auto-upload="false"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              list-type="picture">
+              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+              <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
             <el-row>
               <el-form-item
              v-for="(domain, index) in addForm.domains"
@@ -136,19 +131,7 @@
             </el-form-item>  
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="editForm.name"></el-input>
-            </el-form-item> 
-            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
-              <el-input v-model="editForm.price"></el-input>
             </el-form-item>
-            <el-form-item label="商品图片" prop="picture" label-width="100px">
-              <el-input v-model="editForm.picture"></el-input>
-            </el-form-item>
-            <el-form-item label="商品标签" prop="label" label-width="100px">
-              <el-input v-model="editForm.label"></el-input>
-            </el-form-item>
-            <el-form-item label="商品库存" prop="inventory" label-width="100px">
-              <el-input v-model="editForm.inventory"></el-input>
-            </el-form-item>-->
             <el-form-item label="详细信息" prop="information" label-width="100px">
               <el-input v-model="editForm.information"></el-input>
             </el-form-item>
@@ -202,7 +185,9 @@
 export default {
   data () {
     return {
+      //fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       // 获取用户列表的参数
+      fileList: '',
       queryInfo: {
           query: '',
           pagenum: 1,
@@ -312,18 +297,10 @@ export default {
         name:[
           { required: true, message: '请输入商品名称', trigger: 'blur' },
         ],
-        /*price: [
-          { required: true, message: '请输入商品价格', trigger: 'blur' },
-          //{ validator: checkEmail, trigger: 'blur' }
-        ],*/
         picture: [
           { required: true, message: '请输入商品图片', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
         ],
-        /*inventory: [
-          { required: true, message: '请输入商品库存', trigger: 'blur' },
-          //{ validator: checkMobile, trigger: 'blur' }
-        ],*/
         label: [
           { required: true, message: '请输入商品标签', trigger: 'blur' },
           //{ validator: checkEmail, trigger: 'blur' }
@@ -362,7 +339,7 @@ export default {
         endRow = (endRow > this.total)? this.total: endRow;  
         this.GoodsList = this.goods.slice(startRow,endRow)
 
-        //this.orders.slice(startRow, endRow);
+        
       console.log(res) 
 
     },
@@ -389,7 +366,7 @@ export default {
       }).then(function(result) {
         if(result.data.status == 'success') {
           //关闭对话框
-          this.editDialogVisible = false;
+          this.addDialogVisible = false;
           this.getList();//添加之后再次获取一下订单列表
           this.$message.success('添加成功o(*￣▽￣*)ブ')}
         else return this.$message.error('添加失败了！')
@@ -491,7 +468,21 @@ export default {
         sort_inventory: '',
         key: Date.now()
       });
+    },
+    handleRemove(file, fileList) {
+        console.log(file, fileList);
+      },
+    handlePreview(file) {
+       console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
     }
+
+
   }
 }
 </script>
