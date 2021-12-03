@@ -1,6 +1,8 @@
 # 数据库大作业-更新日志
 ## 1203wsr
-### hi，大家pull之后记得npm install --save vuex
+### 家人们
+-pull之后记得npm install --save vuex
+-https://www.kaggle.com/paramaggarwal/fashion-product-images-dataset 这是数据集的位置，我们卖衣服
 
 ## 1125范碧珂
 ### 完善
