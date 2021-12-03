@@ -9,6 +9,9 @@ export default {
     getters: {
       getUser (state) {
         return state.user
+      },
+      getShowLogin (state) {
+        return state.showLogin
       }
     },
     mutations: {
@@ -16,6 +19,7 @@ export default {
         state.user = data;
       },
       setShowLogin (state, data) {
+        //到这里都没有问题，这里也可以成功设置
         state.showLogin = data;
       }
     },
