@@ -66,17 +66,12 @@
               <el-input v-model="addForm.information"></el-input>
             </el-form-item>
             <el-upload
-              class="upload-demo"
-              ref="upload"
-              
+              action="/php"
               :on-preview="handlePreview"
               :on-remove="handleRemove"
-              :file-list="fileList"
-              :auto-upload="false"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :headers="headerObj"
               list-type="picture">
-              <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-              <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>-->
+              <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
             <el-row>
@@ -187,7 +182,14 @@ export default {
     return {
       //fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       // 获取用户列表的参数
+      imageUrl: '',
       fileList: '',
+      uploadURL: '/php',
+      headerObj:{
+        Authorization:
+        window.sessionStorage.getItem
+        ('token')
+      },
       queryInfo: {
           query: '',
           pagenum: 1,
@@ -380,7 +382,6 @@ export default {
       this.editForm.information = row.information
       this.editForm.ifActivity1 = row.ifActivity1
       this.editForm.ifActivity2 = row.ifActivity2
-      //this.editForm.domains = row.domains
       for (const index in row.domains) {
         this.editForm.domains[index] = row.domains[index]
       }
@@ -469,17 +470,27 @@ export default {
         key: Date.now()
       });
     },
-    handleRemove(file, fileList) {
-        console.log(file, fileList);
-      },
-    handlePreview(file) {
-       console.log(file);
+    handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        console.log(file, this.imageUrl);
     },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
     },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+    handlePreview(){
+
+    },
+    handleRemove(){
+
     }
 
 
@@ -488,4 +499,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
+
 </style>
