@@ -83,32 +83,32 @@
     width: 100px;
   }
   p.span1{
-    position: relative;
+    position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -50px;
-    left: 90px;
+    top: -25px;
+    left: 100px;
   }
   p.span2{
-    position: relative;
+    position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -140px;
-    left: 90px;
+    top: -5px;
+    left: 100px;
   }
   p.span3{
-    position: relative;
+    position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -230px;
-    left: 90px;
+    top: 15px;
+    left: 100px;
   }
   p.span4{
-    position: relative;
+    position: absolute;
     z-index: 100;
     font-size: 15px;
-    top: -320px;
-    left: 90px;
+    top: 35px;
+    left: 100px;
   }
 
   //选择头像时的样式
