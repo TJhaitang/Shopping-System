@@ -13,23 +13,24 @@
   
   <!-- 右上设置 -->
   <el-container>
-   <el-header style="height: 100px; border: 1px solid #eee;position:relative">
-     <!-- 头像  -->
-    <el-avatar icon="el-icon-user-solid" style="height: 50px; width: 50px; left: 5px"></el-avatar>
-    <p class="span1">id/</p>
-    <p class="span2">个性签名/</p>
-    <p class="span3">实名认证/</p>
-    <p class="span4">金钱流水</p>
+   <el-header style="height: 100px; border: 1px solid #eee;position:relative"> 
+    <p class="span1">昵称：{{nickname}}</p>
+    <p class="span2">个性签名：{{signature}}</p>
+    <p class="span3">实名：{{truename}}</p>
+    <p class="span4">邮箱：{{email}}</p>
     </el-header>
-     
+    <div class="avatar_select">
+    	<img :src="userphoto" alt="" />
+      <!--图片地址动态绑定-->
+    </div>
     <el-header style="font-size: 12px;position:absolute;right:30px;height:50px;top:30px">
-      <el-dropdown>
+      <el-dropdown trigger="click">
         <i class="el-icon-setting" style="margin-right: 15px;text-align: right;width:50px"></i>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item @click.native="quit">退出</el-dropdown-item>
+          <el-dropdown-item  @click.native="quit">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span style="display:inline-block;font-size:20px">王小虎</span>
+      <span style="display:inline-block;font-size:20px">店名</span>
     </el-header>
     <el-main>
       <router-view>
@@ -41,7 +42,32 @@
     
 </template>
 
-<style>
+<script>
+  import url1 from '../xiyangyang.png';
+  import url2 from '../meiyangyang.png';
+  import url3 from '../lanyangyang.png';
+  import url4 from '../feiyangyang.png';
+  import url5 from '../nuanyangyang.png';
+  export default {
+    data(){
+      return{
+        nickname:'我不李姐',
+        signature:'销量冲冲冲',
+        email:'9999@qq.com',
+        truename:'李姐',
+        userphoto:url2
+      }
+    },
+    methods: {
+      quit() {
+        localStorage.clear();
+        this.$router.push('/login');
+      }
+    }
+  };
+</script>
+
+<style lang="less" scoped>
   .el-header {
     background-color: #B3C0D1;
     color: rgb(126, 124, 124);
@@ -57,42 +83,51 @@
     width: 100px;
   }
   p.span1{
-    position: relative;
+    position: absolute;
     z-index: 100;
-    font-size: 20px;
-    top: -150px;
-    left: 70px;
+    font-size: 15px;
+    top: -25px;
+    left: 100px;
   }
   p.span2{
-    position: relative;
+    position: absolute;
     z-index: 100;
-    font-size: 10px;
-    top: -250px;
-    left: 70px;
+    font-size: 15px;
+    top: -5px;
+    left: 100px;
   }
   p.span3{
-    position: relative;
+    position: absolute;
     z-index: 100;
-    font-size: 10px;
-    top: -340px;
-    left: 70px;
+    font-size: 15px;
+    top: 15px;
+    left: 100px;
   }
   p.span4{
-    position: relative;
+    position: absolute;
     z-index: 100;
-    font-size: 10px;
-    top: -449.5px;
-    left: 130px;
+    font-size: 15px;
+    top: 35px;
+    left: 100px;
+  }
+
+  //选择头像时的样式
+  .avatar_select{
+    height: 70px;
+    width: 70px;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 0 15px rgb(166, 164, 168);    
+    transform: translate(-50%, -50%);
+    background-color: rgb(250, 248, 248);
+    position: absolute;
+    left: 20%;
+    top:9%;
+    img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+  }
   }
 </style>
-
-<script>
-  export default {
-    methods: {
-      quit() {
-        localStorage.clear();
-        this.$router.push('/login');
-      }
-    }
-  };
-</script>

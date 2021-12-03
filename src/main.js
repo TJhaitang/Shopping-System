@@ -6,6 +6,14 @@ import './plugins/element.js'
 import './assets/css/global.css'
 
 import axios from 'axios'
+import store from './store'
+
+import MyLogin from './components/users/MyLogin.vue';
+Vue.component(MyLogin.name, MyLogin);
+import MyRegister from './components/users/MyRegister';
+Vue.component(MyRegister.name, MyRegister);
+
+
 //配置请求根路径在这里填  👇
 axios.defaults.baseURL = '/php'
 
@@ -24,5 +32,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  store //将store挂载到新的Vue对象上
 }).$mount('#app')
