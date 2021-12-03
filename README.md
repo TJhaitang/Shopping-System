@@ -1,4 +1,6 @@
 # 数据库大作业-更新日志
+## 1203wsr
+### hi，大家pull之后记得npm install --save vuex
 
 ## 1125范碧珂
 ### 完善
