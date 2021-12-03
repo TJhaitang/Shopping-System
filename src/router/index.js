@@ -17,7 +17,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter( {
   routes: [ 
-  { path: '/', redirect: '/login_u' },
+  
   { path: '/login', component: login },
   { path: '/my',component: My,
   children: [{path: '/orders',component:orders},
@@ -26,7 +26,7 @@ const router = new VueRouter( {
 },
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},
-  { path: '/home',component: home},
+  { path: '/',component: home},
   { path: '/order',component: order},
   { path: '/collect',component: collect},
   { path: '/shoppingCart',component: shoppingCart},

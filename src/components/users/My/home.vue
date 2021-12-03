@@ -54,15 +54,21 @@
               <img src="./logo.png" alt />
             </router-link>
           </div>
-          <el-menu-item index="/home">首页</el-menu-item>
+          <el-menu-item index="/">首页</el-menu-item>
           <el-menu-item index="/goods">全部商品</el-menu-item>
           <el-menu-item index="/about">关于我们</el-menu-item>
 
-          <div class="so">
-            <el-input placeholder="请输入搜索内容" v-model="search">
+          <!-- 搜索框框部分 -->
+          <div class="so" style="display: flex;">
+            <el-select v-model="search.type"  placeholder="搜索对象" style="margin-right:15px;">
+             <el-option label="商品" value="product"></el-option>
+             <el-option label="店铺" value="shop"></el-option>
+           </el-select>
+            <el-input placeholder="请输入搜索内容" v-model="search.input" style="width:300px;">
               <el-button slot="append" icon="el-icon-search" @click="searchClick"></el-button>
             </el-input>
           </div>
+          <!-- 搜索部分结束 -->
         </el-menu>
       </el-header>
       <!-- 顶栏容器END -->
@@ -126,7 +132,10 @@ export default {
   data() {
     return {
       activeIndex: "", // 头部导航栏选中的标签
-      search: "", // 搜索条件
+      search: {
+        input: '',
+        type: ''
+      }, // 搜索条件
       register: false, // 是否显示注册组件
       visible: false // 是否退出登录
     };
@@ -304,7 +313,6 @@ a:hover {
 }
 .el-header .so {
   margin-top: 10px;
-  width: 300px;
   float: right;
 }
 /* 顶栏容器CSS END */
