@@ -18,9 +18,11 @@
         <!-- 购物车表头 -->
         <li class="header">
           <div class="pro-check">
+            <!--全选按钮-->
             <el-checkbox v-model="isAllCheck">全选</el-checkbox>
           </div>
-          <div class="pro-img"></div>
+          <!--购物车列表的列名-->
+          <div class="pro-img">商品图片</div>
           <div class="pro-name">商品名称</div>
           <div class="pro-price">单价</div>
           <div class="pro-num">数量</div>
@@ -57,7 +59,7 @@
           <div class="pro-total pro-total-in">{{item.price*item.num}}元</div>
           <div class="pro-action">
             <el-popover placement="right">
-              <p>确定删除吗？</p>
+              <p>确认删除吗？</p>
               <div style="text-align: right; margin: 10px 0 0">
                 <el-button
                   type="primary"
@@ -76,7 +78,7 @@
       <div class="cart-bar">
         <div class="cart-bar-left">
           <span>
-            <router-link to="/goods">继续购物</router-link>
+            <router-link to="/goods">再去逛逛</router-link>
           </span>
           <span class="sep">|</span>
           <span class="cart-total">
@@ -90,6 +92,7 @@
             <span class="total-price-title">合计：</span>
             <span class="total-price">{{getTotalPrice}}元</span>
           </span>
+          <!--这里在干嘛没看懂-->
           <router-link :to="getCheckNum > 0 ? '/confirmOrder' : ''">
             <div :class="getCheckNum > 0 ? 'btn-primary' : 'btn-primary-disabled'">去结算</div>
           </router-link>
@@ -124,7 +127,7 @@ export default {
       this.updateShoppingCart({ key: key, prop: "check", val: true });
       // 向后端发起更新购物车的数据库信息请求
       this.$axios
-        .post("/api/user/shoppingCart/updateShoppingCart", {
+        .post("/api/user/shoppingCart/updateShoppingCart", {//记得改路径
           user_id: this.$store.getters.getUser.user_id,
           product_id: productID,
           num: currentValue
