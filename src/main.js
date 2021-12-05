@@ -37,5 +37,5 @@ Vue.config.productionTip = false
 new Vue({
   router,
   render: h => h(App),
-  store //将store挂载到新的Vue对象上
+  store, //将store挂载到新的Vue对象上
 }).$mount('#app')

@@ -8,7 +8,7 @@ import orders from '../components/Merchant/My/orders.vue'
 import information from '../components/Merchant/My/merchant-info.vue'
 
 import signUp_u from '../components/users/signUp_u.vue'
-import home from '../components/users/My/home.vue'
+import App from '../components/users/My/App.vue'
 import order from '../components/users/My/order.vue'
 import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
@@ -18,7 +18,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter( {
   routes: [ 
-  { path: '/', redirect: '/login_u' },
+  
   { path: '/login', component: login },
   { path: '/my',component: My,
   children: [{path: '/orders',component:orders},
@@ -27,11 +27,13 @@ const router = new VueRouter( {
 },
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},
-  { path: '/home',component: home},
+  { path: '/',component: App,
+  children:[{ path: '/shoppingCart',component: shoppingCart},
   { path: '/order',component: order},
   { path: '/collect',component: collect},
   { path: '/shoppingCart',component: shoppingCart},
   { path: '/good_detail',component: good_detail},
+  { path: '/collect',component: collect}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
