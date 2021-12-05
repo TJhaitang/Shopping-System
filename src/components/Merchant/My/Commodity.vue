@@ -65,21 +65,30 @@
             <el-form-item label="详细信息" prop="information" label-width="100px">
               <el-input v-model="addForm.information"></el-input>
             </el-form-item>
-            <el-upload
-              action="/php"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :headers="headerObj"
-              list-type="picture">
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
+            
+            <el-form-item
+             v-for="(domain, index) in addForm.domains_pic"
+             :label="'图片' + (index+1)"
+             :key="domain.key"
+             :prop="'domains.' + index + '.picture'"
+             :rules="{
+             required: true, message: '类别名不能为空', trigger: 'blur' 
+             }"
+             label-width="300px"
+            >
+            <img-inputer v-model="domain.picture" theme="light" size="3px" type="file" accept="image/*" placeholder="请上传商品图片！" :on-change="chooseImg" />
+             <el-button @click.prevent="removeDomain_pic(domain)">删除</el-button>
+            
+            </el-form-item>
+            <el-form-item>
+             <el-button @click="addDomain_pic">新增图片</el-button>
+            </el-form-item>
             <el-row>
-              <el-form-item
+            <el-form-item
              v-for="(domain, index) in addForm.domains"
              :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
              :key="domain.key"
-             :prop="'domains.' + index + '.value'"
+             :prop="'domains.' + index + '.add_sort'"
              :rules="{
              required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
@@ -88,6 +97,7 @@
              <el-input v-model="domain.value"></el-input>
              <el-input v-model="domain.price"></el-input>
              <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain1(domain)">删除</el-button>
+            
             </el-form-item>
             <el-form-item>
              <el-button @click="addDomain1">新增类别</el-button>
@@ -134,7 +144,7 @@
              v-for="(domain, index) in editForm.domains"
              :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
              :key="domain.key"
-             :prop="'domains.' + index + '.value'"
+             :prop="'domains.' + index + '.edit_sort'"
              :rules="{
              required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
@@ -180,11 +190,8 @@
 export default {
   data () {
     return {
-      //fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
       // 获取用户列表的参数
-      imageUrl: '',
-      fileList: '',
-      uploadURL: '/php',
+  
       headerObj:{
         Authorization:
         window.sessionStorage.getItem
@@ -228,15 +235,12 @@ export default {
           comment: '点击查看',
           activity: '满200-30'
           }], //先增添一些默认的user
-      //value1:true,
       total: 3,
       addDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
         //id: '',
-        //price: '',
         picture: '',
-        //inventory: '',
         information: '',
         name: '',
         label: '',
@@ -246,6 +250,9 @@ export default {
           value: '',
           sort_inventory: '',
           sort_price: '',
+        }],
+        domains_pic: [{
+          picture: '',
         }],
       },
       // 添加表单的验证规则对象
@@ -470,29 +477,31 @@ export default {
         key: Date.now()
       });
     },
-    handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-        console.log(file, this.imageUrl);
+    removeDomain_pic(item) {
+      var index = this.addForm.domains_pic.indexOf(item)
+      if (index !== -1) {
+        this.addForm.domains_pic.splice(index, 1)
+      }
     },
-    beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
+    addDomain_pic() {
+      this.addForm.domains_pic.push({
+        picture: '',
+        key: Date.now()
+      });
     },
-    handlePreview(){
+    /*chooseImg () {          //上传照片时将图片转为base64
 
-    },
-    handleRemove(){
-
-    }
-
+          let file = this.file1   //file1是绑定的file对象
+          let reader = new FileReader()
+          let img = new Image()
+          // 读取图片
+          reader.readAsDataURL(file)
+          // 读取完毕后的操作
+          reader.onloadend = (e) => {
+            img.src = e.target.result
+            this.addForm.domains_pic.picture = reader.result
+          }
+    }*/
 
   }
 }

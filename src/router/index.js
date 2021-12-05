@@ -12,6 +12,7 @@ import home from '../components/users/My/home.vue'
 import order from '../components/users/My/order.vue'
 import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
+import good_detail from '../components/users/My/Good_details.vue'
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,7 @@ const router = new VueRouter( {
   { path: '/order',component: order},
   { path: '/collect',component: collect},
   { path: '/shoppingCart',component: shoppingCart},
+  { path: '/good_detail',component: good_detail},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -39,7 +41,7 @@ router.beforeEach((to, from, next) => {
   // from: 从哪个路径跳转而来
   // next: 放行函数
   // next() 放行； next('/login') 强制跳转（没有token的时候）
-  if(to.path === '/login' || to.path === '/signUp' || to.path === '/signUp_u') return next();
+  if(to.path === '/login' || to.path === '/signUp' || to.path === '/signUp_u'||to.path === '/Commodity'||to.path === '/good_detail') return next();
   //拿出token
   const tokenString = localStorage.getItem('token')
   if (!tokenString) return next('/login');
