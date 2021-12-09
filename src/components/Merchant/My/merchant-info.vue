@@ -138,9 +138,10 @@
         }
 			}
 		},
-		components: {
-			
-		},
+    created(){
+      this.getinfo2();
+    },
+		
 		methods: {
 			closeDialog() {
 			this.dialogVisible = false
@@ -164,6 +165,10 @@
         this.gender=result.gender
         this.self=result.signature
         this.userphoto=result.avatar
+
+        //传信息给store
+        this.setnick(this.nickName)
+        this.setsig(this.self)
       },
 
       //点击修改按钮后要显示当前信息

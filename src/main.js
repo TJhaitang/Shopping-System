@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import ImgInputer from 'vue-img-inputer'
 import './plugins/element.js'
 // 设置全局样式
 import './assets/css/global.css'
+
+import 'vue-img-inputer/dist/index.css'
 
 import axios from 'axios'
 import store from './store'
@@ -12,6 +15,7 @@ import MyLogin from './components/users/MyLogin.vue';
 Vue.component(MyLogin.name, MyLogin);
 import MyRegister from './components/users/MyRegister';
 Vue.component(MyRegister.name, MyRegister);
+Vue.component('ImgInputer', ImgInputer);
 
 
 //配置请求根路径在这里填  👇
@@ -33,5 +37,5 @@ Vue.config.productionTip = false
 new Vue({
   router,
   render: h => h(App),
-  store //将store挂载到新的Vue对象上
+  store, //将store挂载到新的Vue对象上
 }).$mount('#app')

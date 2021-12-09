@@ -1,6 +1,7 @@
 export default {
     state: {
-      shoppingCart: []
+      shoppingCart: [
+      ]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组
       /* 
