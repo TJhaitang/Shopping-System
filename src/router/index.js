@@ -48,10 +48,20 @@ router.beforeEach((to, from, next) => {
   // next() 放行； next('/login') 强制跳转（没有token的时候）
   if(to.path === '/login' || to.path === '/signUp' || to.path === '/signUp_u' || to.path === '/') return next();
   //拿出token
-  const tokenString = localStorage.getItem('token')
-  if (!tokenString) return next('/login');
-  //如果token存在，可以放行
-  next();
+  else if(to.path === '/my' || to.path === '/orders' || to.path === '/Commodity' || to.path === '/info'){
+    if(localStorage.getItem('merchantToken'))
+    next();
+    else {
+      return next('/login');
+    }
+  }
+  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart'){
+    if(localStorage.getItem('userToken'))
+    next();
+      else {
+        return next('/home');
+      }
+  }
 })
 
 export default router
