@@ -114,7 +114,7 @@ export default {
   data() {
     return {
       carousel: "", // 轮播图数据:登录的用户喜欢并且热卖的商品
-
+      
       manClothesList: "", //男装商品展示列表
       manClothesHotList: "", //热门
       manUpperList: "", //男装上衣

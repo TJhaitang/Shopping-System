@@ -128,7 +128,6 @@ export default {
   beforeUpdate() {
     //这个不知道能不能用，就是获取当前路径
     this.activeIndex = this.$route.path;
-    console.log(this.activeIndex)
   },
   data() {
     return {

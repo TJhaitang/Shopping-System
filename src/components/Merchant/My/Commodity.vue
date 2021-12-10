@@ -33,13 +33,6 @@
             </el-table-column>
             <el-table-column prop="activity" label="商品活动" width="100">
             </el-table-column>
-            <!--<el-table-column label="售卖状态" width="100">
-              <template slot-scope="scope">
-               <span>售卖中</span>
-               <el-switch v-model="scope.row.status">
-               </el-switch>
-              </template>
-            </el-table-column>-->
             <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <!-- 修改按钮 -->
@@ -63,33 +56,39 @@
         <el-dialog title="添加商品" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
           <!-- 内容主体 -->
           <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
-            <!--<el-form-item label="商品id" prop="id" label-width="100px">
-              <el-input v-model="addForm.id"></el-input>
-            </el-form-item>-->
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="addForm.name"></el-input>
             </el-form-item>
-            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
-              <el-input v-model="addForm.price"></el-input>
-            </el-form-item>
-            <el-form-item label="商品图片" prop="picture" label-width="100px">
-              <el-input v-model="addForm.picture"></el-input>
-            </el-form-item>-->
             <el-form-item label="商品标签" prop="label" label-width="100px">
               <el-input v-model="addForm.label"></el-input>
             </el-form-item>
-            <!--<el-form-item label="商品库存" prop="inventory" label-width="100px">
-              <el-input v-model="addForm.inventory"></el-input>
-            </el-form-item>-->
             <el-form-item label="详细信息" prop="information" label-width="100px">
               <el-input v-model="addForm.information"></el-input>
             </el-form-item>
+            
+            <el-form-item
+             v-for="(domain, index) in addForm.domains_pic"
+             :label="'图片' + (index+1)"
+             :key="domain.key"
+             :prop="'domains.' + index + '.picture'"
+             :rules="{
+             required: true, message: '类别名不能为空', trigger: 'blur' 
+             }"
+             label-width="300px"
+            >
+            <img-inputer v-model="domain.picture" theme="light" size="3px" type="file" accept="image/*" placeholder="请上传商品图片！" :on-change="chooseImg" />
+             <el-button @click.prevent="removeDomain_pic(domain)">删除</el-button>
+            
+            </el-form-item>
+            <el-form-item>
+             <el-button @click="addDomain_pic">新增图片</el-button>
+            </el-form-item>
             <el-row>
-              <el-form-item
+            <el-form-item
              v-for="(domain, index) in addForm.domains"
              :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
              :key="domain.key"
-             :prop="'domains.' + index + '.value'"
+             :prop="'domains.' + index + '.add_sort'"
              :rules="{
              required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
@@ -98,6 +97,7 @@
              <el-input v-model="domain.value"></el-input>
              <el-input v-model="domain.price"></el-input>
              <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain1(domain)">删除</el-button>
+            
             </el-form-item>
             <el-form-item>
              <el-button @click="addDomain1">新增类别</el-button>
@@ -136,19 +136,7 @@
             </el-form-item>  
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="editForm.name"></el-input>
-            </el-form-item> 
-            <!--<el-form-item label="商品价格" prop="price" label-width="100px">
-              <el-input v-model="editForm.price"></el-input>
             </el-form-item>
-            <el-form-item label="商品图片" prop="picture" label-width="100px">
-              <el-input v-model="editForm.picture"></el-input>
-            </el-form-item>
-            <el-form-item label="商品标签" prop="label" label-width="100px">
-              <el-input v-model="editForm.label"></el-input>
-            </el-form-item>
-            <el-form-item label="商品库存" prop="inventory" label-width="100px">
-              <el-input v-model="editForm.inventory"></el-input>
-            </el-form-item>-->
             <el-form-item label="详细信息" prop="information" label-width="100px">
               <el-input v-model="editForm.information"></el-input>
             </el-form-item>
@@ -156,7 +144,7 @@
              v-for="(domain, index) in editForm.domains"
              :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
              :key="domain.key"
-             :prop="'domains.' + index + '.value'"
+             :prop="'domains.' + index + '.edit_sort'"
              :rules="{
              required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
@@ -203,6 +191,12 @@ export default {
   data () {
     return {
       // 获取用户列表的参数
+  
+      headerObj:{
+        Authorization:
+        window.sessionStorage.getItem
+        ('token')
+      },
       queryInfo: {
           query: '',
           pagenum: 1,
@@ -241,15 +235,12 @@ export default {
           comment: '点击查看',
           activity: '满200-30'
           }], //先增添一些默认的user
-      //value1:true,
       total: 3,
       addDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
         //id: '',
-        //price: '',
         picture: '',
-        //inventory: '',
         information: '',
         name: '',
         label: '',
@@ -259,6 +250,9 @@ export default {
           value: '',
           sort_inventory: '',
           sort_price: '',
+        }],
+        domains_pic: [{
+          picture: '',
         }],
       },
       // 添加表单的验证规则对象
@@ -312,18 +306,10 @@ export default {
         name:[
           { required: true, message: '请输入商品名称', trigger: 'blur' },
         ],
-        /*price: [
-          { required: true, message: '请输入商品价格', trigger: 'blur' },
-          //{ validator: checkEmail, trigger: 'blur' }
-        ],*/
         picture: [
           { required: true, message: '请输入商品图片', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
         ],
-        /*inventory: [
-          { required: true, message: '请输入商品库存', trigger: 'blur' },
-          //{ validator: checkMobile, trigger: 'blur' }
-        ],*/
         label: [
           { required: true, message: '请输入商品标签', trigger: 'blur' },
           //{ validator: checkEmail, trigger: 'blur' }
@@ -362,7 +348,7 @@ export default {
         endRow = (endRow > this.total)? this.total: endRow;  
         this.GoodsList = this.goods.slice(startRow,endRow)
 
-        //this.orders.slice(startRow, endRow);
+        
       console.log(res) 
 
     },
@@ -389,7 +375,7 @@ export default {
       }).then(function(result) {
         if(result.data.status == 'success') {
           //关闭对话框
-          this.editDialogVisible = false;
+          this.addDialogVisible = false;
           this.getList();//添加之后再次获取一下订单列表
           this.$message.success('添加成功o(*￣▽￣*)ブ')}
         else return this.$message.error('添加失败了！')
@@ -403,7 +389,6 @@ export default {
       this.editForm.information = row.information
       this.editForm.ifActivity1 = row.ifActivity1
       this.editForm.ifActivity2 = row.ifActivity2
-      //this.editForm.domains = row.domains
       for (const index in row.domains) {
         this.editForm.domains[index] = row.domains[index]
       }
@@ -491,10 +476,37 @@ export default {
         sort_inventory: '',
         key: Date.now()
       });
-    }
+    },
+    removeDomain_pic(item) {
+      var index = this.addForm.domains_pic.indexOf(item)
+      if (index !== -1) {
+        this.addForm.domains_pic.splice(index, 1)
+      }
+    },
+    addDomain_pic() {
+      this.addForm.domains_pic.push({
+        picture: '',
+        key: Date.now()
+      });
+    },
+    /*chooseImg () {          //上传照片时将图片转为base64
+
+          let file = this.file1   //file1是绑定的file对象
+          let reader = new FileReader()
+          let img = new Image()
+          // 读取图片
+          reader.readAsDataURL(file)
+          // 读取完毕后的操作
+          reader.onloadend = (e) => {
+            img.src = e.target.result
+            this.addForm.domains_pic.picture = reader.result
+          }
+    }*/
+
   }
 }
 </script>
 
 <style lang="less" scoped>
+
 </style>

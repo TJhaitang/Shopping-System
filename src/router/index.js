@@ -13,6 +13,7 @@ import home from '../components/users/My/home.vue'
 import order from '../components/users/My/order.vue'
 import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
+import good_detail from '../components/users/My/Good_details.vue'
 
 Vue.use(VueRouter)
 
@@ -29,14 +30,11 @@ const router = new VueRouter( {
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},
   { path: '/',component: App,
-  children:[
-      { path: '/order',component: order},
-  { path: '/collect',component: collect},
-  { path: '/shoppingCart',component: shoppingCart},
+  children:[{ path: '/shoppingCart',component: shoppingCart},
+  { path: '/order',component: order},
   { path: '/home',component: home},
-  ]
-},
-
+  { path: '/good_detail',component: good_detail},
+  { path: '/collect',component: collect}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
