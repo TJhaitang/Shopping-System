@@ -97,6 +97,7 @@ export default {
                 // 这里要求登录之后后端就返回存储的用户信息。
                 let user = res.data.user;
                 localStorage.setItem("user", user);
+                localStorage.setItem("userToken",res.data.token);
                 // 登录信息存到vuex
                 this.setUser(res.data.user);
                 // 弹出通知框提示登录成功信息

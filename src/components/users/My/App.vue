@@ -31,7 +31,7 @@
             </li>
             <li :class="getNum > 0 ? 'shopCart-full' : 'shopCart'">
               <router-link to="/shoppingCart">
-                <i class="el-icon-shopping-cart-full" ></i> 购物车
+                <i class="el-icon-shopping-cart-full"></i> 购物车
                 <span class="num">({{getNum}})</span>
               </router-link>
             </li>
@@ -80,7 +80,9 @@
 
       <!-- 主要区域容器 -->
       <el-main>
+        <keep-alive>
           <router-view></router-view>
+        </keep-alive>
       </el-main>
       <!-- 主要区域容器END -->
 
@@ -145,18 +147,7 @@ export default {
       // 啊 为啥要用jason.parse呢
       this.setUser(JSON.parse(localStorage.getItem("user")));
     }
-    /* window.setTimeout(() => {
-      this.$message({
-        duration: 0,
-        showClose: true,
-        message: `
-        <p>如果觉得这个项目还不错，</p>
-        <p style="padding:10px 0">您可以给项目源代码仓库点Star支持一下，谢谢！</p>
-        <p><a href="https://github.com/hai-27/vue-store" target="_blank">Github传送门</a></p>`,
-        dangerouslyUseHTMLString: true,
-        type: "success"
-      });
-    }, 1000 * 60); */
+    
   },
   computed: {
     ...mapGetters(["getUser", "getNum"])
