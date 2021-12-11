@@ -71,7 +71,7 @@
     <div v-else class="order-empty">
       <div class="empty">
         <h2>您还没有订单哦！</h2>
-        <p>快去购物吧！</p>
+        <router-link to="/">快去购物吧</router-link>
       </div>
     </div>
     <!-- 订单为空的时候显示的内容END -->
