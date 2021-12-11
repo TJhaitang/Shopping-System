@@ -19,7 +19,7 @@
           <!-- 我的订单表头 -->
           <li class="order-info">
             <div class="order-id">订单编号: {{item.order_id}}</div>
-            <div class="order-time">订单时间: {{item.order_time | dateFormat}}</div>
+            <div class="order-time">订单时间: {{item.order_time}}</div>
           </li>
           <li class="header">
             <div class="pro-img"></div>
@@ -33,15 +33,11 @@
           <!-- 订单列表 -->
           <li class="product-list" v-for="(product,i) in item" :key="i">
             <div class="pro-img">
-              <router-link :to="{ path: '/goods/details', query: {productID:product.product_id} }">
-                <img :src="$target + product.product_picture" />
-              </router-link>
+              
+                <img :src="$product.product_picture" />
+              
             </div>
-            <div class="pro-name">
-              <router-link
-                :to="{ path: '/goods/details', query: {productID:product.product_id} }"
-              >{{product.product_name}}</router-link>
-            </div>
+            <div class="pro-name">{{product.product_name}}</div>
             <div class="pro-price">{{product.product_price}}元</div>
             <div class="pro-num">{{product.product_num}}</div>
             <div class="pro-total pro-total-in">{{product.product_price*product.product_num}}元</div>
@@ -84,10 +80,13 @@ export default {
       orders: [{
         order_id:"123",//订单编号
         order_time:'2021-12-11',//订单时间
-        comName: "哇咔咔", // 订单商品名称
-        comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-        price: "144", // 订单商品价格
-        num: "2", // 订单商品数量
+        product:[
+          {product_name: "哇咔咔", // 订单商品名称
+        product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+        product_price: "144", // 订单商品价格
+        product_num: "2", // 订单商品数量
+          }
+        ]
       }], // 订单列表
       total: [] // 每个订单的商品数量及总价列表
     };
