@@ -18,9 +18,9 @@ export default {
       shoppingCart = {
         id: "", // 购物车id
         comID: "", // 商品id
+        comsizeID:"",//商品规格id
         comName: "", // 商品名称
         comImg: "", // 商品图片
-        comact:"",//商品活动
         price: "", // 商品价格
         num: "", // 商品数量
         maxNum: "", // 商品限购数量
