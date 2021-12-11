@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
   // from: 从哪个路径跳转而来
   // next: 放行函数
   // next() 放行； next('/login') 强制跳转（没有token的时候）
-  if(to.path === '/login' || to.path === '/signUp' || to.path === '/signUp_u' || to.path === '/'||to.path==='/shoppingCart'||to.path==='/order'||to.path==='/confirmOrder') return next();
+  if(to.path === '/login' || to.path === '/signUp'  || to.path === '/' || to.path === '/shoppingCart' || to.path === '/home') return next();
   //拿出token
   else if(to.path === '/my' || to.path === '/orders' || to.path === '/Commodity' || to.path === '/info'){
     if(localStorage.getItem('merchantToken'))

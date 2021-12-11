@@ -17,6 +17,7 @@
       <div class="product-nav">
         <div class="title">分类</div>
         <el-tabs v-model="activeName" type="card">
+        <!-- category name这些参数有米有呀 -->
           <el-tab-pane
             v-for="item in categoryList"
             :key="item.category_id"
@@ -31,8 +32,8 @@
     <!-- 主要内容区 -->
     <div class="main">
       <div class="list">
-        <MyList :list="product" v-if="product.length>0"></MyList>
-        <div v-else class="none-product">抱歉没有找到相关的商品，请看看其他的商品</div>
+        <MyList :list="product" v-if="product.length > 0"></MyList>
+        <div v-else class="none-product">抱歉没有找到相关的商品，请看看其他的商品捏</div>
       </div>
       <!-- 分页 -->
       <div class="pagination">
