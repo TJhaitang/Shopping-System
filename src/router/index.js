@@ -15,6 +15,7 @@ import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
 import good_detail from '../components/users/My/Good_details.vue'
 import confirmOrder from '../components/users/My/ConfirmOrder.vue'
+import goods from '../components/users/My/goods.vue'
 
 Vue.use(VueRouter)
 
@@ -36,7 +37,8 @@ const router = new VueRouter( {
   { path: '/home',component: home},
   { path: '/good_detail',component: good_detail},
   { path: '/collect',component: collect},
-  {path:'/confirmOrder',component:confirmOrder}]},
+  { path:'/confirmOrder',component:confirmOrder},
+  { path: '/goods',component: goods}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -64,4 +66,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-export default router
+export default routers
