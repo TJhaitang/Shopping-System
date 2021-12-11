@@ -24,7 +24,6 @@
           <!--购物车列表的列名-->
           <div class="pro-img">商品图片</div>
           <div class="pro-name">商品名称</div>
-          <!--<div class="pro-activity">参与的活动</div>-->
           <div class="pro-price">单价</div>
           <div class="pro-num">数量</div>
           <div class="pro-total">小计</div>
