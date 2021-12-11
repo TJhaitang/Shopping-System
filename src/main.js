@@ -15,6 +15,10 @@ import MyLogin from './components/users/MyLogin.vue';
 Vue.component(MyLogin.name, MyLogin);
 import MyRegister from './components/users/MyRegister';
 Vue.component(MyRegister.name, MyRegister);
+import MyMenu from './components/users/MyMenu';
+Vue.component(MyMenu.name, MyMenu);
+import MyList from './components/users/MyList';
+Vue.component(MyList.name, MyList);
 Vue.component('ImgInputer', ImgInputer);
 
 

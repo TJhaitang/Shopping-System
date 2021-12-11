@@ -10,7 +10,7 @@
           </div>
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
         </el-popover>
-        <!-- 这是啥玩意 奇怪得很 -->
+
         <router-link :to="{ path: '/goods/details', query: {productID:item.commodityId} }">
           <img :src="item.photo" alt />
           <h2>{{item.name}}</h2>
@@ -110,7 +110,7 @@ export default {
   display: block;
   width: 160px;
   height: 160px;
-  background: url(../assets/imgs/placeholder.png) no-repeat 50%;
+  background: url(./My/placeholder.png) no-repeat 50%;
   margin: 0 auto;
 }
 .myList ul li h2 {

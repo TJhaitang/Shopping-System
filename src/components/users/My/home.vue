@@ -3,9 +3,9 @@
     <!-- 轮播图 -->
     <div class="block">
       <el-carousel height="460px">
-        <el-carousel-item v-for="item in carousel" :key="item.carousel_id">
+        <el-carousel-item v-for="item in carousel" :key="item.commodityId">
           <!-- :alt是什么玩意？？不晓得 -->
-          <img style="height:460px;" :src="item.imgSrc" :alt="item.describes" />
+          <img style="height:460px;" :src="item.photo" :alt="item.price" />
         </el-carousel-item>
       </el-carousel>
     </div>
@@ -26,16 +26,6 @@
             </div>
           </div>
           <div class="box-bd">
-            <div class="promo-list">
-              <ul>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg" />
-                </li>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/4850873d0c417e6480a26059f83aac29_images.jpg" />
-                </li>
-              </ul>
-            </div>
             <div class="list">
               <MyList :list="manClothesList" :isMore="true"></MyList>
             </div>
@@ -49,7 +39,7 @@
             <div class="title">女装</div>
             <!-- 更多卡片 -->
             <div class="more" id="more">
-              <MyMenu :val="4" @fromChild="getChildMsg">
+              <MyMenu :val="4" @fromChild="getChildMsg2">
                 <span slot="1">热门</span>
                 <span slot="2">女士上衣</span>
                 <span slot="3">女士裤子</span>
@@ -58,16 +48,7 @@
             </div>
           </div>
           <div class="box-bd">
-            <div class="promo-list">
-              <ul>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg" />
-                </li>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/4850873d0c417e6480a26059f83aac29_images.jpg" />
-                </li>
-              </ul>
-            </div>
+            
             <div class="list">
               <MyList :list="womanClothesList" :isMore="true"></MyList>
             </div>
@@ -81,7 +62,7 @@
             <div class="title">鞋包配饰</div>
             <!-- 更多卡片 -->
             <div class="more" id="more">
-              <MyMenu :val="4" @fromChild="getChildMsg">
+              <MyMenu :val="4" @fromChild="getChildMsg3">
                 <span slot="1">热门</span>
                 <span slot="2">鞋</span>
                 <span slot="3">包</span>
@@ -90,16 +71,7 @@
             </div>
           </div>
           <div class="box-bd">
-            <div class="promo-list">
-              <ul>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg" />
-                </li>
-                <li>
-                  <img src="http://assets.myntassets.com/v1/images/style/properties/4850873d0c417e6480a26059f83aac29_images.jpg" />
-                </li>
-              </ul>
-            </div>
+            
             <div class="list">
               <MyList :list="accessory" :isMore="true"></MyList>
             </div>
@@ -114,12 +86,44 @@ export default {
   data() {
     return {
       carousel: "", // 轮播图数据:登录的用户喜欢并且热卖的商品
-      
-      manClothesList: "", //男装商品展示列表
-      manClothesHotList: "", //热门
-      manUpperList: "", //男装上衣
-      manPantsList: "", //男装裤子
-      manSuitList: "", //男装套装
+
+      manClothesList:  "",//男装商品展示列表
+      manClothesHotList: [
+        {
+          commodityId:'123',
+          photo: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg",
+          name: "男士格子衫",
+          discription: "超帅程序员格子马甲", 
+          price: "50",
+        }
+      ], //男装上衣 
+      manUpperList: [
+        {
+          commodityId:'123',
+          photo: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg",
+          name: "男士格子衫",
+          discription: "超帅程序员格子马甲", 
+          price: "50",
+        }
+      ], //男装上衣
+      manPantsList: [
+        {
+          commodityId:'123',
+          photo: "http://assets.myntassets.com/v1/images/style/properties/4850873d0c417e6480a26059f83aac29_images.jpg",
+          name: "男士牛仔裤",
+          discription: "超帅程序员丝滑牛仔裤", 
+          price: "50",
+        }
+      ], //男装裤子
+      manSuitList: [
+        {
+          commodityId:'123',
+          photo: "http://assets.myntassets.com/v1/images/style/properties/06e9d4231254fdb2c7fe967ad413ad7b_images.jpg",
+          name: "男士清新套装",
+          discription: "超帅程序员小清新套装", 
+          price: "99",
+        }
+      ], //男装套装
 
       womanClothesList: "", //女装商品展示列表
       womanClothesHotList: "", //热门
@@ -225,42 +229,44 @@ export default {
   created() {
     // 获取轮播图数据
     this.$http
-      .post("获取轮播图数据", {})
+      .get("/member/Shopping/rcmds.php")
       .then(res => {
-        this.carousel = res.data.carousel;
+        this.carousel = res.data;
+        console.log(res);
       });
     // 获取各类商品数据
-    this.getPromo("manUpper", "manUpperList");
-    this.getPromo("manPants", "manPantsList");
-    this.getPromo("manSuit", "manSuitList");
+    //this.getPromo("manUpper", "manUpperList");
+    //this.getPromo("manPants", "manPantsList");
+    //this.getPromo("manSuit", "manSuitList");
 
-    this.getPromo("womanUpper", "womanUpperList");
-    this.getPromo("womanPants", "womanPantsList");
-    this.getPromo("womanSuit", "womanSuitList");
+    //this.getPromo("womanUpper", "womanUpperList");
+   // this.getPromo("womanPants", "womanPantsList");
+   // this.getPromo("womanSuit", "womanSuitList");
 
-    this.getPromo("accessoryShoes", "accessoryShoesList");
-    this.getPromo("accessoryBag", "accessoryBagList");
-    this.getPromo("accessoryOther", "accessoryOtherList");
-    this.getPromo(
-      ["manUpper", "manPants", "manSuit"],
-      "manClothesList",
-      "/api/product/getHotProduct"
-    );
-    this.getPromo(
-      ["womanUpper", "womanPants", "womanSuit"],
-      "womanClothesList",
-      "/api/product/getHotProduct"
-    );
-    this.getPromo(
-      ["accessoryShoes", "accessoryBag", "accessoryOther"],
-      "accessoryList",
-      "/api/product/getHotProduct"
-    );
+    //this.getPromo("accessoryShoes", "accessoryShoesList");
+    //this.getPromo("accessoryBag", "accessoryBagList");
+   // this.getPromo("accessoryOther", "accessoryOtherList");
+   // this.getPromo(
+  //    ["manUpper", "manPants", "manSuit"],
+  //    "manClothesList",
+  //    "/api/product/getHotProduct"
+  //  );
+  //  this.getPromo(
+  //    ["womanUpper", "womanPants", "womanSuit"],
+    //   "womanClothesList",
+    //   "/api/product/getHotProduct"
+    // );
+    // this.getPromo(
+    //   ["accessoryShoes", "accessoryBag", "accessoryOther"],
+    //   "accessoryList",
+    //   "/api/product/getHotProduct"
+    // );
   },
   methods: {
     // 获取家电模块子组件传过来的数据
     getChildMsg(val) {
       this.manClothesActive = val;
+      console.log('val');
     },
     // 获取配件模块子组件传过来的数据
     getChildMsg2(val) {
@@ -271,15 +277,111 @@ export default {
     },
     // 获取各类商品数据方法封装
     getPromo(categoryName, val, api) {
-      api = api != undefined ? api : "/api/product/getPromoProduct";
+      api = api != undefined ? api : "/member/Shopping/rcmds.php";
       this.$http
-        .post(api, {
-          categoryName
-        })
+        .get(api,)
         .then(res => {
-          this[val] = res.data.Product;
+          this[val] = res.data;
+          console.log()
         });
     }
   }
 };
 </script>
+
+<style lang="less" scoped>
+.main-box {
+  background-color: #f5f5f5;
+  padding-bottom: 20px;
+}
+
+.main {
+  margin: 0 auto;
+  max-width: 1225px;
+}
+
+/* 轮播图CSS */
+.block {
+  margin: 0 auto;
+  max-width: 1225px;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+  background-color: #d3dce6;
+}
+
+/* 轮播图CSS END */
+
+.box-hd {
+  height: 58px;
+  margin: 20px 0 0 0;
+}
+
+.box-hd .title {
+  float: left;
+  font-size: 22px;
+  font-weight: 200;
+  line-height: 58px;
+  color: #333;
+}
+
+.box-hd .more {
+  float: right;
+}
+
+.box-hd .more a {
+  font-size: 16px;
+  line-height: 58px;
+  color: #424242;
+}
+
+.box-hd .more a:hover {
+  color: #ff6700;
+}
+
+.box-bd {
+  height: 615px;
+}
+
+.box-bd .promo-list {
+  float: left;
+  height: 615px;
+  width: 234px;
+}
+
+.box-bd .promo-list li {
+  z-index: 1;
+  width: 234px;
+  height: 300px;
+  margin-bottom: 14.5px;
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+}
+
+.box-bd .promo-list li:hover {
+  z-index: 2;
+  -webkit-box-shadow: 0 15px 30px rgba(0, 0, 0, .1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, .1);
+  -webkit-transform: translate3d(0, -2px, 0);
+  transform: translate3d(0, -2px, 0);
+}
+
+.box-bd .promo-list li img {
+  width: 234px;
+  height: 300px;
+}
+
+.box-bd .promo-list img {
+  width: 234px;
+}
+
+.box-bd .list {
+  float: left;
+  height: 615px;
+  width: 991px;
+}
+</style>

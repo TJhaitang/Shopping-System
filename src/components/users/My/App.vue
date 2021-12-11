@@ -54,7 +54,7 @@
               <img src="./logo.png" alt />
             </router-link>
           </div>
-          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item index="/goods">全部商品</el-menu-item>
           <el-menu-item index="/about">关于我们</el-menu-item>
 
