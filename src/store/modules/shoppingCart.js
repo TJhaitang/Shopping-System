@@ -1,6 +1,16 @@
 export default {
     state: {
       shoppingCart: [
+        {
+          id: "3421", // 购物车id
+          comID: "4321", // 商品id
+          comName: "好耶！", // 商品名称
+          comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
+          price: "144", // 商品价格
+          num: "2", // 商品数量
+          maxNum: "5", // 商品限购数量
+          check: false // 是否勾选
+        }
       ]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组

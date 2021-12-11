@@ -14,6 +14,7 @@ import order from '../components/users/My/order.vue'
 import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
 import good_detail from '../components/users/My/Good_details.vue'
+import confirmOrder from '../components/users/My/ConfirmOrder.vue'
 
 Vue.use(VueRouter)
 
@@ -34,7 +35,8 @@ const router = new VueRouter( {
   { path: '/order',component: order},
   { path: '/home',component: home},
   { path: '/good_detail',component: good_detail},
-  { path: '/collect',component: collect}]},
+  { path: '/collect',component: collect},
+  {path:'/confirmOrder',component:confirmOrder}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -53,7 +55,7 @@ router.beforeEach((to, from, next) => {
       return next('/login');
     }
   }
-  else if(to.path === '/order' || to.path === '/collect' ){
+  else if(to.path === '/order' || to.path === '/collect'){
     if(localStorage.getItem('userToken'))
     next();
       else {

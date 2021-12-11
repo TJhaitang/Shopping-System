@@ -24,7 +24,7 @@
           <!--购物车列表的列名-->
           <div class="pro-img">商品图片</div>
           <div class="pro-name">商品名称</div>
-          <div class="pro-activity">参与的活动</div>
+          <!--<div class="pro-activity">参与的活动</div>-->
           <div class="pro-price">单价</div>
           <div class="pro-num">数量</div>
           <div class="pro-total">小计</div>
@@ -37,22 +37,16 @@
           <div class="pro-check">
             <el-checkbox :value="item.check" @change="checkChange($event,index)"></el-checkbox>
           </div>
-          <div class="pro-img">
-            <router-link :to="{ path: '/goods/details', query: {productID:item.productID} }">
-              <img :src="$target + item.productImg" />
-            </router-link>
+          <div class="pro-img"> 
+            <img :src="item.comImg" />
           </div>
-          <div class="pro-name">
-            <router-link
-              :to="{ path: '/goods/details', query: {productID:item.productID} }"
-            >{{item.productName}}</router-link>
-          </div>
+          <div class="pro-name">{{item.comName}}</div>
           <div class="pro-price">{{item.price}}元</div>
           <div class="pro-num">
             <el-input-number
               size="small"
               :value="item.num"
-              @change="handleChange($event,index,item.productID)"
+              @change="handleChange($event,index,item.comID)"
               :min="1"
               :max="item.maxNum"
             ></el-input-number>
@@ -65,7 +59,7 @@
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="deleteItem($event,item.id,item.productID)"
+                  @click="deleteItem($event,item.id,item.comID)"
                 >确定</el-button>
               </div>
               <i class="el-icon-error" slot="reference" style="font-size: 18px;"></i>
@@ -79,7 +73,7 @@
       <div class="cart-bar">
         <div class="cart-bar-left">
           <span>
-            <router-link to="/goods">再去逛逛</router-link>
+            <router-link to="/">再去逛逛</router-link>
           </span>
           <span class="sep">|</span>
           <span class="cart-total">
@@ -93,7 +87,7 @@
             <span class="total-price-title">合计：</span>
             <span class="total-price">{{getTotalPrice}}元</span>
           </span>
-          <!--这里在干嘛没看懂-->
+          <!--选择了商品则结算按钮亮起来，并且可以跳转到结算界面-->
           <router-link :to="getCheckNum > 0 ? '/confirmOrder' : ''">
             <div :class="getCheckNum > 0 ? 'btn-primary' : 'btn-primary-disabled'">去结算</div>
           </router-link>
@@ -107,7 +101,7 @@
     <div v-else class="cart-empty">
       <div class="empty">
         <h2>您的购物车还是空的！</h2>
-        <p>快去逛逛吧！</p>
+        <router-link to="/">快去逛逛吧</router-link>
       </div>
     </div>
     <!-- 购物车为空的时候显示的内容END -->
@@ -121,6 +115,7 @@ export default {
     return {};
   },
   methods: {
+    //Vuex中的函数
     ...mapActions(["updateShoppingCart", "deleteShoppingCart", "checkAll"]),
     // 修改商品数量的时候调用该函数
     handleChange(currentValue, key, productID) {
@@ -162,7 +157,7 @@ export default {
     // 向后端发起删除购物车的数据库信息请求
     deleteItem(e, id, productID) {
       this.$axios
-        .post("/api/user/shoppingCart/deleteShoppingCart", {
+        .post("/api/user/shoppingCart/deleteShoppingCart", {//改记得
           user_id: this.$store.getters.getUser.user_id,
           product_id: productID
         })
