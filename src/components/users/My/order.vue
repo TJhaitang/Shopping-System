@@ -18,8 +18,8 @@
         <ul>
           <!-- 我的订单表头 -->
           <li class="order-info">
-            <div class="order-id">订单编号: {{item[0].order_id}}</div>
-            <div class="order-time">订单时间: {{item[0].order_time | dateFormat}}</div>
+            <div class="order-id">订单编号: {{item.order_id}}</div>
+            <div class="order-time">订单时间: {{item.order_time | dateFormat}}</div>
           </li>
           <li class="header">
             <div class="pro-img"></div>
@@ -81,7 +81,14 @@
 export default {
   data() {
     return {
-      orders: [], // 订单列表
+      orders: [{
+        order_id:"123",//订单编号
+        order_time:'2021-12-11',//订单时间
+        comName: "哇咔咔", // 订单商品名称
+        comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+        price: "144", // 订单商品价格
+        num: "2", // 订单商品数量
+      }], // 订单列表
       total: [] // 每个订单的商品数量及总价列表
     };
   },
