@@ -1,4 +1,8 @@
 # 数据库大作业-更新日志
+## 1212wsr
+### 家人们
+- token加到了请求头里（具体的添加规则在main.js测试能用）商家的叫merchantToken，用户叫userToken，都存在localStorage里。
+
 ## 1203wsr
 ### 家人们
 - pull之后记得npm install --save vuex
