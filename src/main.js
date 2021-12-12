@@ -29,7 +29,10 @@ axios.defaults.baseURL = '/php'
 axios.interceptors.request.use(config => {
   console.log(config);
   //请求头里增加token令牌
-  config.headers.authorization = localStorage.getItem('token')
+  if(localStorage.getItem('userToken'))
+  config.headers.common["X-Token"] = localStorage.getItem('userToken');
+  else if(localStorage.getItem('merchantToken'))
+  config.headers.common["X-Token"] = localStorage.getItem('merchantToken');
   //最后必须returnconfig
   return config;
 })

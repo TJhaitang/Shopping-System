@@ -27,8 +27,48 @@
             <div class="pro-price">单价</div>
             <div class="pro-num">数量</div>
             <div class="pro-total">小计</div>
+            <div class="pro-comment">评价</div>
           </li>
           <!-- 我的订单表头END -->
+          
+          <!-- 订单评价对话框 -->
+    <el-dialog title='评价一下这一单吧！~' 
+    :visible.sync = 'commentDialogVisible' 
+    width = '50%'
+    @close="commentDialogClosed">
+      <el-form
+        :model="commentForm"
+        ref="commentFormRef"
+        label-width="100px"
+      >
+        <el-form-item  label="商品名称">
+          <el-input v-model="commentForm.product_name" :disabled="true"></el-input>
+        </el-form-item> 
+        <el-form-item  label="商品规格">
+          <el-input v-model="commentForm.item_id" :disabled="true"></el-input>
+        </el-form-item> 
+        <el-form-item  label="分数">
+          <el-rate
+            v-model="commentForm.score"
+            allow-half = true
+            :colors= "['#99A9BF', '#F7BA2A', '#FF9900']" >
+          </el-rate>
+        </el-form-item> 
+        <el-form-item  label="评价内容">
+          <el-input
+            type="textarea"
+            :rows="5"
+            placeholder="请输入评价内容"
+            v-model="commentForm.content">
+          </el-input>
+        </el-form-item>
+        </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="insertComment">确认修改</el-button>
+        <el-button type="primary" @click="commentDialogVisible = false">取消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 评价对话框结束 -->
 
           <!-- 订单列表 -->
           <li class="product-list" v-for="(commodity,i) in item.product" :key="i">
@@ -39,6 +79,9 @@
             <div class="pro-price">{{commodity.product_price}}元</div>
             <div class="pro-num">{{commodity.product_num}}</div>
             <div class="pro-total pro-total-in">{{commodity.product_price*commodity.product_num}}元</div>
+            <div class="pro-comment">
+                <el-button type="primary" icon='el-icon-edit' @click = "showCommentDialog(commodity)"></el-button>
+            </div>
           </li>
         </ul>
         <div class="order-bar">
@@ -91,7 +134,15 @@ export default {
           }
         ]
       }], // 订单列表
-      total: [1] // 每个订单的商品数量及总价列表
+      total: [1], // 每个订单的商品数量及总价列表,
+      commentDialogVisible: false,
+
+      commentForm : {
+        product_name:"",
+        item_id:3, 
+        score:"", //分数
+        content: "" //评价
+      }
     };
   },
   activated() {
@@ -127,6 +178,30 @@ export default {
         total.push({ totalNum, totalPrice });
       }
       this.total = total;
+    }
+  }, 
+  methods: {
+    showCommentDialog(row) {
+      this.commentForm.product_name = row.product_name;
+      this.commentForm.item_id = 3;
+      this.commentForm.score = 0;
+      this.commentForm.content = "";
+      this.commentDialogVisible = true;
+    },
+    commentDialogClosed() {
+      this.$refs.commentFormRef.resetFields(); //评价对话框置空
+      this.commentDialogVisible = false;
+    },
+    insertComment() {
+      this.$http.post("/member/Shopping/insertComment.php", 
+        this.commentForm)
+        .then(res => {
+          console.log(res)
+          if(res.data.status == "success")
+            this.$message.success('评价成功！！');
+          else this.$message.error('评价失败啦┭┮﹏┭┮');
+      })
+      this.commentDialogVisible = false;
     }
   }
 };
@@ -205,7 +280,7 @@ export default {
 }
 .order .content ul .pro-name {
   float: left;
-  width: 380px;
+  width: 280px;
 }
 .order .content ul .pro-name a {
   color: #424242;
@@ -232,6 +307,9 @@ export default {
 }
 .order .content ul .pro-total-in {
   color: #ff6700;
+}
+.order .content ul .pro-comment {
+  float: left;
 }
 .order .order-bar {
   width: 1185px;

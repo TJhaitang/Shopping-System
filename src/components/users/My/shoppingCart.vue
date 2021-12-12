@@ -176,6 +176,10 @@ export default {
         .catch(err => {
           return Promise.reject(err);
         });
+    },
+    //显示评价对话框
+    showCommentDialog(row) {
+
     }
   },
   computed: {
@@ -271,7 +275,7 @@ export default {
 }
 .shoppingCart .content ul .pro-name {
   float: left;
-  width: 380px;
+  width: 300px;
 }
 .shoppingCart .content ul .pro-name a {
   color: #424242;

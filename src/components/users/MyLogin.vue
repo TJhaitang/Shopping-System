@@ -71,14 +71,14 @@ export default {
                 this.isLogin = false;
                 localStorage.clear()
                 localStorage.setItem("userToken", res.data.token);
-                this.$http.defaults.headers.common["X-Token"] = res.data.token;
-                // this.$http.defaults.headers.common["X-token"] = jwt;
                 // 登录信息存到本地(localstorage)
                 // 这里要求登录之后后端就返回存储的用户信息。
                 this.$http.get("/member/getInfo.php")
                 .then(res => 
-                { let user = {username: res.data.username};
-                localStorage.setItem("user", user);
+                { 
+                  let user = res.data;
+                  localStorage.setItem("user", JSON.stringify(user));
+                  this.setUser(user);
                 })
                 // 登录信息存到vuex
                 // 弹出通知框提示登录成功信息

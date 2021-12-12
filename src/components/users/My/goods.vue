@@ -32,7 +32,7 @@
     <!-- 主要内容区 -->
     <div class="main">
       <div class="list">
-        <MyList :list="product" v-if="product.length > 0"></MyList>
+        <MyList :list="productList" v-if="product.length > 0"></MyList>
         <div v-else class="none-product">抱歉没有找到相关的商品，请看看其他的商品捏</div>
       </div>
       <!-- 分页 -->
@@ -61,6 +61,7 @@ export default {
       total: 0, // 商品总量
       pageSize: 15, // 每页显示的商品数量
       currentPage: 1, //当前页码
+      maxPage: 1, //最大页数（总页码）
       activeName: "-1", // 分类列表当前选中的id
       search: "" // 搜索条件
     };
@@ -83,6 +84,7 @@ export default {
     if (this.$route.query.categoryID != undefined) {
       this.categoryID = this.$route.query.categoryID;
       if (this.categoryID.length == 1) {
+        //这是撒子捏
         this.activeName = "" + this.categoryID[0];
       }
       return;
@@ -158,7 +160,7 @@ export default {
     },
     // 向后端请求分类列表数据
     getCategory() {
-      this.$axios
+      this.$http
         .post("/api/product/getCategory", {})
         .then(res => {
           const val = {
@@ -168,9 +170,6 @@ export default {
           const cate = res.data.category;
           cate.unshift(val);
           this.categoryList = cate;
-        })
-        .catch(err => {
-          return Promise.reject(err);
         });
     },
     // 向后端请求全部商品或分类商品数据
@@ -180,18 +179,18 @@ export default {
         this.categoryID.length == 0
           ? "/api/product/getAllProduct"
           : "/api/product/getProductByCategory";
-      this.$axios
+      this.$http
         .post(api, {
           categoryID: this.categoryID,
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
+        //  currentPage: this.currentPage,
+        //  pageSize: this.pageSize
         })
         .then(res => {
           this.product = res.data.Product;
           this.total = res.data.total;
-        })
-        .catch(err => {
-          return Promise.reject(err);
+
+          //分页
+          dividePage(res);
         });
     },
     // 通过搜索条件向后端请求商品数据
@@ -199,16 +198,35 @@ export default {
       this.$axios
         .post("/api/product/getProductBySearch", {
           search: this.search,
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
+          //currentPage: this.currentPage,
+          //pageSize: this.pageSize
         })
         .then(res => {
           this.product = res.data.Product;
           this.total = res.data.total;
+          
+          //分页
+          dividePage(res);
         })
         .catch(err => {
           return Promise.reject(err);
         });
+    },
+    dividePage(res) {
+      this.total = res.data.orderNum 
+       if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
+            this.maxpage=parseInt(this.total/this.pageSize)+1;   
+           
+       }else{   
+           this.maxpage=parseInt(this.total/this.pageSize);   
+       } 
+
+       //取出当前页面中应该显示的数据，赋值给orderList
+        var startRow = (this.pageNum - 1) * this.pageSize; 
+        var endRow = this.pageNum * this.pageSize; 
+        console.log(startRow)
+        endRow = (endRow > this.total)? this.total: endRow;  
+        this.productList = this.product.slice(startRow, endRow);
     }
   }
 };

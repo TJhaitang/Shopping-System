@@ -7,12 +7,12 @@
           <ul>
             <!-- 判断是否能获取到用户数据,如果能就显示 欢迎xx，不能就显示登录和注册按钮 -->
             <!-- 不知道这个getters能不能用。可能这里出问题 -->
-            <li >
+            <li v-if='!this.$store.getters.getUser'>
               <el-button type="text" @click="login">登录</el-button>
               <span class="sep">|</span>
               <el-button type="text" @click="register = true">注册</el-button>
             </li>
-            <li >
+            <li v-else>
               欢迎
               <el-popover placement="top" width="180" v-model="visible">
                 <p>确定退出登录吗？</p>
@@ -20,7 +20,7 @@
                   <el-button size="mini" type="text" @click="visible = false">取消</el-button>
                   <el-button type="primary" size="mini" @click="logout">确定</el-button>
                 </div>
-                <el-button type="text" slot="reference">{{this.$store.getters.getUser.userName}}</el-button>
+                <el-button type="text" slot="reference">{{this.$store.getters.getUser.username}}</el-button>
               </el-popover>
             </li>
             <li>
@@ -145,10 +145,9 @@ export default {
     if (localStorage.getItem("user")) {
       // 如果已经登录，设置vuex登录状态
       // 啊 为啥要用jason.parse呢
-      console.log(localStorage.getItem("user"))
-      this.setUser(localStorage.getItem("user"));
+      
+      this.setUser(JSON.parse(localStorage.getItem("user")));
     }
-    this.getUser;
     
   },
   computed: {
@@ -157,27 +156,23 @@ export default {
   watch: {
     // 获取vuex的登录状态
     getUser: function(val) {
-      // if (val === "") {
-      //   // 用户没有登录，设置购物车为空
-      //   this.setShoppingCart([]);
-      // } else {
+       if (val === "") {
+         // 用户没有登录，设置购物车为空
+         this.setShoppingCart([]);
+       } else {
         // 用户已经登录,获取该用户的购物车信息
-        let jwt = localStorage.getItem("userToken");
-        this.$http.defaults.headers.common["X-token"]=jwt;
         this.$http
           .get("/member/Shopping/getCarList.php")
           .then(res => {
             if (res.data.status != "fail") {
               // 001 为成功, 更新vuex购物车状态
-              
               this.setShoppingCart([res.data[1]]);
-              console.log(getShoppingCart);
             } else {
               // 提示失败信息
               this.$message.error('没获取到购物车信息 呜呜');
             }
           });
-     // }
+      }
     }
   },
   methods: {
