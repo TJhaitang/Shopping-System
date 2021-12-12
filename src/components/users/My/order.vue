@@ -31,23 +31,21 @@
           <!-- 我的订单表头END -->
 
           <!-- 订单列表 -->
-          <li class="product-list" v-for="(product,i) in item" :key="i">
+          <li class="product-list" v-for="(commodity,i) in item.product" :key="i">
             <div class="pro-img">
-              
-                <img :src="$product.product_picture" />
-              
+                <img :src="commodity.product_picture" />
             </div>
-            <div class="pro-name">{{product.product_name}}</div>
-            <div class="pro-price">{{product.product_price}}元</div>
-            <div class="pro-num">{{product.product_num}}</div>
-            <div class="pro-total pro-total-in">{{product.product_price*product.product_num}}元</div>
+            <div class="pro-name">{{commodity.product_name}}</div>
+            <div class="pro-price">{{commodity.product_price}}元</div>
+            <div class="pro-num">{{commodity.product_num}}</div>
+            <div class="pro-total pro-total-in">{{commodity.product_price*commodity.product_num}}元</div>
           </li>
         </ul>
         <div class="order-bar">
           <div class="order-bar-left">
             <span class="order-total">
               共
-              <span class="order-total-num">{{total[index].totalNum}}</span> 件商品
+              <span class="order-total-num">{{total[index]}}</span> 件商品
             </span>
           </div>
           <div class="order-bar-right">
@@ -85,10 +83,15 @@ export default {
         product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
         product_price: "144", // 订单商品价格
         product_num: "2", // 订单商品数量
+          },
+          {product_name: "哇咔咔", // 订单商品名称
+        product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+        product_price: "144", // 订单商品价格
+        product_num: "2", // 订单商品数量
           }
         ]
       }], // 订单列表
-      total: [] // 每个订单的商品数量及总价列表
+      total: [1] // 每个订单的商品数量及总价列表
     };
   },
   activated() {

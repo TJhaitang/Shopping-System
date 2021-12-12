@@ -1,16 +1,26 @@
 export default {
     state: {
       shoppingCart: [
-        {
-          id: "3421", // 购物车id
-          comID: "4321", // 商品id
-          comName: "好耶！", // 商品名称
-          comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
-          price: "144", // 商品价格
-          num: "2", // 商品数量
-          maxNum: "5", // 商品限购数量
-          check: false // 是否勾选
-        }
+        // {
+        //   id: "3421", // 购物车id
+        //   comID: "4321", // 商品id
+        //   comName: "好耶！", // 商品名称
+        //   comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
+        //   price: "144", // 商品价格
+        //   num: 1, // 商品数量
+        //   maxNum: "5", // 商品限购数量
+        //   check: false // 是否勾选
+        // },
+        // {
+        //   id: "3421", // 购物车id
+        //   comID: "4321", // 商品id
+        //   comName: "好耶！", // 商品名称
+        //   comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
+        //   price: "144", // 商品价格
+        //   num: 2, // 商品数量
+        //   maxNum: "5", // 商品限购数量
+        //   check: false // 是否勾选
+        // }
       ]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组
@@ -18,9 +28,9 @@ export default {
       shoppingCart = {
         id: "", // 购物车id
         comID: "", // 商品id
+        comsizeID:"",//商品规格id
         comName: "", // 商品名称
         comImg: "", // 商品图片
-        comact:"",//商品活动
         price: "", // 商品价格
         num: "", // 商品数量
         maxNum: "", // 商品限购数量
@@ -35,6 +45,7 @@ export default {
       getNum (state) {
         // 购物车商品总数量
         let totalNum = 0;
+        console.log(state.shoppingCart.length)
         for (let i = 0; i < state.shoppingCart.length; i++) {
           const temp = state.shoppingCart[i];
           totalNum += temp.num;
@@ -93,6 +104,7 @@ export default {
       setShoppingCart (state, data) {
         // 设置购物车状态
         state.shoppingCart = data;
+        console.log(state.shoppingCart)
       },
       unshiftShoppingCart (state, data) {
         // 添加购物车

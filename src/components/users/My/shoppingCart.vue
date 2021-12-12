@@ -32,22 +32,21 @@
         <!-- 购物车表头END -->
 
         <!-- 购物车列表 -->
-        <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.id">
+        <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.carId">
           <div class="pro-check">
-            <el-checkbox :value="item.check" @change="checkChange($event,index)"></el-checkbox>
+            <el-checkbox :value="true" @change="checkChange($event,index)"></el-checkbox>
           </div>
           <div class="pro-img"> 
-            <img :src="item.comImg" />
+            <img :src="item.image" />
           </div>
-          <div class="pro-name">{{item.comName}}</div>
+          <div class="pro-name">{{item.commodityName}}</div>
           <div class="pro-price">{{item.price}}元</div>
           <div class="pro-num">
             <el-input-number
               size="small"
               :value="item.num"
-              @change="handleChange($event,index,item.comID)"
+              @change="handleChange($event,index,item.commodityId)"
               :min="1"
-              :max="item.maxNum"
             ></el-input-number>
           </div>
           <div class="pro-total pro-total-in">{{item.price*item.num}}元</div>
@@ -58,7 +57,7 @@
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="deleteItem($event,item.id,item.comID)"
+                  @click="deleteItem($event,item.carId,item.commodityId)"
                 >确定</el-button>
               </div>
               <i class="el-icon-error" slot="reference" style="font-size: 18px;"></i>
@@ -83,7 +82,7 @@
         </div>
         <div class="cart-bar-right">
           <span>
-            <span class="total-price-title">合计：</span>
+            <span class="total-price-title">合计:</span>
             <span class="total-price">{{getTotalPrice}}元</span>
           </span>
           <!--选择了商品则结算按钮亮起来，并且可以跳转到结算界面-->

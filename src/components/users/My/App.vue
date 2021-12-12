@@ -7,12 +7,12 @@
           <ul>
             <!-- 判断是否能获取到用户数据,如果能就显示 欢迎xx，不能就显示登录和注册按钮 -->
             <!-- 不知道这个getters能不能用。可能这里出问题 -->
-            <li v-if="!this.$store.getters.getUser">
+            <li >
               <el-button type="text" @click="login">登录</el-button>
               <span class="sep">|</span>
               <el-button type="text" @click="register = true">注册</el-button>
             </li>
-            <li v-else>
+            <li >
               欢迎
               <el-popover placement="top" width="180" v-model="visible">
                 <p>确定退出登录吗？</p>
@@ -145,35 +145,39 @@ export default {
     if (localStorage.getItem("user")) {
       // 如果已经登录，设置vuex登录状态
       // 啊 为啥要用jason.parse呢
-      this.setUser(JSON.parse(localStorage.getItem("user")));
+      console.log(localStorage.getItem("user"))
+      this.setUser(localStorage.getItem("user"));
     }
+    this.getUser;
     
   },
   computed: {
-    ...mapGetters(["getUser", "getNum"])
+    ...mapGetters(["getUser", "getNum","getShoppingCart"])
   },
   watch: {
     // 获取vuex的登录状态
     getUser: function(val) {
-      if (val === "") {
-        // 用户没有登录，设置购物车为空
-        this.setShoppingCart([]);
-      } else {
+      // if (val === "") {
+      //   // 用户没有登录，设置购物车为空
+      //   this.setShoppingCart([]);
+      // } else {
         // 用户已经登录,获取该用户的购物车信息
+        let jwt = localStorage.getItem("userToken");
+        this.$http.defaults.headers.common["X-token"]=jwt;
         this.$http
-          .post("获取购物车信息地址", {
-            user_id: val.user_id
-          })
+          .get("/member/Shopping/getCarList.php")
           .then(res => {
-            if (res.data.code === "001") {
+            if (res.data.status != "fail") {
               // 001 为成功, 更新vuex购物车状态
-              this.setShoppingCart(res.data.shoppingCartData);
+              
+              this.setShoppingCart([res.data[1]]);
+              console.log(getShoppingCart);
             } else {
               // 提示失败信息
               this.$message.error('没获取到购物车信息 呜呜');
             }
           });
-      }
+     // }
     }
   },
   methods: {
@@ -182,6 +186,7 @@ export default {
       // 点击登录按钮, 通过更改vuex的showLogin值显示登录组件
       // 啊 状态里为啥要设置登录组件的开闭呀？这个有必要记录么
       // 这里的登录只是把登陆组件展示，登录的请求方法在MyLogin
+
       this.setShowLogin(true);
     },
     // 退出登录

@@ -69,15 +69,18 @@ export default {
               if (res.data.status === "success") {
                 // 隐藏登录组件
                 this.isLogin = false;
-                // console.log(res.data.token)
+                localStorage.clear()
                 localStorage.setItem("userToken", res.data.token);
-                this.$http.defaults.headers.common["X-token"] = res.data.token;
+                this.$http.defaults.headers.common["X-Token"] = res.data.token;
+                // this.$http.defaults.headers.common["X-token"] = jwt;
                 // 登录信息存到本地(localstorage)
                 // 这里要求登录之后后端就返回存储的用户信息。
-              //  let user = res.data.user;
-              //  localStorage.setItem("user", user);
+                this.$http.get("/member/getInfo.php")
+                .then(res => 
+                { let user = {username: res.data.username};
+                localStorage.setItem("user", user);
+                })
                 // 登录信息存到vuex
-                //this.setUser(res.data.user);
                 // 弹出通知框提示登录成功信息
                 this.$message.success('登录成功了！欢迎~')
               } else {
