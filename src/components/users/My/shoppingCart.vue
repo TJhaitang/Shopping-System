@@ -34,7 +34,7 @@
         <!-- 购物车列表 -->
         <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.carId">
           <div class="pro-check">
-            <el-checkbox :value="true" @change="checkChange($event,index)"></el-checkbox>
+            <el-checkbox :value=item.check @change="checkChange($event,index)"></el-checkbox>
           </div>
           <div class="pro-img"> 
             <img :src="item.image" />
@@ -110,7 +110,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return {};
+    return {cheak:false};
   },
   methods: {
     //Vuex中的函数
