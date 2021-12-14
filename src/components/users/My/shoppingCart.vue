@@ -44,12 +44,12 @@
           <div class="pro-num">
             <el-input-number
               size="small"
-              :value="item.num"
-              @change="handleChange($event,index,item.commodityId)"
+              :value="item.num*1"
+              @change="handleChange($event,index,getcarID)"
               :min="1"
             ></el-input-number>
           </div>
-          <div class="pro-total pro-total-in">{{item.price*item.num}}元</div>
+          <div class="pro-total pro-total-in">{{towNumber(item.price*item.num)}}元</div>
           <div class="pro-action">
             <el-popover placement="right">
               <p>确认删除吗？</p>
@@ -83,7 +83,7 @@
         <div class="cart-bar-right">
           <span>
             <span class="total-price-title">合计:</span>
-            <span class="total-price">{{getTotalPrice}}元</span>
+            <span class="total-price">{{towNumber(getTotalPrice)}}元</span>
           </span>
           <!--选择了商品则结算按钮亮起来，并且可以跳转到结算界面-->
           <router-link :to="getCheckNum > 0 ? '/confirmOrder' : ''">
@@ -116,20 +116,20 @@ export default {
     //Vuex中的函数
     ...mapActions(["updateShoppingCart", "deleteShoppingCart", "checkAll"]),
     // 修改商品数量的时候调用该函数
-    handleChange(currentValue, key, productID) {
+    handleChange(currentValue, key, carid) {
       // 当修改数量时，默认勾选
       this.updateShoppingCart({ key: key, prop: "check", val: true });
       // 向后端发起更新购物车的数据库信息请求
-      this.$axios
-        .post("/api/user/shoppingCart/updateShoppingCart", {//记得改路径
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: productID,
+      this.$http
+        .post("/member/Shopping/updateCar.php", {//记得改路径
+          carId: carid,
+          operation: 'update',
           num: currentValue
         })
         .then(res => {
-          switch (res.data.code) {
-            case "001":
-              // “001”代表更新成功
+          switch (res.data.status) {
+            case "success":
+              // “success”代表更新成功
               // 更新vuex状态
               this.updateShoppingCart({
                 key: key,
@@ -180,6 +180,10 @@ export default {
     //显示评价对话框
     showCommentDialog(row) {
 
+    },
+    //保留两位小数，不然计算价格时3.72显示成3.719999999
+    towNumber(val) {      
+      return val.toFixed(2)    
     }
   },
   computed: {
@@ -187,7 +191,8 @@ export default {
       "getShoppingCart",
       "getCheckNum",
       "getTotalPrice",
-      "getNum"
+      "getNum",
+      "getcarID"
     ]),
     isAllCheck: {
       get() {
