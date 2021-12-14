@@ -137,11 +137,15 @@ export default {
                 val: currentValue
               });
               // 提示更新成功信息
-              this.notifySucceed(res.data.msg);
+              this.$notify({
+                message: '修改数量成功'
+              });
               break;
             default:
               // 提示更新失败信息
-              this.notifyError(res.data.msg);
+              this.$notify({
+                message: '修改数量失败'
+              });
           }
         })
         .catch(err => {
@@ -155,22 +159,26 @@ export default {
     // 向后端发起删除购物车的数据库信息请求
     deleteItem(e, id, productID) {
       this.$axios
-        .post("/api/user/shoppingCart/deleteShoppingCart", {//改记得
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: productID
+        .post("/member/Shopping/updateCar.php", {//改记得，改了
+          carId: id,
+          operation: 'delete',
         })
         .then(res => {
-          switch (res.data.code) {
-            case "001":
-              // “001” 删除成功
+          switch (res.data.status) {
+            case "success":
+              // “success” 删除成功
               // 更新vuex状态
               this.deleteShoppingCart(id);
               // 提示删除成功信息
-              this.notifySucceed(res.data.msg);
+              this.$notify({
+                message: '删除成功'
+              });
               break;
             default:
               // 提示删除失败信息
-              this.notifyError(res.data.msg);
+              this.$notify({
+                message: '删除失败'
+              });
           }
         })
         .catch(err => {
