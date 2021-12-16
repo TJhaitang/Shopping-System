@@ -28,7 +28,7 @@
             <div class="pro-num">数量</div>
             <div class="pro-total">小计</div>
             <div class="pro-comment">评价</div>
-            <div class='pro-back'>售后</div>
+            <div class='pro-back'>订单状态</div>
           </li>
           <!-- 我的订单表头END -->
           
@@ -83,12 +83,11 @@
             <div class="pro-comment">
                 <el-button type="mini" icon='el-icon-edit' @click = "showCommentDialog(commodity)"></el-button>
             </div>
-            <div class="pro-back">
+            <div class="pro-back">{{showStatus(item.status)}}
               <el-dropdown trigger="click">
                 <i class="el-icon-setting"></i>
                 <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item  @click.native="quit">退货</el-dropdown-item>
-                <el-dropdown-item  @click.native="quit">换货</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -139,7 +138,8 @@ export default {
           },
         ],
         quantity:2,
-        cost:288
+        cost:288,
+        status:'0',
       }], // 订单列表
       commentDialogVisible: false,
 
@@ -208,6 +208,23 @@ export default {
           else this.$message.error('评价失败啦┭┮﹏┭┮');
       })
       this.commentDialogVisible = false;
+    },
+    showStatus(value){
+      if(value='0'){
+        return '已删除'
+      }
+      else if(value='1'){
+        return '待审核'
+      }
+      else if(value='2'){
+        return '待发货'
+      }
+      else if(value='3'){
+        return '待收货'
+      }
+      else if(value='4'){
+        return '交易完成'
+      }
     }
   }
 };
@@ -317,10 +334,11 @@ export default {
 }
 .order .content ul .pro-comment {
   float: left;
+  padding-left: 0px;
 }
 .order .content ul .pro-back {
   float: left;
-  padding-left: 40px;
+  padding-left: 20px;
 }
 .order .order-bar {
   width: 1185px;
