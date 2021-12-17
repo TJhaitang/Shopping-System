@@ -1,16 +1,16 @@
 export default {
     state: {
       shoppingCart: [
-        // {
-        //   id: "3421", // 购物车id
-        //   comID: "4321", // 商品id
-        //   comName: "好耶！", // 商品名称
-        //   comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
-        //   price: "144", // 商品价格
-        //   num: 1, // 商品数量
-        //   maxNum: "5", // 商品限购数量
-        //   check: false // 是否勾选
-        // },
+          // {
+          //   carId: "3421", // 购物车id
+          //   commodityID: "4321", // 商品id
+          //   commodityName: "好耶！", // 商品名称
+          //   imamg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
+          //   price: 144, // 商品价格
+          //   num: 1, // 商品数量
+          
+          //   check: false // 是否勾选
+          // },
         // {
         //   id: "3421", // 购物车id
         //   comID: "4321", // 商品id
@@ -45,11 +45,11 @@ export default {
       getNum (state) {
         // 购物车商品总数量
         let totalNum = 0;
-        console.log(state.shoppingCart.length)
         for (let i = 0; i < state.shoppingCart.length; i++) {
           const temp = state.shoppingCart[i];
-          totalNum += temp.num;
+          totalNum += temp.num*1;
         }
+        console.log(state.shoppingCart[0])
         return totalNum;
       },
       getIsAllCheck (state) {
@@ -83,7 +83,7 @@ export default {
         for (let i = 0; i < state.shoppingCart.length; i++) {
           const temp = state.shoppingCart[i];
           if (temp.check) {
-            totalNum += temp.num;
+            totalNum += temp.num*1;
           }
         }
         return totalNum;
@@ -98,13 +98,20 @@ export default {
           }
         }
         return totalPrice;
-      }
+      },
+      getcarId(){
+        return state.shoppingCart.carId;
+        console.log('nienie')
+      },
     },
     mutations: {
       setShoppingCart (state, data) {
         // 设置购物车状态
+        for(var i=0 ; i<data.length ; i++)
+          {
+            data[i].check=false;    
+          }
         state.shoppingCart = data;
-        console.log(state.shoppingCart)
       },
       unshiftShoppingCart (state, data) {
         // 添加购物车
@@ -118,15 +125,15 @@ export default {
         // 更新购物车
         // 可更新商品数量和是否勾选
         // 用于购物车点击勾选及加减商品数量
-        if (payload.prop == "num") {
-          // 判断效果的商品数量是否大于限购数量或小于1，如果是，不进行更新操作直接返回
-          if (state.shoppingCart[payload.key].maxNum < payload.val) {
-            return;
-          }
-          if (payload.val < 1) {
-            return;
-          }
-        }
+         if (payload.prop == "num") {
+           // 判断效果的商品数量是否大于限购数量或小于1，如果是，不进行更新操作直接返回
+          //  if (state.shoppingCart[payload.key].maxNum < payload.val) {
+          //    return;
+          //  }
+           if (payload.val < 1) {
+             return;
+           }
+         }
         // 根据商品在购物车的数组的索引和属性更改
         state.shoppingCart[payload.key][payload.prop] = payload.val;
       },

@@ -162,7 +162,7 @@ export default {
           .get("/member/Shopping/getCarList.php")
           .then(res => {
             if (res.data.status != "fail") {
-              // 001 为成功, 更新vuex购物车状态
+              // 不为'fail'为成功, 更新vuex购物车状态
               this.setShoppingCart([res.data[1]]);
             } else {
               // 提示失败信息

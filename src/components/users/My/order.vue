@@ -28,6 +28,7 @@
             <div class="pro-num">数量</div>
             <div class="pro-total">小计</div>
             <div class="pro-comment">评价</div>
+            <div class='pro-back'>订单状态</div>
           </li>
           <!-- 我的订单表头END -->
           
@@ -80,7 +81,15 @@
             <div class="pro-num">{{commodity.product_num}}</div>
             <div class="pro-total pro-total-in">{{commodity.product_price*commodity.product_num}}元</div>
             <div class="pro-comment">
-                <el-button type="primary" icon='el-icon-edit' @click = "showCommentDialog(commodity)"></el-button>
+                <el-button type="mini" icon='el-icon-edit' @click = "showCommentDialog(commodity)"></el-button>
+            </div>
+            <div class="pro-back">{{showStatus(item.status)}}
+              <el-dropdown trigger="click">
+                <i class="el-icon-setting"></i>
+                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item  @click.native="quit">退货</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </div>
           </li>
         </ul>
@@ -88,13 +97,13 @@
           <div class="order-bar-left">
             <span class="order-total">
               共
-              <span class="order-total-num">{{total[index]}}</span> 件商品
+              <span class="order-total-num">{{item.quantity}}</span> 件商品
             </span>
           </div>
           <div class="order-bar-right">
             <span>
               <span class="total-price-title">合计：</span>
-              <span class="total-price">{{total[index].totalPrice}}元</span>
+              <span class="total-price">{{item.cost}}元</span>
             </span>
           </div>
           <!-- 订单列表END -->
@@ -125,16 +134,13 @@ export default {
           {product_name: "哇咔咔", // 订单商品名称
         product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
         product_price: "144", // 订单商品价格
-        product_num: "2", // 订单商品数量
+        product_num: "1", // 订单商品数量
           },
-          {product_name: "哇咔咔", // 订单商品名称
-        product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-        product_price: "144", // 订单商品价格
-        product_num: "2", // 订单商品数量
-          }
-        ]
+        ],
+        quantity:2,
+        cost:288,
+        status:'0',
       }], // 订单列表
-      total: [1], // 每个订单的商品数量及总价列表,
       commentDialogVisible: false,
 
       commentForm : {
@@ -202,6 +208,23 @@ export default {
           else this.$message.error('评价失败啦┭┮﹏┭┮');
       })
       this.commentDialogVisible = false;
+    },
+    showStatus(value){
+      if(value='0'){
+        return '已删除'
+      }
+      else if(value='1'){
+        return '待审核'
+      }
+      else if(value='2'){
+        return '待发货'
+      }
+      else if(value='3'){
+        return '待收货'
+      }
+      else if(value='4'){
+        return '交易完成'
+      }
     }
   }
 };
@@ -272,7 +295,7 @@ export default {
   float: left;
   height: 85px;
   width: 120px;
-  padding-left: 80px;
+  padding-left: 35px;
 }
 .order .content ul .pro-img img {
   height: 80px;
@@ -281,6 +304,7 @@ export default {
 .order .content ul .pro-name {
   float: left;
   width: 280px;
+  padding-left: 15px;
 }
 .order .content ul .pro-name a {
   color: #424242;
@@ -310,6 +334,11 @@ export default {
 }
 .order .content ul .pro-comment {
   float: left;
+  padding-left: 0px;
+}
+.order .content ul .pro-back {
+  float: left;
+  padding-left: 20px;
 }
 .order .order-bar {
   width: 1185px;
