@@ -7,7 +7,7 @@
           <i class="el-icon-s-order"></i>
         </p>
         <p>确认订单</p>
-        <router-link to></router-link>
+        <router-link to = '/order'></router-link>
       </div>
     </div>
     <!-- 头部END -->
@@ -146,7 +146,7 @@ export default {
   created() {
     // 如果没有勾选购物车商品直接进入确认订单页面,提示信息并返回购物车
     if (this.getCheckNum < 1) {
-      this.notifyError("请勾选商品后再结算");
+      this.$message.error("请勾选商品后再结算");
       this.$router.push({ path: "/shoppingCart" });
     }
   },
@@ -158,8 +158,8 @@ export default {
     ...mapActions(["deleteShoppingCart"]),
     addOrder() {
       this.$axios
-        .post("/api/user/order/addOrder", {
-          user_id: this.$store.getters.getUser.user_id,
+        .post("/member/Shopping/insertOrder.php", {
+          suid: this.$store.getters.getUser.user_id,
           products: this.getCheckGoods
         })
         .then(res => {

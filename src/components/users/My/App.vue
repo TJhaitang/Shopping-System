@@ -26,9 +26,6 @@
             <li>
               <router-link to="/order">我的订单</router-link>
             </li>
-            <li>
-              <router-link to="/collect">我的收藏</router-link>
-            </li>
             <li :class="getNum > 0 ? 'shopCart-full' : 'shopCart'">
               <router-link to="/shoppingCart">
                 <i class="el-icon-shopping-cart-full"></i> 购物车
