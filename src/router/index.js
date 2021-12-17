@@ -9,10 +9,13 @@ import information from '../components/Merchant/My/merchant-info.vue'
 
 import signUp_u from '../components/users/signUp_u.vue'
 import App from '../components/users/My/App.vue'
+import home from '../components/users/My/home.vue'
 import order from '../components/users/My/order.vue'
 import collect from '../components/users/My/collect.vue'
 import shoppingCart from '../components/users/My/shoppingCart.vue'
 import good_detail from '../components/users/My/Good_details.vue'
+import confirmOrder from '../components/users/My/ConfirmOrder.vue'
+import goods from '../components/users/My/goods.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +24,8 @@ const router = new VueRouter( {
   
   { path: '/login', component: login },
   { path: '/my',component: My,
-  children: [{path: '/orders',component:orders},
+  children: 
+  [{path: '/orders',component:orders},
   { path: '/Commodity',component:Commodity},
   {path: '/info',component: information}]
 },
@@ -30,10 +34,11 @@ const router = new VueRouter( {
   { path: '/',component: App,
   children:[{ path: '/shoppingCart',component: shoppingCart},
   { path: '/order',component: order},
-  { path: '/collect',component: collect},
-  { path: '/shoppingCart',component: shoppingCart},
+  { path: '/home',component: home},
   { path: '/good_detail',component: good_detail},
-  { path: '/collect',component: collect}]},
+  { path: '/collect',component: collect},
+  { path:'/confirmOrder',component:confirmOrder},
+  { path: '/goods',component: goods}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -43,12 +48,24 @@ router.beforeEach((to, from, next) => {
   // from: 从哪个路径跳转而来
   // next: 放行函数
   // next() 放行； next('/login') 强制跳转（没有token的时候）
-  if(to.path === '/login' || to.path === '/signUp' || to.path === '/signUp_u'||to.path === '/Commodity'||to.path === '/good_detail') return next();
+  if(to.path === '/login' || to.path === '/signUp'  || to.path === '/' || to.path === '/home'||to.path==='/order'||to.path==='/confirmOrder') return next();
   //拿出token
-  const tokenString = localStorage.getItem('token')
-  if (!tokenString) return next('/login');
-  //如果token存在，可以放行
-  next();
+  else if(to.path === '/my' || to.path === '/orders' || to.path === '/Commodity' || to.path === '/info'){
+    if(localStorage.getItem('merchantToken')){
+      next();
+    }
+    else {
+      return next('/login');
+    }
+  }
+  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart' ){
+    if(localStorage.getItem('userToken')){
+      next();
+    }
+      else {
+        return next('/home');
+      }
+  }
 })
 
 export default router

@@ -7,7 +7,7 @@
           <ul>
             <!-- 判断是否能获取到用户数据,如果能就显示 欢迎xx，不能就显示登录和注册按钮 -->
             <!-- 不知道这个getters能不能用。可能这里出问题 -->
-            <li v-if="!this.$store.getters.getUser">
+            <li v-if='!this.$store.getters.getUser'>
               <el-button type="text" @click="login">登录</el-button>
               <span class="sep">|</span>
               <el-button type="text" @click="register = true">注册</el-button>
@@ -20,7 +20,7 @@
                   <el-button size="mini" type="text" @click="visible = false">取消</el-button>
                   <el-button type="primary" size="mini" @click="logout">确定</el-button>
                 </div>
-                <el-button type="text" slot="reference">{{this.$store.getters.getUser.userName}}</el-button>
+                <el-button type="text" slot="reference">{{this.$store.getters.getUser.username}}</el-button>
               </el-popover>
             </li>
             <li>
@@ -31,7 +31,7 @@
             </li>
             <li :class="getNum > 0 ? 'shopCart-full' : 'shopCart'">
               <router-link to="/shoppingCart">
-                <i class="el-icon-shopping-cart-full" ></i> 购物车
+                <i class="el-icon-shopping-cart-full"></i> 购物车
                 <span class="num">({{getNum}})</span>
               </router-link>
             </li>
@@ -54,7 +54,7 @@
               <img src="./logo.png" alt />
             </router-link>
           </div>
-          <el-menu-item index="/">首页</el-menu-item>
+          <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item index="/goods">全部商品</el-menu-item>
           <el-menu-item index="/about">关于我们</el-menu-item>
 
@@ -80,7 +80,9 @@
 
       <!-- 主要区域容器 -->
       <el-main>
+        <keep-alive>
           <router-view></router-view>
+        </keep-alive>
       </el-main>
       <!-- 主要区域容器END -->
 
@@ -143,40 +145,28 @@ export default {
     if (localStorage.getItem("user")) {
       // 如果已经登录，设置vuex登录状态
       // 啊 为啥要用jason.parse呢
+      
       this.setUser(JSON.parse(localStorage.getItem("user")));
     }
-    /* window.setTimeout(() => {
-      this.$message({
-        duration: 0,
-        showClose: true,
-        message: `
-        <p>如果觉得这个项目还不错，</p>
-        <p style="padding:10px 0">您可以给项目源代码仓库点Star支持一下，谢谢！</p>
-        <p><a href="https://github.com/hai-27/vue-store" target="_blank">Github传送门</a></p>`,
-        dangerouslyUseHTMLString: true,
-        type: "success"
-      });
-    }, 1000 * 60); */
+    
   },
   computed: {
-    ...mapGetters(["getUser", "getNum"])
+    ...mapGetters(["getUser", "getNum","getShoppingCart"])
   },
   watch: {
     // 获取vuex的登录状态
     getUser: function(val) {
-      if (val === "") {
-        // 用户没有登录，设置购物车为空
-        this.setShoppingCart([]);
-      } else {
+       if (val === "") {
+         // 用户没有登录，设置购物车为空
+         this.setShoppingCart([]);
+       } else {
         // 用户已经登录,获取该用户的购物车信息
         this.$http
-          .post("获取购物车信息地址", {
-            user_id: val.user_id
-          })
+          .get("/member/Shopping/getCarList.php")
           .then(res => {
-            if (res.data.code === "001") {
-              // 001 为成功, 更新vuex购物车状态
-              this.setShoppingCart(res.data.shoppingCartData);
+            if (res.data.status != "fail") {
+              // 不为'fail'为成功, 更新vuex购物车状态
+              this.setShoppingCart([res.data[1]]);
             } else {
               // 提示失败信息
               this.$message.error('没获取到购物车信息 呜呜');
@@ -191,6 +181,7 @@ export default {
       // 点击登录按钮, 通过更改vuex的showLogin值显示登录组件
       // 啊 状态里为啥要设置登录组件的开闭呀？这个有必要记录么
       // 这里的登录只是把登陆组件展示，登录的请求方法在MyLogin
+
       this.setShowLogin(true);
     },
     // 退出登录

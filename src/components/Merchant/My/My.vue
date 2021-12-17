@@ -30,6 +30,7 @@
       </el-dropdown>
       <span style="display:inline-block;font-size:20px">店名</span>
     </el-header>
+    
     <el-main>
       <router-view>
       </router-view>

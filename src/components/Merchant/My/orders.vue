@@ -125,7 +125,7 @@
           this.orderQuery
       )
      if(result.meta.status !== 200){
-          return this.$message.error('获取订单失败惹（╥﹏╥）')
+          return this.$message.error('获取订单失败惹（╥ ﹏ ╥）')
       }  
      
       //分页
@@ -149,10 +149,9 @@
       this.orderList.map(function (val){
         if(val.status == 1) {val.status = '待审核' }
         else if(val.status == 2){val.status = '待发货'}
-        else if(val.status ==3){val.status = '待收货'}
+        else if(val.status == 3){val.status = '待收货'}
         else {val.status = '订单完成'}
       })
-      this.total= result.totalpage
       console.log(result) 
     },
 

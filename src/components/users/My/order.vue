@@ -18,8 +18,8 @@
         <ul>
           <!-- 我的订单表头 -->
           <li class="order-info">
-            <div class="order-id">订单编号: {{item[0].order_id}}</div>
-            <div class="order-time">订单时间: {{item[0].order_time | dateFormat}}</div>
+            <div class="order-id">订单编号: {{item.order_id}}</div>
+            <div class="order-time">订单时间: {{item.order_time}}</div>
           </li>
           <li class="header">
             <div class="pro-img"></div>
@@ -27,37 +27,83 @@
             <div class="pro-price">单价</div>
             <div class="pro-num">数量</div>
             <div class="pro-total">小计</div>
+            <div class="pro-comment">评价</div>
+            <div class='pro-back'>订单状态</div>
           </li>
           <!-- 我的订单表头END -->
+          
+          <!-- 订单评价对话框 -->
+    <el-dialog title='评价一下这一单吧！~' 
+    :visible.sync = 'commentDialogVisible' 
+    width = '50%'
+    @close="commentDialogClosed">
+      <el-form
+        :model="commentForm"
+        ref="commentFormRef"
+        label-width="100px"
+      >
+        <el-form-item  label="商品名称">
+          <el-input v-model="commentForm.product_name" :disabled="true"></el-input>
+        </el-form-item> 
+        <el-form-item  label="商品规格">
+          <el-input v-model="commentForm.item_id" :disabled="true"></el-input>
+        </el-form-item> 
+        <el-form-item  label="分数">
+          <el-rate
+            v-model="commentForm.score"
+            allow-half = true
+            :colors= "['#99A9BF', '#F7BA2A', '#FF9900']" >
+          </el-rate>
+        </el-form-item> 
+        <el-form-item  label="评价内容">
+          <el-input
+            type="textarea"
+            :rows="5"
+            placeholder="请输入评价内容"
+            v-model="commentForm.content">
+          </el-input>
+        </el-form-item>
+        </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="insertComment">确认修改</el-button>
+        <el-button type="primary" @click="commentDialogVisible = false">取消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 评价对话框结束 -->
 
           <!-- 订单列表 -->
-          <li class="product-list" v-for="(product,i) in item" :key="i">
+          <li class="product-list" v-for="(commodity,i) in item.product" :key="i">
             <div class="pro-img">
-              <router-link :to="{ path: '/goods/details', query: {productID:product.product_id} }">
-                <img :src="$target + product.product_picture" />
-              </router-link>
+                <img :src="commodity.product_picture" />
             </div>
-            <div class="pro-name">
-              <router-link
-                :to="{ path: '/goods/details', query: {productID:product.product_id} }"
-              >{{product.product_name}}</router-link>
+            <div class="pro-name">{{commodity.product_name}}</div>
+            <div class="pro-price">{{commodity.product_price}}元</div>
+            <div class="pro-num">{{commodity.product_num}}</div>
+            <div class="pro-total pro-total-in">{{commodity.product_price*commodity.product_num}}元</div>
+            <div class="pro-comment">
+                <el-button type="mini" icon='el-icon-edit' @click = "showCommentDialog(commodity)"></el-button>
             </div>
-            <div class="pro-price">{{product.product_price}}元</div>
-            <div class="pro-num">{{product.product_num}}</div>
-            <div class="pro-total pro-total-in">{{product.product_price*product.product_num}}元</div>
+            <div class="pro-back">{{showStatus(item.status)}}
+              <el-dropdown trigger="click">
+                <i class="el-icon-setting"></i>
+                <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item  @click.native="quit">退货</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </div>
           </li>
         </ul>
         <div class="order-bar">
           <div class="order-bar-left">
             <span class="order-total">
               共
-              <span class="order-total-num">{{total[index].totalNum}}</span> 件商品
+              <span class="order-total-num">{{item.quantity}}</span> 件商品
             </span>
           </div>
           <div class="order-bar-right">
             <span>
               <span class="total-price-title">合计：</span>
-              <span class="total-price">{{total[index].totalPrice}}元</span>
+              <span class="total-price">{{item.cost}}元</span>
             </span>
           </div>
           <!-- 订单列表END -->
@@ -71,7 +117,7 @@
     <div v-else class="order-empty">
       <div class="empty">
         <h2>您还没有订单哦！</h2>
-        <p>快去购物吧！</p>
+        <router-link to="/">快去购物吧</router-link>
       </div>
     </div>
     <!-- 订单为空的时候显示的内容END -->
@@ -81,8 +127,28 @@
 export default {
   data() {
     return {
-      orders: [], // 订单列表
-      total: [] // 每个订单的商品数量及总价列表
+      orders: [{
+        order_id:"123",//订单编号
+        order_time:'2021-12-11',//订单时间
+        product:[
+          {product_name: "哇咔咔", // 订单商品名称
+        product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+        product_price: "144", // 订单商品价格
+        product_num: "1", // 订单商品数量
+          },
+        ],
+        quantity:2,
+        cost:288,
+        status:'0',
+      }], // 订单列表
+      commentDialogVisible: false,
+
+      commentForm : {
+        product_name:"",
+        item_id:3, 
+        score:"", //分数
+        content: "" //评价
+      }
     };
   },
   activated() {
@@ -118,6 +184,47 @@ export default {
         total.push({ totalNum, totalPrice });
       }
       this.total = total;
+    }
+  }, 
+  methods: {
+    showCommentDialog(row) {
+      this.commentForm.product_name = row.product_name;
+      this.commentForm.item_id = 3;
+      this.commentForm.score = 0;
+      this.commentForm.content = "";
+      this.commentDialogVisible = true;
+    },
+    commentDialogClosed() {
+      this.$refs.commentFormRef.resetFields(); //评价对话框置空
+      this.commentDialogVisible = false;
+    },
+    insertComment() {
+      this.$http.post("/member/Shopping/insertComment.php", 
+        this.commentForm)
+        .then(res => {
+          console.log(res)
+          if(res.data.status == "success")
+            this.$message.success('评价成功！！');
+          else this.$message.error('评价失败啦┭┮﹏┭┮');
+      })
+      this.commentDialogVisible = false;
+    },
+    showStatus(value){
+      if(value='0'){
+        return '已删除'
+      }
+      else if(value='1'){
+        return '待审核'
+      }
+      else if(value='2'){
+        return '待发货'
+      }
+      else if(value='3'){
+        return '待收货'
+      }
+      else if(value='4'){
+        return '交易完成'
+      }
     }
   }
 };
@@ -188,7 +295,7 @@ export default {
   float: left;
   height: 85px;
   width: 120px;
-  padding-left: 80px;
+  padding-left: 35px;
 }
 .order .content ul .pro-img img {
   height: 80px;
@@ -196,7 +303,8 @@ export default {
 }
 .order .content ul .pro-name {
   float: left;
-  width: 380px;
+  width: 280px;
+  padding-left: 15px;
 }
 .order .content ul .pro-name a {
   color: #424242;
@@ -223,6 +331,14 @@ export default {
 }
 .order .content ul .pro-total-in {
   color: #ff6700;
+}
+.order .content ul .pro-comment {
+  float: left;
+  padding-left: 0px;
+}
+.order .content ul .pro-back {
+  float: left;
+  padding-left: 20px;
 }
 .order .order-bar {
   width: 1185px;
