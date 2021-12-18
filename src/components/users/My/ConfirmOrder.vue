@@ -205,6 +205,8 @@ export default {
           payment: this.$store.getters.getTotalPrice,
           addNum: this.confirmAddress,
           items:[
+            {num : "3",
+            itemId : "3"},
             {num : "1",
             itemId : "3"}
           ]
