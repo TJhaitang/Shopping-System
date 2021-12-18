@@ -187,7 +187,11 @@ export default {
     this.$http
     .get("/member/Shopping/getAddressList.php")
     .then(res => {
-      this.address = res.data;
+      this.address = [];
+      let length = res.data.AddressNum;
+        for(let i = 1;i<=length;i++){
+           this.address.push(res.data[i]);
+        }
     })
   },
   computed: {
@@ -196,6 +200,17 @@ export default {
   },
   methods: {
     ...mapActions(["deleteShoppingCart"]),
+    getAddressList() {
+      this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = [];
+      let length = res.data.AddressNum;
+        for(let i = 1;i<=length;i++){
+           this.address.push(res.data[i]);
+        }
+    })
+    },
     addOrder() {
       console.log(this.$store.getters.getSuid);
       this.$http
@@ -207,8 +222,6 @@ export default {
           items:[
             {num : "3",
             itemId : "3"},
-            {num : "1",
-            itemId : "3"}
           ]
         })
         .then(res => {
@@ -246,11 +259,7 @@ export default {
             this.$message.success('添加成功！');
             this.addAddressDialogVisible = false;
             //重新getAddress
-            this.$http
-            .get("/member/Shopping/getAddressList.php")
-            .then(res => {
-            this.address = res.data;
-          })
+            this.getAddressList();
           }else {
             this.$message.error('失败！');
             this.addAddressDialogVisible = false;
@@ -269,11 +278,7 @@ export default {
         if(res.data.status == "success"){
           this.$message.success("删除成功啦");
           //重新getAddress
-          this.$http
-          .get("/member/Shopping/getAddressList.php")
-          .then(res => {
-            this.address = res.data;
-      });
+          this.getAddressList();
         }else this.$message.error("删除失败捏");
       });
     }
