@@ -94,7 +94,7 @@
           <div class="order-bar-left">
             <span class="order-total">
               共
-              <span class="order-total-num">{{item.items.itemNum}}</span> 件商品
+              <span class="total-num">{{item.items.itemNum}}个</span>
             </span>
           </div>
           <div class="order-bar-right">
@@ -175,9 +175,12 @@ export default {
           .get("/member/Shopping/getOrderList.php")
            .then(res => {
              if (res.data.status != "fail") {
-             // 不为'fail'为成功, 更新vuex购物车状态
-               this.orders=[res.data];
-               console.log(this.orders)
+            //  不为'fail'为成功, 更新vuex购物车状态
+               let length = res.data.orderNum;
+               for(let i = 1;i<=length;i++){
+                 this.orders.push(res.data[i]);
+               }
+               console.log(this.orders);
              } else {
                // 提示失败信息
                this.$message.error('没获取到订单信息 呜呜');
