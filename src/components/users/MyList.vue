@@ -3,10 +3,12 @@
     <ul>
       <li v-for="item in list" :key="item.commodityId">
       <!-- 商品收藏里面的列表卡片是有叉号的，点击叉号可以删除喜欢 -->
-        <el-popover placement="top">
+        <el-popover 
+        placement="top"
+        >
           <p>确定删除吗？</p>
           <div style="text-align: right; margin: 10px 0 0">
-            <el-button type="primary" size="mini" @click="deleteCollect(item.commodityId)">确定</el-button>
+            <el-button type="primary" size="mini" @click="deleteCollect(item.commodityId)" >确定</el-button>
           </div>
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
         </el-popover>
@@ -39,7 +41,7 @@ export default {
   // isDelete是 是否显示删除喜欢
   props: ["list", "isMore", "isDelete"],
   data() {
-    return {};
+    return { };
   },
   computed: {
     // 通过list获取当前显示的商品的分类ID，用于“浏览更多”链接的参数
@@ -82,6 +84,7 @@ export default {
               this.$message.error('删除失败了！')
           }
         });
+        this.visible = false;
     }
   }
 };
