@@ -24,12 +24,12 @@
               v-for="item in address"
               :key="item.id"
             >
-              <h2>{{item.name}}</h2>
+              <h2>{{item.consignee}}</h2>
               <p class="phone">{{item.phone}}</p>
               <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
-              <i class="el-icon-circle-plus-outline"></i>
+              <i class="el-icon-circle-plus-outline" @click="addAddressDialogVisible = true"></i>
               <p>添加新地址</p>
             </li>
           </ul>
@@ -109,10 +109,38 @@
       <div class="section-bar">
         <div class="btn">
           <router-link to="/shoppingCart" class="btn-base btn-return">返回购物车</router-link>
-          <a href="javascript:void(0);" @click="addOrder" class="btn-base btn-primary">结算</a>
+          <a  class="btn-base btn-primary">结算</a>
         </div>
       </div>
       <!-- 结算导航END -->
+
+      <!-- 添加地址对话框 -->
+    <el-dialog title='添加一个收获地址~' 
+    :visible.sync = 'addAddressDialogVisible' 
+    width = '50%'
+    @close="addAddressDialogClosed">
+      <el-form
+        :model="addAddressForm"
+        ref="addAddressFormRef"
+        label-width="100px"
+      >
+        <el-form-item  label="收货人姓名">
+          <el-input v-model="addAddressForm.consignee" ></el-input>
+        </el-form-item> 
+        <el-form-item  label="收货地址">
+          <el-input v-model="addAddressForm.address" ></el-input>
+        </el-form-item> 
+        <el-form-item  label="收货人电话">
+          <el-input v-model="addAddressForm.phone" ></el-input>
+        </el-form-item> 
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addAddress">确认添加</el-button>
+        <el-button type="primary" @click="addAddressDialogClosed">取消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 添加地址对话框结束 -->
+
     </div>
     <!-- 主要内容容器END -->
   </div>
@@ -126,21 +154,16 @@ export default {
     return {
       // 虚拟数据
       confirmAddress: 1, // 选择的地址id
+      // 是否显示添加地址对话框
+      addAddressDialogVisible : false,
       // 地址列表
-      address: [
-        {
-          id: 1,
-          name: "陈同学",
-          phone: "13580018623",
-          address: "广东 广州市 白云区 江高镇 广东白云学院"
-        },
-        {
-          id: 2,
-          name: "陈同学",
-          phone: "13580018623",
-          address: "广东 茂名市 化州市 杨梅镇 ***"
-        }
-      ]
+      address: [],
+      // 添加地址对话框数据
+      addAddressForm : {
+        consignee:"",
+        phone:"",
+        address: ""
+      }
     };
   },
   created() {
@@ -149,6 +172,12 @@ export default {
       this.$message.error("请勾选商品后再结算");
       this.$router.push({ path: "/shoppingCart" });
     }
+    //获取地址信息
+    this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = res.data;
+    })
   },
   computed: {
     // 结算的商品数量; 结算商品总计; 结算商品信息
@@ -157,7 +186,7 @@ export default {
   methods: {
     ...mapActions(["deleteShoppingCart"]),
     addOrder() {
-      this.$axios
+      this.$http
         .post("/member/Shopping/insertOrder.php", {
           suid: this.$store.getters.getUser.user_id,
           products: this.getCheckGoods
@@ -185,6 +214,23 @@ export default {
         .catch(err => {
           return Promise.reject(err);
         });
+    },
+    addAddressDialogClosed() {
+      this.$refs.addAddressFormRef.resetFields(); //评价对话框置空
+      this.addAddressDialogVisible = false;
+    },
+    addAddress() {
+      this.$http
+        .post("/member/Shopping/insertAddress.php",this.addAddressForm)
+        .then(res => {
+          if(res.data.status != 'fail'){
+            this.$message.success('添加成功！');
+            this.addAddressDialogVisible = false;
+          }else {
+            this.$message.error('失败！');
+            this.addAddressDialogVisible = false;
+          }
+        })
     }
   }
 };
