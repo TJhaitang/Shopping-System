@@ -117,7 +117,7 @@
     <div v-else class="order-empty">
       <div class="empty">
         <h2>您还没有订单哦！</h2>
-        <router-link to="/">快去购物吧</router-link>
+        <router-link to="/home">快去购物吧</router-link>
       </div>
     </div>
     <!-- 订单为空的时候显示的内容END -->
@@ -127,20 +127,41 @@
 export default {
   data() {
     return {
-      orders: [{
-        order_id:"123",//订单编号
-        order_time:'2021-12-11',//订单时间
-        product:[
-          {product_name: "哇咔咔", // 订单商品名称
-        product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-        product_price: "144", // 订单商品价格
-        product_num: "1", // 订单商品数量
-          },
-        ],
+      orders: [
+         {
+         order_id:"123",//订单编号
+         order_time:'2021-12-11',//订单时间
+         product:[
+           {product_name: "哇咔咔", // 订单商品名称
+         product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+         product_price: "144", // 订单商品价格
+         product_num: "1", // 订单商品数量
+           },
+         ],
+         quantity:2,
+         cost:288,
+         status:'2',
+       },
+       {
+         order_id:"123",//订单编号
+         order_time:'2021-12-11',//订单时间
+         product:[
+           {product_name: "哇咔咔", // 订单商品名称
+         product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+         product_price: "144", // 订单商品价格
+         product_num: "1", // 订单商品数量
+           },
+           {product_name: "哇咔咔", // 订单商品名称
+         product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
+         product_price: "144", // 订单商品价格
+         product_num: "1", // 订单商品数量
+           },
+         ],
         quantity:2,
         cost:288,
-        status:'0',
-      }], // 订单列表
+        status:'3',
+      }
+      ], // 订单列表
       commentDialogVisible: false,
 
       commentForm : {
@@ -153,20 +174,17 @@ export default {
   },
   activated() {
     // 获取订单数据
-    this.$axios
-      .post("/api/user/order/getOrder", {
-        user_id: this.$store.getters.getUser.user_id
-      })
-      .then(res => {
-        if (res.data.code === "001") {
-          this.orders = res.data.orders;
-        } else {
-          this.notifyError(res.data.msg);
-        }
-      })
-      .catch(err => {
-        return Promise.reject(err);
-      });
+    // this.$http
+    //       .get("/member/Shopping/getOrderList.php")
+    //       .then(res => {
+    //         if (res.data.status != "fail") {
+    //           // 不为'fail'为成功, 更新vuex购物车状态
+    //           this.orders=res.data;
+    //         } else {
+    //           // 提示失败信息
+    //           this.$message.error('没获取到订单信息 呜呜');
+    //         }
+    //       });
   },
   watch: {
     // 通过订单信息，计算出每个订单的商品数量及总价
@@ -210,19 +228,19 @@ export default {
       this.commentDialogVisible = false;
     },
     showStatus(value){
-      if(value='0'){
+      if(value==='0'){
         return '已删除'
       }
-      else if(value='1'){
+      else if(value==='1'){
         return '待审核'
       }
-      else if(value='2'){
+      else if(value==='2'){
         return '待发货'
       }
-      else if(value='3'){
+      else if(value==='3'){
         return '待收货'
       }
-      else if(value='4'){
+      else if(value==='4'){
         return '交易完成'
       }
     }
