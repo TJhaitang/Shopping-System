@@ -1,17 +1,40 @@
 <template>
   <div class="goods" id="goods" name="goods">
-    <!-- 面包屑 -->
-    <div class="breadcrumb">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>全部商品</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="search">搜索</el-breadcrumb-item>
-        <el-breadcrumb-item v-else>分类</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="search">{{search}}</el-breadcrumb-item>
-      </el-breadcrumb>
+    <div class="head1">
+     <!-- 面包屑 -->
+      <div class="breadcrumb">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>全部商品</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="search">搜索</el-breadcrumb-item>
+          <el-breadcrumb-item v-else>分类</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="search">{{search}}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+     <!-- 面包屑END -->
+      <div class="highSearch" >
+        <el-collapse v-model="searchQuery" >
+          <el-collapse-item title="高级筛选" name="1">
+             <div class="filter-container"> 
+                <el-input v-model="orderQuery.id" placeholder="订单id" style="width: 200px;margin-right:15px;margin-bottom:15px;"   />
+                <el-input v-model="orderQuery.uid" placeholder="会员id" style="width: 200px;margin-right:15px;"   />
+                <el-select v-model="orderQuery.status"  placeholder="订单状态" style="margin-right:15px;">
+                <el-option label="待审核" value="1"></el-option>
+                <el-option label="待发货" value="2"></el-option>
+                <el-option label="待收货" value="3"></el-option>
+                <el-option label="交易完成" value="4"></el-option>
+            </el-select>
+      <el-button v-waves  type="primary" icon="el-icon-search"   >
+        搜索
+      </el-button>
+      <el-button v-waves  type="primary" icon="el-icon-delete"   >
+        清空
+      </el-button>
     </div>
-    <!-- 面包屑END -->
-
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+   </div>
     <!-- 分类标签 -->
     <div class="nav">
       <div class="product-nav">
@@ -63,7 +86,8 @@ export default {
       currentPage: 1, //当前页码
       maxPage: 1, //最大页数（总页码）
       activeName: "-1", // 分类列表当前选中的id
-      search: "" // 搜索条件
+      search: "", // 搜索条件
+      searchQuery: "" // 筛选条件
     };
   },
   created() {

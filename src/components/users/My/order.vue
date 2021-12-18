@@ -66,7 +66,7 @@
         </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="insertComment">确认修改</el-button>
-        <el-button type="primary" @click="commentDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="commentDialogClosed">取消</el-button>
       </span>
     </el-dialog>
     <!-- 评价对话框结束 -->
