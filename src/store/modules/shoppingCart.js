@@ -88,6 +88,18 @@ export default {
         }
         return totalNum;
       },
+      getSuid (state) {
+        let suid = 0;
+        for (let i = 0; i < state.shoppingCart.length; i++) {
+          const temp = state.shoppingCart[i];
+          if (temp.check) {
+            suid = temp.merchantId;
+            break;
+          }
+        }
+        console.log(suid);
+        return suid;
+      },
       getTotalPrice (state) {
         // 购物车勾选的商品总价格
         let totalPrice = 0;

@@ -20,10 +20,20 @@
         <div class="address-body">
           <ul>
             <li
-              :class="item.id == confirmAddress ? 'in-section' : ''"
+              @click = "confirmAddress = item.add_id"
+              :class="item.add_id == confirmAddress ? 'in-section' : ''"
               v-for="item in address"
               :key="item.id"
             >
+
+            <el-popover placement="top">
+              <p>确定删除吗？</p>
+              <div style="text-align: right; margin: 10px 0 0">
+                <el-button type="primary" size="mini" @click="deleteAddress(item.add_id)">确定</el-button>
+              </div>
+              <i class="el-icon-close delete" style="margin-left: 200px" slot="reference" v-show="true"></i>
+            </el-popover>
+
               <h2>{{item.consignee}}</h2>
               <p class="phone">{{item.phone}}</p>
               <p class="address">{{item.address}}</p>
@@ -34,6 +44,7 @@
             </li>
           </ul>
         </div>
+        
       </div>
       <!-- 选择地址END -->
 
@@ -109,7 +120,7 @@
       <div class="section-bar">
         <div class="btn">
           <router-link to="/shoppingCart" class="btn-base btn-return">返回购物车</router-link>
-          <a  class="btn-base btn-primary">结算</a>
+          <a  class="btn-base btn-primary" @click = "addOrder">结算</a>
         </div>
       </div>
       <!-- 结算导航END -->
@@ -186,33 +197,38 @@ export default {
   methods: {
     ...mapActions(["deleteShoppingCart"]),
     addOrder() {
+      console.log(this.$store.getters.getSuid);
       this.$http
         .post("/member/Shopping/insertOrder.php", {
-          suid: this.$store.getters.getUser.user_id,
-          products: this.getCheckGoods
+          suid: this.$store.getters.getSuid,
+          cost: this.$store.getters.getTotalPrice,
+          payment: this.$store.getters.getTotalPrice,
+          addNum: this.confirmAddress,
+          items:[
+            {num : "1",
+            itemId : "3"}
+          ]
         })
         .then(res => {
+          console.log(res);
           let products = this.getCheckGoods;
-          switch (res.data.code) {
+          switch (res.data.status) {
             // “001”代表结算成功
-            case "001":
+            case "success":
               for (let i = 0; i < products.length; i++) {
                 const temp = products[i];
                 // 删除已经结算的购物车商品
                 this.deleteShoppingCart(temp.id);
               }
               // 提示结算结果
-              this.notifySucceed(res.data.msg);
+              this.$message.success('付款好啦！');
               // 跳转我的订单页面
               this.$router.push({ path: "/order" });
               break;
             default:
               // 提示失败信息
-              this.notifyError(res.data.msg);
+              this.$message.error('付款失败！');
           }
-        })
-        .catch(err => {
-          return Promise.reject(err);
         });
     },
     addAddressDialogClosed() {
@@ -223,14 +239,41 @@ export default {
       this.$http
         .post("/member/Shopping/insertAddress.php",this.addAddressForm)
         .then(res => {
-          if(res.data.status != 'fail'){
+          console.log(res);
+          if(res.data.status == 'success'){
             this.$message.success('添加成功！');
             this.addAddressDialogVisible = false;
+            //重新getAddress
+            this.$http
+            .get("/member/Shopping/getAddressList.php")
+            .then(res => {
+            this.address = res.data;
+          })
           }else {
             this.$message.error('失败！');
             this.addAddressDialogVisible = false;
           }
-        })
+        });
+    this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = res.data;
+      });
+    },
+    deleteAddress(add_id) {
+      this.$http
+      .post("/member/Shopping/deleteAdd.php", {add_id : add_id})
+      .then(res => {
+        if(res.data.status == "success"){
+          this.$message.success("删除成功啦");
+          //重新getAddress
+          this.$http
+          .get("/member/Shopping/getAddressList.php")
+          .then(res => {
+            this.address = res.data;
+      });
+        }else this.$message.error("删除失败捏");
+      });
     }
   }
 };
