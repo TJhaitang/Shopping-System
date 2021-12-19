@@ -18,9 +18,11 @@
         <!-- 购物车表头 -->
         <li class="header">
           <div class="pro-check">
+            <!--全选按钮-->
             <el-checkbox v-model="isAllCheck">全选</el-checkbox>
           </div>
-          <div class="pro-img"></div>
+          <!--购物车列表的列名-->
+          <div class="pro-img">商品图片</div>
           <div class="pro-name">商品名称</div>
           <div class="pro-price">单价</div>
           <div class="pro-num">数量</div>
@@ -30,39 +32,32 @@
         <!-- 购物车表头END -->
 
         <!-- 购物车列表 -->
-        <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.id">
+        <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.carId">
           <div class="pro-check">
-            <el-checkbox :value="item.check" @change="checkChange($event,index)"></el-checkbox>
+            <el-checkbox :value=item.check @change="checkChange($event,index)"></el-checkbox>
           </div>
-          <div class="pro-img">
-            <router-link :to="{ path: '/goods/details', query: {productID:item.productID} }">
-              <img :src="$target + item.productImg" />
-            </router-link>
+          <div class="pro-img"> 
+            <img :src="item.image" />
           </div>
-          <div class="pro-name">
-            <router-link
-              :to="{ path: '/goods/details', query: {productID:item.productID} }"
-            >{{item.productName}}</router-link>
-          </div>
+          <div class="pro-name">{{item.commodityName}}</div>
           <div class="pro-price">{{item.price}}元</div>
           <div class="pro-num">
             <el-input-number
               size="small"
-              :value="item.num"
-              @change="handleChange($event,index,item.productID)"
+              :value="item.num*1"
+              @change="handleChange($event,index,getcarID)"
               :min="1"
-              :max="item.maxNum"
             ></el-input-number>
           </div>
-          <div class="pro-total pro-total-in">{{item.price*item.num}}元</div>
+          <div class="pro-total pro-total-in">{{towNumber(item.price*item.num)}}元</div>
           <div class="pro-action">
             <el-popover placement="right">
-              <p>确定删除吗？</p>
+              <p>确认删除吗？</p>
               <div style="text-align: right; margin: 10px 0 0">
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="deleteItem($event,item.id,item.productID)"
+                  @click="deleteItem($event,item.carId,item.commodityId)"
                 >确定</el-button>
               </div>
               <i class="el-icon-error" slot="reference" style="font-size: 18px;"></i>
@@ -76,7 +71,7 @@
       <div class="cart-bar">
         <div class="cart-bar-left">
           <span>
-            <router-link to="/goods">继续购物</router-link>
+            <router-link to="/">再去逛逛</router-link>
           </span>
           <span class="sep">|</span>
           <span class="cart-total">
@@ -87,9 +82,10 @@
         </div>
         <div class="cart-bar-right">
           <span>
-            <span class="total-price-title">合计：</span>
-            <span class="total-price">{{getTotalPrice}}元</span>
+            <span class="total-price-title">合计:</span>
+            <span class="total-price">{{towNumber(getTotalPrice)}}元</span>
           </span>
+          <!--选择了商品则结算按钮亮起来，并且可以跳转到结算界面-->
           <router-link :to="getCheckNum > 0 ? '/confirmOrder' : ''">
             <div :class="getCheckNum > 0 ? 'btn-primary' : 'btn-primary-disabled'">去结算</div>
           </router-link>
@@ -103,7 +99,7 @@
     <div v-else class="cart-empty">
       <div class="empty">
         <h2>您的购物车还是空的！</h2>
-        <p>快去逛逛吧！</p>
+        <router-link to="/">快去逛逛吧</router-link>
       </div>
     </div>
     <!-- 购物车为空的时候显示的内容END -->
@@ -114,25 +110,26 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return {};
+    return {cheak:false};
   },
   methods: {
+    //Vuex中的函数
     ...mapActions(["updateShoppingCart", "deleteShoppingCart", "checkAll"]),
     // 修改商品数量的时候调用该函数
-    handleChange(currentValue, key, productID) {
+    handleChange(currentValue, key, carid) {
       // 当修改数量时，默认勾选
       this.updateShoppingCart({ key: key, prop: "check", val: true });
       // 向后端发起更新购物车的数据库信息请求
-      this.$axios
-        .post("/api/user/shoppingCart/updateShoppingCart", {
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: productID,
+      this.$http
+        .post("/member/Shopping/updateCar.php", {//记得改路径
+          carId: carid,
+          operation: 'update',
           num: currentValue
         })
         .then(res => {
-          switch (res.data.code) {
-            case "001":
-              // “001”代表更新成功
+          switch (res.data.status) {
+            case "success":
+              // “success”代表更新成功
               // 更新vuex状态
               this.updateShoppingCart({
                 key: key,
@@ -140,11 +137,15 @@ export default {
                 val: currentValue
               });
               // 提示更新成功信息
-              this.notifySucceed(res.data.msg);
+              this.$notify({
+                message: '修改数量成功'
+              });
               break;
             default:
               // 提示更新失败信息
-              this.notifyError(res.data.msg);
+              this.$notify({
+                message: '修改数量失败'
+              });
           }
         })
         .catch(err => {
@@ -157,28 +158,36 @@ export default {
     },
     // 向后端发起删除购物车的数据库信息请求
     deleteItem(e, id, productID) {
-      this.$axios
-        .post("/api/user/shoppingCart/deleteShoppingCart", {
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: productID
+      this.$http
+        .post("/member/Shopping/updateCar.php", {//改记得，改了
+          carId: id,
+          operation: 'delete',
         })
         .then(res => {
-          switch (res.data.code) {
-            case "001":
-              // “001” 删除成功
+          switch (res.data.status) {
+            case "success":
+              // “success” 删除成功
               // 更新vuex状态
               this.deleteShoppingCart(id);
               // 提示删除成功信息
-              this.notifySucceed(res.data.msg);
+              this.$notify({
+                message: '删除成功'
+              });
               break;
             default:
               // 提示删除失败信息
-              this.notifyError(res.data.msg);
+              this.$notify({
+                message: '删除失败'
+              });
           }
         })
         .catch(err => {
           return Promise.reject(err);
         });
+    },
+    //保留两位小数，不然计算价格时3.72显示成3.719999999
+    towNumber(val) {      
+      return val.toFixed(2)    
     }
   },
   computed: {
@@ -186,7 +195,8 @@ export default {
       "getShoppingCart",
       "getCheckNum",
       "getTotalPrice",
-      "getNum"
+      "getNum",
+      "getcarID"
     ]),
     isAllCheck: {
       get() {
@@ -274,7 +284,7 @@ export default {
 }
 .shoppingCart .content ul .pro-name {
   float: left;
-  width: 380px;
+  width: 300px;
 }
 .shoppingCart .content ul .pro-name a {
   color: #424242;

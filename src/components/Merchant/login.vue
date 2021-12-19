@@ -90,8 +90,14 @@ export default {
         if (result.data.status == "success"){
           //token放在本地中,先清空再存放。
           localStorage.clear();
+// <<<<<<< HEAD
           
+//           localStorage.setItem('token',result.data.token);
+// =======
+//           localStorage.setItem('merchantToken',result.data.token);
+// >>>>>>> b86bbd74c81f729b570f98b0f17c824a6d187593
           localStorage.setItem('token',result.data.token);
+          localStorage.setItem('merchantToken',result.data.token);
           this.$router.push('/my');
           this.$message.success("登录成功啦");
         }

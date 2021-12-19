@@ -15,6 +15,10 @@ import MyLogin from './components/users/MyLogin.vue';
 Vue.component(MyLogin.name, MyLogin);
 import MyRegister from './components/users/MyRegister';
 Vue.component(MyRegister.name, MyRegister);
+import MyMenu from './components/users/MyMenu';
+Vue.component(MyMenu.name, MyMenu);
+import MyList from './components/users/MyList';
+Vue.component(MyList.name, MyList);
 Vue.component('ImgInputer', ImgInputer);
 
 
@@ -25,7 +29,10 @@ axios.defaults.baseURL = '/php'
 axios.interceptors.request.use(config => {
   console.log(config);
   //请求头里增加token令牌
-  config.headers.authorization = localStorage.getItem('token')
+  if(localStorage.getItem('userToken'))
+  config.headers.common["X-Token"] = localStorage.getItem('userToken');
+  else if(localStorage.getItem('merchantToken'))
+  config.headers.common["X-Token"] = localStorage.getItem('merchantToken');
   //最后必须returnconfig
   return config;
 })
