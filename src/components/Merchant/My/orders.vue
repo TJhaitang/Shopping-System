@@ -170,7 +170,7 @@
     editOrder () {
       this.$http.post('/merchant/changeOrder.php',
       {
-        addr:this.editForm.addr,
+        id:this.editForm.id,
         ifChangeStatus:this.editForm.ifChangeStatus
       }).then(function(result) {
         if(result.data.status == 'success') {

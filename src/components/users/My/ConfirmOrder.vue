@@ -7,7 +7,7 @@
           <i class="el-icon-s-order"></i>
         </p>
         <p>确认订单</p>
-        <router-link to></router-link>
+        <router-link to = '/order'></router-link>
       </div>
     </div>
     <!-- 头部END -->
@@ -20,20 +20,31 @@
         <div class="address-body">
           <ul>
             <li
-              :class="item.id == confirmAddress ? 'in-section' : ''"
+              @click = "confirmAddress = item.add_id"
+              :class="item.add_id == confirmAddress ? 'in-section' : ''"
               v-for="item in address"
               :key="item.id"
             >
-              <h2>{{item.name}}</h2>
+
+            <el-popover placement="top">
+              <p>确定删除吗？</p>
+              <div style="text-align: right; margin: 10px 0 0">
+                <el-button type="primary" size="mini" @click="deleteAddress(item.add_id)">确定</el-button>
+              </div>
+              <i class="el-icon-close delete" style="margin-left: 200px" slot="reference" v-show="true"></i>
+            </el-popover>
+
+              <h2>{{item.consignee}}</h2>
               <p class="phone">{{item.phone}}</p>
               <p class="address">{{item.address}}</p>
             </li>
             <li class="add-address">
-              <i class="el-icon-circle-plus-outline"></i>
+              <i class="el-icon-circle-plus-outline" @click="addAddressDialogVisible = true"></i>
               <p>添加新地址</p>
             </li>
           </ul>
         </div>
+        
       </div>
       <!-- 选择地址END -->
 
@@ -109,10 +120,38 @@
       <div class="section-bar">
         <div class="btn">
           <router-link to="/shoppingCart" class="btn-base btn-return">返回购物车</router-link>
-          <a href="javascript:void(0);" @click="addOrder" class="btn-base btn-primary">结算</a>
+          <a  class="btn-base btn-primary" @click = "addOrder">结算</a>
         </div>
       </div>
       <!-- 结算导航END -->
+
+      <!-- 添加地址对话框 -->
+    <el-dialog title='添加一个收获地址~' 
+    :visible.sync = 'addAddressDialogVisible' 
+    width = '50%'
+    @close="addAddressDialogClosed">
+      <el-form
+        :model="addAddressForm"
+        ref="addAddressFormRef"
+        label-width="100px"
+      >
+        <el-form-item  label="收货人姓名">
+          <el-input v-model="addAddressForm.consignee" ></el-input>
+        </el-form-item> 
+        <el-form-item  label="收货地址">
+          <el-input v-model="addAddressForm.address" ></el-input>
+        </el-form-item> 
+        <el-form-item  label="收货人电话">
+          <el-input v-model="addAddressForm.phone" ></el-input>
+        </el-form-item> 
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addAddress">确认添加</el-button>
+        <el-button type="primary" @click="addAddressDialogClosed">取消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 添加地址对话框结束 -->
+
     </div>
     <!-- 主要内容容器END -->
   </div>
@@ -126,29 +165,34 @@ export default {
     return {
       // 虚拟数据
       confirmAddress: 1, // 选择的地址id
+      // 是否显示添加地址对话框
+      addAddressDialogVisible : false,
       // 地址列表
-      address: [
-        {
-          id: 1,
-          name: "陈同学",
-          phone: "13580018623",
-          address: "广东 广州市 白云区 江高镇 广东白云学院"
-        },
-        {
-          id: 2,
-          name: "陈同学",
-          phone: "13580018623",
-          address: "广东 茂名市 化州市 杨梅镇 ***"
-        }
-      ]
+      address: [],
+      // 添加地址对话框数据
+      addAddressForm : {
+        consignee:"",
+        phone:"",
+        address: ""
+      }
     };
   },
   created() {
     // 如果没有勾选购物车商品直接进入确认订单页面,提示信息并返回购物车
     if (this.getCheckNum < 1) {
-      this.notifyError("请勾选商品后再结算");
+      this.$message.error("请勾选商品后再结算");
       this.$router.push({ path: "/shoppingCart" });
     }
+    //获取地址信息
+    this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = [];
+      let length = res.data.AddressNum;
+        for(let i = 1;i<=length;i++){
+           this.address.push(res.data[i]);
+        }
+    })
   },
   computed: {
     // 结算的商品数量; 结算商品总计; 结算商品信息
@@ -156,35 +200,87 @@ export default {
   },
   methods: {
     ...mapActions(["deleteShoppingCart"]),
+    getAddressList() {
+      this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = [];
+      let length = res.data.AddressNum;
+        for(let i = 1;i<=length;i++){
+           this.address.push(res.data[i]);
+        }
+    })
+    },
     addOrder() {
-      this.$axios
-        .post("/api/user/order/addOrder", {
-          user_id: this.$store.getters.getUser.user_id,
-          products: this.getCheckGoods
+      console.log(this.$store.getters.getSuid);
+      this.$http
+        .post("/member/Shopping/insertOrder.php", {
+          suid: this.$store.getters.getSuid,
+          cost: this.$store.getters.getTotalPrice,
+          payment: this.$store.getters.getTotalPrice,
+          addNum: this.confirmAddress,
+          items:[
+            {num : "3",
+            itemId : "3"},
+          ]
         })
         .then(res => {
+          console.log(res);
           let products = this.getCheckGoods;
-          switch (res.data.code) {
+          switch (res.data.status) {
             // “001”代表结算成功
-            case "001":
+            case "success":
               for (let i = 0; i < products.length; i++) {
                 const temp = products[i];
                 // 删除已经结算的购物车商品
                 this.deleteShoppingCart(temp.id);
               }
               // 提示结算结果
-              this.notifySucceed(res.data.msg);
+              this.$message.success('付款好啦！');
               // 跳转我的订单页面
               this.$router.push({ path: "/order" });
               break;
             default:
               // 提示失败信息
-              this.notifyError(res.data.msg);
+              this.$message.error('付款失败！');
           }
-        })
-        .catch(err => {
-          return Promise.reject(err);
         });
+    },
+    addAddressDialogClosed() {
+      this.$refs.addAddressFormRef.resetFields(); //评价对话框置空
+      this.addAddressDialogVisible = false;
+    },
+    addAddress() {
+      this.$http
+        .post("/member/Shopping/insertAddress.php",this.addAddressForm)
+        .then(res => {
+          console.log(res);
+          if(res.data.status == 'success'){
+            this.$message.success('添加成功！');
+            this.addAddressDialogVisible = false;
+            //重新getAddress
+            this.getAddressList();
+          }else {
+            this.$message.error('失败！');
+            this.addAddressDialogVisible = false;
+          }
+        });
+    this.$http
+    .get("/member/Shopping/getAddressList.php")
+    .then(res => {
+      this.address = res.data;
+      });
+    },
+    deleteAddress(add_id) {
+      this.$http
+      .post("/member/Shopping/deleteAdd.php", {add_id : add_id})
+      .then(res => {
+        if(res.data.status == "success"){
+          this.$message.success("删除成功啦");
+          //重新getAddress
+          this.getAddressList();
+        }else this.$message.error("删除失败捏");
+      });
     }
   }
 };

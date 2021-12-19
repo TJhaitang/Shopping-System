@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <div class="page-header">
       <div class="title">
-        <p>{{productDetails.product_name}}</p>
+        <p>{{productName}}</p>
         <div class="list">
           <ul>
             <li>
@@ -35,57 +35,75 @@
             style="height:560px;"
             :src="$target + productPicture[0].product_picture"
             :alt="productPicture[0].intro"
-          />
+          >
         </div>
       </div>
       <!-- 左侧商品轮播图END -->
 
       <!-- 右侧内容区 -->
       <div class="content">
-        <h1 class="name">{{productDetails.product_name}}</h1>
+        <h1 class="name">{{productName}}</h1>
+        <p class="intro">{{productDetails}}</p> 
+        <!-- <p class="store">店铺</p>  -->
+        <!--<h1 class="name">{{productDetails.product_name}}</h1>
         <p class="intro">{{productDetails.product_intro}}</p>
-        <p class="store">小米自营</p>
+        <p class="store">{{productDetails.product_shop}}</p>-->
+        <!-- <h1 class="name">小米手机</h1>
+        <p class="intro">商品介绍</p>
+        <p class="store">官方旗舰店</p> -->
         <div class="price">
-          <span>{{productDetails.product_selling_price}}元</span>
-          <span
+          <span>{{domains[0].sort_price}}元</span>
+          <!--<span
             v-show="productDetails.product_price != productDetails.product_selling_price"
             class="del"
-          >{{productDetails.product_price}}元</span>
+          >{{productDetails.product_price}}元</span>-->
+        </div>
+         <div class="sortChoose_buttons">
+          <el-radio-group v-model="radio">
+             <el-radio-button v-for="(domain,index) in domains "
+             :label=domains[index].id
+             :key="domain.key"
+             @change="changeSort(index)"
+             ></el-radio-button>
+          </el-radio-group>
         </div>
         <div class="pro-list">
-          <span class="pro-name">{{productDetails.product_name}}</span>
+          <!-- <span class="pro-name">{{productDetails.product_name}}</span> -->
+          <span class="pro-name">{{productName}}</span>
           <span class="pro-price">
-            <span>{{productDetails.product_selling_price}}元</span>
+             <!-- <span>{{domains[0].sort_price}}元</span> -->
+            <!-- <span>9999元</span> -->
             <span
               v-show="productDetails.product_price != productDetails.product_selling_price"
               class="pro-del"
             >{{productDetails.product_price}}元</span>
           </span>
-          <p class="price-sum">总计 : {{productDetails.product_selling_price}}元</p>
+          <p class="price-sum">总计 : {{price}}元</p>
+          
         </div>
         <!-- 内容区底部按钮 -->
         <div class="button">
           <el-button class="shop-cart" :disabled="dis" @click="addShoppingCart">加入购物车</el-button>
-          <el-button class="like" @click="addCollect">喜欢</el-button>
+          <el-button class="like" @click="addCollect">收藏</el-button>
         </div>
         <!-- 内容区底部按钮END -->
         <div class="pro-policy">
           <ul>
             <li>
-              <i class="el-icon-circle-check"></i> 小米自营
+              <i class="el-icon-circle-check"></i> 很不靠谱
             </li>
             <li>
-              <i class="el-icon-circle-check"></i> 小米发货
+              <i class="el-icon-circle-check"></i> 可能不会发货
             </li>
             <li>
-              <i class="el-icon-circle-check"></i> 7天无理由退货
+              <i class="el-icon-circle-check"></i> 7天无退货理由
             </li>
             <li>
               <i class="el-icon-circle-check"></i> 7天价格保护
             </li>
           </ul>
         </div>
-      </div>
+      </div> 
       <!-- 右侧内容区END -->
     </div>
     <!-- 主要内容END -->
@@ -99,13 +117,18 @@ export default {
       dis: false, // 控制“加入购物车按钮是否可用”
       productID: "", // 商品id
       productDetails: "", // 商品详细信息
-      productPicture: "" // 商品图片
+      productPicture: "", // 商品图片
+      productName: "",
+      price: "",
+      domains: [],
+      radio: ''
     };
   },
   // 通过路由获取商品id
   activated() {
     if (this.$route.query.productID != undefined) {
-      this.productID = this.$route.query.productID;
+      // this.productID = this.$route.query.productID 
+      this.productID = '11639229009'
     }
   },
   watch: {
@@ -115,20 +138,43 @@ export default {
       this.getDetailsPicture(val);
     }
   },
+  created(){
+      this.getDetails()
+    },
   methods: {
     ...mapActions(["unshiftShoppingCart", "addShoppingCartNum"]),
     // 获取商品详细信息
-    getDetails(val) {
-      this.$axios
-        .post("/api/product/getDetails", {
-          productID: val
-        })
-        .then(res => {
-          this.productDetails = res.data.Product[0];
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+    getDetails() {
+      this.$http.post('/member/Shopping/getCommodityInfo.php',
+      {
+        comId:'11639229009'
+      }).then(result=>{
+        console.log(result.data)
+        if(result.data.status !== 'fail'){
+          this.productDetails = result.data.description
+          this.productName = result.data.name
+          
+          if(result.data.domains.stdNum >0){
+            for(let i=0;i<result.data.domains.stdNum;i++){
+              this.domains.push({
+               sort_name: result.data.domains[i+1].name,
+               sort_id:result.data.domains[i+1].id,
+               sort_price:result.data.domains[i+1].price,
+               sort_standards:result.data.domains[i+1].standards,
+               sort_stock:result.data.domains[i+1].stock,
+               sort_sales:result.data.domains[i+1].sales
+              })
+            }
+          }
+          console.log('成功辽')
+          this.price = result.data.domains[1].price
+          this.radio = result.data.domains[1].id
+          console.log("ratio")
+          console.log(this.radio)
+          //console.log(result.data.domains[1].name)
+        }
+        else return this.$message.error('获取商品信息失败！')
+      })
     },
     // 获取商品图片
     getDetailsPicture(val) {
@@ -203,6 +249,11 @@ export default {
         .catch(err => {
           return Promise.reject(err);
         });
+    },
+    changeSort(index){
+      this.price = result.data.domains[index].sort_price
+      console.log("price")
+      console.log(this.price)
     }
   }
 };

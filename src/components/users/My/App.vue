@@ -26,9 +26,6 @@
             <li>
               <router-link to="/order">我的订单</router-link>
             </li>
-            <li>
-              <router-link to="/collect">我的收藏</router-link>
-            </li>
             <li :class="getNum > 0 ? 'shopCart-full' : 'shopCart'">
               <router-link to="/shoppingCart">
                 <i class="el-icon-shopping-cart-full"></i> 购物车
@@ -164,9 +161,10 @@ export default {
         this.$http
           .get("/member/Shopping/getCarList.php")
           .then(res => {
-            if (res.data.status != "fail") {
+            if (res.data.carNum >0) {
               // 不为'fail'为成功, 更新vuex购物车状态
-              this.setShoppingCart([res.data[1]]);
+              this.setShoppingCart(res.data);
+              console.log(res.data)
             } else {
               // 提示失败信息
               this.$message.error('没获取到购物车信息 呜呜');

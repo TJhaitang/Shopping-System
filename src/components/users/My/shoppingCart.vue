@@ -158,7 +158,7 @@ export default {
     },
     // 向后端发起删除购物车的数据库信息请求
     deleteItem(e, id, productID) {
-      this.$axios
+      this.$http
         .post("/member/Shopping/updateCar.php", {//改记得，改了
           carId: id,
           operation: 'delete',
@@ -169,6 +169,7 @@ export default {
               // “success” 删除成功
               // 更新vuex状态
               this.deleteShoppingCart(id);
+              this.$router.go(0)
               // 提示删除成功信息
               this.$notify({
                 message: '删除成功'
@@ -184,10 +185,6 @@ export default {
         .catch(err => {
           return Promise.reject(err);
         });
-    },
-    //显示评价对话框
-    showCommentDialog(row) {
-
     },
     //保留两位小数，不然计算价格时3.72显示成3.719999999
     towNumber(val) {      
@@ -288,7 +285,7 @@ export default {
 }
 .shoppingCart .content ul .pro-name {
   float: left;
-  width: 300px;
+  width: 350px;
 }
 .shoppingCart .content ul .pro-name a {
   color: #424242;

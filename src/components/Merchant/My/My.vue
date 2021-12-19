@@ -14,8 +14,10 @@
   <!-- 右上设置 -->
   <el-container>
    <el-header style="height: 100px; border: 1px solid #eee;position:relative"> 
-    <p class="span1">昵称：{{this.$store.getters.getnick}}</p>
-    <p class="span2">个性签名：{{this.$store.getters.getsig}}</p>
+    <!--<p class="span1">昵称：{{this.$store.getters.getnick}}</p>
+    <p class="span2">个性签名：{{this.$store.getters.getsig}}</p>-->
+    <p class="span1">昵称：{{this.username}}</p>
+    <p class="span2">个性签名：{{this.signature}}</p>
     </el-header>
     <div class="avatar_select">
     	<img :src="userphoto" alt="" />
@@ -50,14 +52,50 @@
   export default {
     data(){
       return{
-        userphoto:url3
+        userphoto:url3,
+        username: '',
+        uid: '',
+        email: '',
+        phone: '',
+        addr: '',
+        gender: '',
+        signature: '',
+        avatar: '',
+        identity: '',
+        name: '',
+        province: '',
       }
+    },
+    created(){
+      this.getMerchantInfo()
     },
     methods: {
       quit() {
         localStorage.clear();
         this.$router.push('/login');
+      },
+      async getMerchantInfo(){
+        let jwt = localStorage.getItem("token");
+        this.$http.defaults.headers.common["X-token"] = jwt;
+      const {data: res} = await this.$http.get('/merchant/getInfo.php')
+      console.log(res)
+      if (res.status == 'TokenNotValid'){
+        return this.$message.error('获取商家信息失败（╥﹏╥）')
       }
+      else{
+        this.username = res.username
+        this.uid = res.uid
+        this.email = res.email
+        this.phone = res.phone
+        this.name = res.name
+        this.addr = res.addr
+        this.gender = res.gender
+        this.province = res.province
+        this.avatar = res.avatar
+        this.identity = res.identity
+      }
+
+    },
     }
   };
 </script>
