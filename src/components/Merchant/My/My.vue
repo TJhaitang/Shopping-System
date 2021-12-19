@@ -75,8 +75,8 @@
         this.$router.push('/login');
       },
       async getMerchantInfo(){
-        let jwt = localStorage.getItem("token");
-        this.$http.defaults.headers.common["X-token"] = jwt;
+        // let jwt = localStorage.getItem("token");
+        // this.$http.defaults.headers.common["X-token"] = jwt;
       const {data: res} = await this.$http.get('/merchant/getInfo.php')
       console.log(res)
       if (res.status == 'TokenNotValid'){
