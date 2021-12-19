@@ -113,7 +113,6 @@ export default {
       },
       getcarId(){
         return state.shoppingCart.carId;
-        console.log('nienie')
       },
     },
     mutations: {
