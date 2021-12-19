@@ -125,39 +125,7 @@ export default {
   data() {
     return {
       orders: [
-      //    {
-      //    order_id:"123",//订单编号
-      //    order_time:'2021-12-11',//订单时间
-      //    product:[
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //    ],
-      //    quantity:2,
-      //    cost:288,
-      //    status:'2',
-      //  },
-      //  {
-      //    order_id:"123",//订单编号
-      //    order_time:'2021-12-11',//订单时间
-      //    product:[
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //    ],
-      //   quantity:2,
-      //   cost:288,
-      //   status:'3',
-      // }
+      
       ], // 订单列表
       commentDialogVisible: false,
 
@@ -174,13 +142,13 @@ export default {
     this.$http
           .get("/member/Shopping/getOrderList.php")
            .then(res => {
-             if (res.data.status != "fail") {
-            //  不为'fail'为成功, 更新vuex购物车状态
+             if (res.data.orderNum>0) {
+            //  不为'fail'为成功, 更新vuex订单状态
                let length = res.data.orderNum;
                for(let i = 1;i<=length;i++){
                  this.orders.push(res.data[i]);
                }
-               console.log(this.orders);
+               console.log(res.data);
              } else {
                // 提示失败信息
                this.$message.error('没获取到订单信息 呜呜');
@@ -228,9 +196,13 @@ export default {
       })
       this.commentDialogVisible = false;
     },
+    //更改订单状态（退货）
+    returnOrder(){
+
+    },
     showStatus(value){
-      if(value==='0'){
-        return '已删除'
+      if(value==='5'){
+        return '已退货'
       }
       else if(value==='1'){
         return '待审核'

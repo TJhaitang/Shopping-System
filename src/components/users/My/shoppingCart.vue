@@ -169,6 +169,7 @@ export default {
               // “success” 删除成功
               // 更新vuex状态
               this.deleteShoppingCart(id);
+              this.$router.go(0)
               // 提示删除成功信息
               this.$notify({
                 message: '删除成功'
@@ -284,7 +285,7 @@ export default {
 }
 .shoppingCart .content ul .pro-name {
   float: left;
-  width: 300px;
+  width: 350px;
 }
 .shoppingCart .content ul .pro-name a {
   color: #424242;

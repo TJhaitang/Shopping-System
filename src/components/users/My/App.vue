@@ -161,9 +161,10 @@ export default {
         this.$http
           .get("/member/Shopping/getCarList.php")
           .then(res => {
-            if (res.data.status != "fail") {
+            if (res.data.carNum >0) {
               // 不为'fail'为成功, 更新vuex购物车状态
-              this.setShoppingCart([res.data[1]]);
+              this.setShoppingCart(res.data);
+              console.log(res.data)
             } else {
               // 提示失败信息
               this.$message.error('没获取到购物车信息 呜呜');
