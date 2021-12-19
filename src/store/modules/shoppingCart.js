@@ -78,6 +78,19 @@ export default {
         }
         return suid;
       },
+      //获取所选商品的编号和数量
+      getitems(state){
+        let items=[];
+        for (let i = 0;i<state.shoppingCart.length;i++){
+          const temp = state.shoppingCart[i];
+          if (temp.check) {
+            let num=temp.num;
+            let item_id=temp.standardId
+            items.push({"num":num,"itemId":item_id})
+          }
+        }
+        return items;
+      },
       getTotalPrice (state) {
         // 购物车勾选的商品总价格
         let totalPrice = 0;

@@ -24,7 +24,7 @@
               <el-dropdown trigger="click">
                 <i class="el-icon-setting"></i>
                 <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item  @click="returnOrder(item.code)">退货</el-dropdown-item>
+                <el-dropdown-item  @click.native="returnOrder(item.code)">退货</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -142,6 +142,7 @@ export default {
     this.$http
           .get("/member/Shopping/getOrderList.php")
            .then(res => {
+             console.log(res)
              if (res.data.orderNum>0) {
             //  不为'fail'为成功, 更新vuex订单状态
                let length = res.data.orderNum;
@@ -200,12 +201,14 @@ export default {
       this.$http
       .post("/member/Shopping/return.php",{orderId:orderid})
       .then(res => {
-        console.log(res.data.status)
+        console.log(res)
           switch (res.data.status) {
             case "success":
               // “success”代表更新成功
               // 更新vuex状态
               this.updateOrder(orderid);
+              //刷新界面
+              this.$router.go(0)
               // 提示更新成功信息
               this.$notify({
                 message: '退货成功'
