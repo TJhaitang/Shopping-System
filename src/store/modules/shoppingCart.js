@@ -1,6 +1,7 @@
 export default {
     state: {
-      shoppingCart: []
+      shoppingCart: [],
+      merchants:[]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组
       /* 
@@ -20,6 +21,10 @@ export default {
       getShoppingCart (state) {
         // 获取购物车状态
         return state.shoppingCart;
+      },
+      getMerchants(state){
+        //获取商家列表
+        return state.merchants;
       },
       getNum (state) {
         // 购物车商品总数量
@@ -114,7 +119,16 @@ export default {
             data[i].check=false;
             state.shoppingCart.push(data[i]);
           }
-          console.log(state.shoppingCart)
+      },
+      //设置商家信息
+      setMerchants(state,data){
+        let length = data.carNum;
+          for(let i = 1;i<=length;i++){
+            if(!state.merchants.includes(data[i].merchantId)){
+              state.merchants.push(data[i].merchantId)
+          }
+        }
+        console.log(state.merchants)
       },
       unshiftShoppingCart (state, data) {
         // 添加购物车
@@ -171,6 +185,9 @@ export default {
     actions: {
       setShoppingCart ({ commit }, data) {
         commit('setShoppingCart', data);
+      },
+      setMerchants({commit},data){
+        commit('setMerchants',data)
       },
       unshiftShoppingCart ({ commit }, data) {
         commit('unshiftShoppingCart', data);

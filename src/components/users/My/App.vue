@@ -164,6 +164,7 @@ export default {
             if (res.data.carNum >0) {
               // 不为'fail'为成功, 更新vuex购物车状态
               this.setShoppingCart(res.data);
+              this.setMerchants(res.data)
               console.log(res.data)
             } else {
               // 提示失败信息
@@ -174,7 +175,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["setUser", "setShowLogin", "setShoppingCart"]),
+    ...mapActions(["setUser", "setShowLogin", "setShoppingCart","setMerchants"]),
     login() {
       // 点击登录按钮, 通过更改vuex的showLogin值显示登录组件
       // 啊 状态里为啥要设置登录组件的开闭呀？这个有必要记录么
