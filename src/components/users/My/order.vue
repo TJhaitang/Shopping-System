@@ -24,7 +24,7 @@
               <el-dropdown trigger="click">
                 <i class="el-icon-setting"></i>
                 <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item  @click.native="quit">退货</el-dropdown-item>
+                <el-dropdown-item  @click.native="returnOrder(item.code)">退货</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
@@ -125,39 +125,7 @@ export default {
   data() {
     return {
       orders: [
-      //    {
-      //    order_id:"123",//订单编号
-      //    order_time:'2021-12-11',//订单时间
-      //    product:[
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //    ],
-      //    quantity:2,
-      //    cost:288,
-      //    status:'2',
-      //  },
-      //  {
-      //    order_id:"123",//订单编号
-      //    order_time:'2021-12-11',//订单时间
-      //    product:[
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //      {product_name: "哇咔咔", // 订单商品名称
-      //    product_picture: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 订单商品图片
-      //    product_price: "144", // 订单商品价格
-      //    product_num: "1", // 订单商品数量
-      //      },
-      //    ],
-      //   quantity:2,
-      //   cost:288,
-      //   status:'3',
-      // }
+      
       ], // 订单列表
       commentDialogVisible: false,
 
@@ -174,13 +142,13 @@ export default {
     this.$http
           .get("/member/Shopping/getOrderList.php")
            .then(res => {
-             if (res.data.status != "fail") {
-            //  不为'fail'为成功, 更新vuex购物车状态
+             console.log(res)
+             if (res.data.orderNum>0) {
+            //  不为'fail'为成功, 更新vuex订单状态
                let length = res.data.orderNum;
                for(let i = 1;i<=length;i++){
                  this.orders.push(res.data[i]);
                }
-               console.log(this.orders);
              } else {
                // 提示失败信息
                this.$message.error('没获取到订单信息 呜呜');
@@ -228,9 +196,44 @@ export default {
       })
       this.commentDialogVisible = false;
     },
+    //更改订单状态（退货）
+    returnOrder(orderid){
+      this.$http
+      .post("/member/Shopping/return.php",{orderId:orderid})
+      .then(res => {
+        console.log(res)
+          switch (res.data.status) {
+            case "success":
+              // “success”代表更新成功
+              // 更新vuex状态
+              this.updateOrder(orderid);
+              //刷新界面
+              this.$router.go(0)
+              // 提示更新成功信息
+              this.$notify({
+                message: '退货成功'
+              });
+              break;
+            default:
+              // 提示更新失败信息
+              this.$notify({
+                message: '修改数量失败'
+              });
+          }
+        })
+    },
+    //改变退货状态
+    updateOrder(orderId){
+      for (let i = 0; i < this.orders.length; i++) {
+          const temp = this.orders[i];
+          if (temp.orderId == orderId) {
+            this.orders[i].status=5; //改变状态为已删除
+          }
+        }
+    },
     showStatus(value){
-      if(value==='0'){
-        return '已删除'
+      if(value==='5'){
+        return '已退货'
       }
       else if(value==='1'){
         return '待审核'

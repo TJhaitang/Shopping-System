@@ -1,27 +1,7 @@
 export default {
     state: {
-      shoppingCart: [
-          // {
-          //   carId: "3421", // 购物车id
-          //   commodityID: "4321", // 商品id
-          //   commodityName: "好耶！", // 商品名称
-          //   imamg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
-          //   price: 144, // 商品价格
-          //   num: 1, // 商品数量
-          
-          //   check: false // 是否勾选
-          // },
-        // {
-        //   id: "3421", // 购物车id
-        //   comID: "4321", // 商品id
-        //   comName: "好耶！", // 商品名称
-        //   comImg: "http://assets.myntassets.com/v1/images/style/properties/7a5b82d1372a7a5c6de67ae7a314fd91_images.jpg", // 商品图片
-        //   price: "144", // 商品价格
-        //   num: 2, // 商品数量
-        //   maxNum: "5", // 商品限购数量
-        //   check: false // 是否勾选
-        // }
-      ]
+      shoppingCart: [],
+      merchants:[]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组
       /* 
@@ -41,6 +21,10 @@ export default {
       getShoppingCart (state) {
         // 获取购物车状态
         return state.shoppingCart;
+      },
+      getMerchants(state){
+        //获取商家列表
+        return state.merchants;
       },
       getNum (state) {
         // 购物车商品总数量
@@ -97,8 +81,20 @@ export default {
             break;
           }
         }
-        console.log(suid);
         return suid;
+      },
+      //获取所选商品的编号和数量
+      getitems(state){
+        let items=[];
+        for (let i = 0;i<state.shoppingCart.length;i++){
+          const temp = state.shoppingCart[i];
+          if (temp.check) {
+            let num=temp.num;
+            let item_id=temp.standardId
+            items.push({"num":num,"itemId":item_id})
+          }
+        }
+        return items;
       },
       getTotalPrice (state) {
         // 购物车勾选的商品总价格
@@ -118,11 +114,21 @@ export default {
     mutations: {
       setShoppingCart (state, data) {
         // 设置购物车状态
-        for(var i=0 ; i<data.length ; i++)
-          {
-            data[i].check=false;    
+        let length = data.carNum;
+          for(let i = 1;i<=length;i++){
+            data[i].check=false;
+            state.shoppingCart.push(data[i]);
           }
-        state.shoppingCart = data;
+      },
+      //设置商家信息
+      setMerchants(state,data){
+        let length = data.carNum;
+          for(let i = 1;i<=length;i++){
+            if(!state.merchants.includes(data[i].merchantId)){
+              state.merchants.push(data[i].merchantId)
+          }
+        }
+        console.log(state.merchants)
       },
       unshiftShoppingCart (state, data) {
         // 添加购物车
@@ -179,6 +185,9 @@ export default {
     actions: {
       setShoppingCart ({ commit }, data) {
         commit('setShoppingCart', data);
+      },
+      setMerchants({commit},data){
+        commit('setMerchants',data)
       },
       unshiftShoppingCart ({ commit }, data) {
         commit('unshiftShoppingCart', data);
