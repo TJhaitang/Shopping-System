@@ -1,6 +1,7 @@
 export default {
     state: {
-      shoppingCart: []
+      shoppingCart: [],
+      merchants:[]
       // shoppingCart结构
       // 一个shoppingCart表示一个商品状态，整个大购物车是一个shoppingCart数组
       /* 
@@ -20,6 +21,10 @@ export default {
       getShoppingCart (state) {
         // 获取购物车状态
         return state.shoppingCart;
+      },
+      getMerchants(state){
+        //获取商家列表
+        return state.merchants;
       },
       getNum (state) {
         // 购物车商品总数量
@@ -78,6 +83,19 @@ export default {
         }
         return suid;
       },
+      //获取所选商品的编号和数量
+      getitems(state){
+        let items=[];
+        for (let i = 0;i<state.shoppingCart.length;i++){
+          const temp = state.shoppingCart[i];
+          if (temp.check) {
+            let num=temp.num;
+            let item_id=temp.standardId
+            items.push({"num":num,"itemId":item_id})
+          }
+        }
+        return items;
+      },
       getTotalPrice (state) {
         // 购物车勾选的商品总价格
         let totalPrice = 0;
@@ -101,7 +119,16 @@ export default {
             data[i].check=false;
             state.shoppingCart.push(data[i]);
           }
-          console.log(state.shoppingCart)
+      },
+      //设置商家信息
+      setMerchants(state,data){
+        let length = data.carNum;
+          for(let i = 1;i<=length;i++){
+            if(!state.merchants.includes(data[i].merchantId)){
+              state.merchants.push(data[i].merchantId)
+          }
+        }
+        console.log(state.merchants)
       },
       unshiftShoppingCart (state, data) {
         // 添加购物车
@@ -158,6 +185,9 @@ export default {
     actions: {
       setShoppingCart ({ commit }, data) {
         commit('setShoppingCart', data);
+      },
+      setMerchants({commit},data){
+        commit('setMerchants',data)
       },
       unshiftShoppingCart ({ commit }, data) {
         commit('unshiftShoppingCart', data);

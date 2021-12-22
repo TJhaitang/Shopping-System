@@ -31,6 +31,45 @@
             v-model="RegisterUser.email"
           ></el-input>
         </el-form-item>
+        <el-form-item prop="province" label="你所在省份">
+          <el-input v-model="RegisterUser.province" suffix-icon="el-icon-s-home" list="province_list"></el-input>
+          <datalist id="province_list">
+              <option value="河北省"/>
+              <option value="山西省"/>
+              <option value="辽宁省"/>
+              <option value="吉林省"/>
+              <option value="黑龙江省"/>
+              <option value="江苏省"/>
+              <option value="浙江省"/>
+              <option value="安徽省"/>
+              <option value="福建省"/>
+              <option value="江西省"/>
+              <option value="山东省"/>
+              <option value="河南省"/>
+              <option value="湖北省"/>
+              <option value="湖南省"/>
+              <option value="广东省"/>
+              <option value="海南省"/>
+              <option value="四川省"/>
+              <option value="贵州省"/>
+              <option value="云南省"/>
+              <option value="陕西省"/>
+              <option value="甘肃省"/>
+              <option value="青海省"/>
+              <option value="台湾省"/>
+              <option value="内蒙古自治区"/>
+              <option value="广西壮族自治区"/>
+              <option value="西藏自治区"/>
+              <option value="宁夏回族自治区"/>
+              <option value="新疆维吾尔自治区"/>
+              <option value="北京市"/>
+              <option value="天津市"/>
+              <option value="上海市"/>
+              <option value="重庆市"/>
+              <option value="香港特别行政区"/>
+              <option value="澳门特别行政区"/>
+          </datalist>
+        </el-form-item>
         <el-form-item prop="password">
           <el-input
             prefix-icon="el-icon-view"
@@ -96,6 +135,7 @@ export default {
         password: "",
         confirmPass: "",
         phone: "",
+        province: "",
         type: "V",
         email: ""
       },

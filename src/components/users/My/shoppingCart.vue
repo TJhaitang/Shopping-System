@@ -14,6 +14,7 @@
 
     <!-- 购物车主要内容区 -->
     <div class="content" v-if="getShoppingCart.length>0">
+      <div v-for="(merchant,index) in getMerchants" :key="index">
       <ul>
         <!-- 购物车表头 -->
         <li class="header">
@@ -32,7 +33,8 @@
         <!-- 购物车表头END -->
 
         <!-- 购物车列表 -->
-        <li class="product-list" v-for="(item,index) in getShoppingCart" :key="item.carId">
+        <li  v-for="(item,index) in getShoppingCart" :key="item.carId">
+          <div class="product-list" v-if="item.merchantId==merchant">
           <div class="pro-check">
             <el-checkbox :value=item.check @change="checkChange($event,index)"></el-checkbox>
           </div>
@@ -63,9 +65,11 @@
               <i class="el-icon-error" slot="reference" style="font-size: 18px;"></i>
             </el-popover>
           </div>
+          </div>
         </li>
         <!-- 购物车列表END -->
       </ul>
+      </div>
       <div style="height:20px;background-color: #f5f5f5"></div>
       <!-- 购物车底部导航条 -->
       <div class="cart-bar">
@@ -110,8 +114,20 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return {cheak:false};
+    return {};
   },
+  // created(){
+  //   let length = this.$store.getters.getShoppingCart.length;
+  //   console.log(length)
+  //     for(let i = 0;i<length;i++){
+  //       const temp = this.getShoppingCart[i];
+  //       if(!this.merchants.includes(temp.merchantId)){
+  //         this.merchants.push(temp.merchantId)
+  //       console.log(temp.merchantId)
+  //       }   
+  //     }
+  //     console.log(this.$store.getters.getShoppingCart)
+  // },
   methods: {
     //Vuex中的函数
     ...mapActions(["updateShoppingCart", "deleteShoppingCart", "checkAll"]),
@@ -197,7 +213,8 @@ export default {
       "getCheckNum",
       "getTotalPrice",
       "getNum",
-      "getcarID"
+      "getcarID",
+      "getMerchants"
     ]),
     isAllCheck: {
       get() {
