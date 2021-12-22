@@ -15,28 +15,21 @@
           </el-row>
           
           <el-table :data="goodslist" border stripe>
-            <el-table-column prop="id" label="商品id" width="100">
-            </el-table-column>
             <el-table-column prop="name" label="商品名称" width="150">
             </el-table-column>
-            <el-table-column prop="category" label="商品种类" width="60">
+            <el-table-column prop="label" label="商品标签" width="60">
             </el-table-column>
-            <el-table-column prop="price" label="商品价格" width="60">
+            <el-table-column prop="description" label="商品详细信息" width="200">
             </el-table-column>
-            <el-table-column prop="picture" label="商品图片" width="100">
+            <el-table-column prop="minus" label="商品活动" width="100">
             </el-table-column>
-            <el-table-column prop="inventory" label="商品库存" width="60">
-            </el-table-column>
-            <el-table-column prop="information" label="商品详细信息" width="200">
-            </el-table-column>
-            <el-table-column prop="comment" label="商品评论" width="100">
-            </el-table-column>
-            <el-table-column prop="activity" label="商品活动" width="100">
-            </el-table-column>
-            <el-table-column label="操作" width="120px">
+            <!--<el-table-column prop="activity" label="商品活动" width="100">
+            </el-table-column>-->
+            <el-table-column label="操作" width="240px">
               <template slot-scope="scope">
+                <el-button type="text" @click="domainDialogVisible = true">查看商品分类</el-button>
                 <!-- 修改按钮 -->
-                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
                 <!-- 删除按钮 -->
                 <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeGoodsById(scope.row.id)"></el-button>
                            
@@ -52,6 +45,19 @@
             :total="total">
           </el-pagination>
         </el-card>
+
+        <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="30%"
+          :before-close="handleClose">
+          <span>这是一段信息</span>
+          <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
+
+
         <!-- 添加商品的对话框 -->
         <el-dialog title="添加商品" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
           <!-- 内容主体 -->
@@ -62,8 +68,8 @@
             <el-form-item label="商品标签" prop="label" label-width="100px">
               <el-input v-model="addForm.label"></el-input>
             </el-form-item>
-            <el-form-item label="详细信息" prop="information" label-width="100px">
-              <el-input v-model="addForm.information"></el-input>
+            <el-form-item label="详细信息" prop="description" label-width="100px">
+              <el-input v-model="addForm.description"></el-input>
             </el-form-item>
             
             <el-form-item
@@ -86,7 +92,7 @@
             <el-row>
             <el-form-item
              v-for="(domain, index) in addForm.domains"
-             :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
+             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存、与活动)'"
              :key="domain.key"
              :prop="'domains.' + index + '.add_sort'"
              :rules="{
@@ -95,8 +101,9 @@
              label-width="300px"
             >
              <el-input v-model="domain.value"></el-input>
-             <el-input v-model="domain.price"></el-input>
-             <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain1(domain)">删除</el-button>
+             <el-input v-model="domain.sort_price"></el-input>
+             <el-input v-model="domain.sort_inventory"></el-input>
+             <el-button @click.prevent="removeDomain1(domain)">删除</el-button>
             
             </el-form-item>
             <el-form-item>
@@ -124,35 +131,39 @@
           <!-- 底部区域 -->
           <span slot="footer" class="dialog-footer">
               <el-button @click="addDialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="addUser">确 定</el-button>
+              <el-button type="primary" @click="addGoods">确 定</el-button>
           </span>
         </el-dialog>
         <!-- 修改商品的对话框 -->
         <el-dialog title="修改商品信息" :visible.sync="editDialogVisible" width="50%" @close="editDialogClosed">
           <!-- 内容主体区域 -->
           <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
-            <el-form-item label="商品id" label-width="100px">
-              <el-input v-model="editForm.id" disabled></el-input>
+            <el-form-item label="商品id" prop="comId" label-width="100px">
+              <el-input v-model="editForm.comId" disabled></el-input>
             </el-form-item>  
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="editForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="详细信息" prop="information" label-width="100px">
-              <el-input v-model="editForm.information"></el-input>
+            <el-form-item label="商品活动" prop="label" label-width="100px">
+              <el-input v-model="editForm.label"></el-input>
+            </el-form-item>
+            <el-form-item label="详细信息" prop="description" label-width="100px">
+              <el-input v-model="editForm.description"></el-input>
             </el-form-item>
             <el-form-item
              v-for="(domain, index) in editForm.domains"
-             :label="'类别' + (index+1)+'(请依次输入类别名、价格与库存)'"
+             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存、规格与活动)'"
              :key="domain.key"
              :prop="'domains.' + index + '.edit_sort'"
              :rules="{
-             required: true, message: '类别名不能为空', trigger: 'blur' 
+             //required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
              label-width="300px"
             >
-             <el-input v-model="domain.value"></el-input>
-             <el-input v-model="domain.price"></el-input>
-             <el-input v-model="domain.sort_inventory"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+             <el-input v-model="domain.name"></el-input>
+             <el-input v-model="domain.sort_price"></el-input>
+             <el-input v-model="domain.sort_inventory"></el-input>
+             <el-button @click.prevent="removeDomain(domain)">删除</el-button>
             </el-form-item>
             <el-form-item>
              <el-button @click="addDomain">新增类别</el-button>
@@ -180,7 +191,7 @@
           <!-- 底部区域 -->
           <span slot="footer" class="dialog-footer">
               <el-button @click="editDialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="editUserInfo">确 定</el-button>
+              <el-button type="primary" @click="editGoodsInfo">确 定</el-button>
           </span>
         </el-dialog>
     </div>
@@ -191,7 +202,7 @@ export default {
   data () {
     return {
       // 获取用户列表的参数
-  
+   editDialogVisible: false,
       headerObj:{
         Authorization:
         window.sessionStorage.getItem
@@ -204,63 +215,29 @@ export default {
       },
       pageNum: 1,
       pageSize: 10,
-      goodslist: [{
-          id: '***',
-          name: '数据库大作业代写',
-          category: '服务类',
-          price: '999',
-          picture: '点击查看',
-          inventory: '999',
-          information: '代写大作业，质量保证',
-          comment: '点击查看',
-          activity: '满300-60'
-      },
-      {  id: '***',
-          name: '强力生发水',
-          category: '洗护类',
-          price: '888',
-          picture: '点击查看',
-          inventory: '999',
-          information: '还你茂密头发',
-          comment: '点击查看',
-          activity: '满200-30'
-          },
-      { id: '***',
-          name: '上课代答到',
-          category: '服务类',
-          price: '666',
-          picture: '点击查看',
-          inventory: '999',
-          information: '声音学谁像谁',
-          comment: '点击查看',
-          activity: '满200-30'
-          }], //先增添一些默认的user
+      goodslist: [],
+           //先增添一些默认的user
       total: 3,
       addDialogVisible: false,
+      domainDialogVisible: false,
       // 添加用户的表单数据
       addForm: {
         //id: '',
         picture: '',
-        information: '',
+        description: '',
         name: '',
         label: '',
         ifActivity1: '',
         ifActivity2: '',
-        domains: [{
-          value: '',
-          sort_inventory: '',
-          sort_price: '',
-        }],
-        domains_pic: [{
-          picture: '',
-        }],
+        //suid: '',
+        //minus: '',
+        domains: [],
+        //domains_pic: [{
+          //picture: '',
+        //}],
       },
       // 添加表单的验证规则对象
       addFormRules: {
-        //id: [
-          //{ required: true, message: '请输入商品id', trigger: 'blur' },
-          //{ min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-        //],
         name: [
           { required: true, message: '请输入商品名称', trigger: 'blur' },
         ],
@@ -279,42 +256,39 @@ export default {
           //{ required: true, message: '请输入商品库存', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
         //],
-        information: [
+        description: [
           { required: true, message: '请输入商品详细信息', trigger: 'blur' },
           { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
         ]
       },
-      editDialogVisible: false,
       editForm: {
-        id: '',
+        operation: "update",
+        comId: '',
         //price: '',
-        picture: '',
+        //picture: '',
         name: '',
         label: '',
-        inventory: '',
-        information: '',
+        //minus: '',
+        //inventory: '',
+        description: '',
         ifActivity1: '',
         ifActivity2: '',
-        domains: [{
-          value: '',
-          sort_inventory: '',
-          sort_price: ''
-        }],
+        domains: [],
       },
       // 修改表单的验证规则对象
       editFormRules: {
         name:[
           { required: true, message: '请输入商品名称', trigger: 'blur' },
         ],
-        picture: [
-          { required: true, message: '请输入商品图片', trigger: 'blur' },
+        minus: [
+          { required: true, message: '请输入商品活动', trigger: 'blur' },
           //{ validator: checkMobile, trigger: 'blur' }
         ],
         label: [
           { required: true, message: '请输入商品标签', trigger: 'blur' },
           //{ validator: checkEmail, trigger: 'blur' }
         ],
-        information: [
+        description: [
           { required: true, message: '请输入商品详细信息', trigger: 'blur' },
           { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
           //{ validator: checkMobile, trigger: 'blur' }
@@ -327,30 +301,68 @@ export default {
     this.getGoodsList()
   },
   methods: {
-    async getGoodsList() {
-      const { data: res } = await this.$http.get('getComIist.php', { params: this.queryInfo })
-      // console.log(res)
-      if (res.meta.status !== 200) return this.$message.error('获取商品列表失败！')
-      this.goodslist = res.data.goods
-
-      this.total = res.comNum
-      if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
-            this.maxpage=parseInt(this.total/this.pageSize)+1;   
-           
-       }else{   
-           this.maxpage=parseInt(this.total/this.pageSize);   
-       } 
-
-       //取出当前页面中应该显示的数据，赋值给orderList
-        var startRow = (this.pageNum - 1) * this.pageSize; 
-        var endRow = this.pageNum * this.pageSize; 
-        console.log(startRow)
-        endRow = (endRow > this.total)? this.total: endRow;  
-        this.GoodsList = this.goods.slice(startRow,endRow)
-
+    getGoodsList(){
+      console.log("getGoodsList")
+      this.$http.post("/merchant/getComList.php",{})
+      .then(res => {
+      //this.goodslist = res.data;
+      console.log(res.data.data)
+      //console.log(res.data.data[1])
+      for(let i=1;i<=res.data.data.comNum;i++){
         
-      console.log(res) 
-
+        //console.log(i)
+        this.goodslist.push({
+          id: '',
+          name: '',
+          //category: '',
+          //price: '',
+          //picture: '',
+          //inventory: '',
+          description: '',
+          //comment: '',
+          //activity: '',
+          suid: '',
+          minus: '',
+          label: '',
+          domainlength: 0,
+          domains: [],
+        });
+        this.goodslist[i-1].id = res.data.data[i].commodityId
+        this.goodslist[i-1].name = res.data.data[i].name
+        this.goodslist[i-1].label = res.data.data[i].slabel
+        this.goodslist[i-1].description = res.data.data[i].description
+        this.goodslist[i-1].minus = res.data.data[i].minus
+        this.goodslist[i-1].suid = res.data.data[i].suid
+        //this.goodslist[i-1].
+        //console.log(res.data.data[i].domains)
+        if(res.data.data[i].domains.stdNum > 0){
+          this.goodslist[i-1].domainlength = res.data.data[i].domains.stdNum
+          for(let j=0;j<res.data.data[i].domains.stdNum;j++)
+          {
+            this.goodslist[i-1].domains.push({
+              value: '',
+              sort_inventory: '',
+              sort_price: '',
+              //sort_name: '',
+              //sort_standards: '',
+              //sort_sales: '',
+              //sort_comId: '',
+            })
+            //console.log("j1")
+            this.goodslist[i-1].domains[j].value = res.data.data[i].domains[j+1].id
+            this.goodslist[i-1].domains[j].sort_inventory =  res.data.data[i].domains[j+1].stock
+            this.goodslist[i-1].domains[j].sort_price = res.data.data[i].domains[j+1].price
+            this.goodslist[i-1].domains[j].sort_name = res.data.data[i].domains[j+1].name
+            this.goodslist[i-1].domains[j].sort_sales = res.data.data[i].domains[j+1].sales 
+            this.goodslist[i-1].domains[j].sort_standards = res.data.data[i].domains[j+1].standards 
+            this.goodslist[i-1].domains[j].sort_comId = res.data.data[i].domains[j+1].commodityId
+            //console.log("j2")
+            
+          } 
+        }
+      } 
+      });
+      
     },
     handleSizeChange(newSize) {
       // console.log(newSize)
@@ -367,56 +379,74 @@ export default {
     },
     // 添加新商品
     addGoods(){
-      this.$http.post('/merchant/insertCommodity.php',
-      {
-        name: this.addForm.name,
-        discription: this.addForm.information,
-        sort:this.addForm.domains
-      }).then(function(result) {
-        if(result.data.status == 'success') {
+      console.log(this.addForm)
+      this.$http.post('/merchant/insertCommodity.php',this.addForm
+      ).then(result=>{
+        console.log("addGoods")
+        console.log(result)
+        if(result.status !== 'fail'){
           //关闭对话框
           this.addDialogVisible = false;
-          this.getList();//添加之后再次获取一下订单列表
+          this.getGoodsList();//添加之后再次获取一下订单列表
           this.$message.success('添加成功o(*￣▽￣*)ブ')}
         else return this.$message.error('添加失败了！')
       })
     },
-    async showEditDialog(row) {
-      this.editForm.id = row.id
-      this.editForm.price = row.price
-      this.editForm.picture = row.picture
-      this.editForm.inventory = row.inventory
-      this.editForm.information = row.information
+    showEditDialog(row) {
+      //this.editForm.id = row.id
+      this.editForm.name = row.name
+      //this.editForm. = row.inventory
+      //this.editForm.minus = row.minus
+      this.editForm.description = row.description
+      this.editForm.comId = row.id
+      this.editForm.label = row.label
       this.editForm.ifActivity1 = row.ifActivity1
       this.editForm.ifActivity2 = row.ifActivity2
-      for (const index in row.domains) {
-        this.editForm.domains[index] = row.domains[index]
+      if(row.domainlength>0){
+        for(let i=0;i<row.domainlength;i++){
+          this.editForm.domains.push({
+            name: '',
+            sort_inventory: '',
+            sort_price: '',
+            //sort_name: '',
+            //sort_standards: '',
+            //sort_sales: '',
+            stdId: '',
+          })
+          console.log("std")
+          console.log(row.domains[i].value)
+          this.editForm.domains[i].name= row.domains[i].value
+          this.editForm.domains[i].sort_inventory = row.domains[i].sort_inventory
+          this.editForm.domains[i].sort_price = row.domains[i].sort_price
+          //this.editForm.domains[i].sort_name = row.domains[i].sort_name
+          //this.editForm.domains[i].sort_standards = row.domains[i].sort_standards
+          //this.editForm.domains[i].sort_sales = row.domains[i].sort_sales
+          this.editForm.domains[i].stdId = row.domains[i].value
+
+        }
       }
-      console.log(this.editForm.ifActivity1)
+      //console.log(this.editForm)
       this.editDialogVisible = true;
     },
     // 监听修改用户对话框的关闭事件
     editDialogClosed() {
-      this.$refs.editFormRef.resetFields()
+      this.$refs.editFormRef.resetFields();
     },
     // 修改信息并提交
     editGoodsInfo() {
-      
+      console.log(this.editForm)
       this.$http.post('/merchant/updateCommodity.php',
-      {
-        operation: "update",
-        comId: this.editForm.id,
-        name: this.editForm.name,
-        description: this.editForm.information,
-        sort: this.editForm.domains
-      }).then(function(result) {
-        if(result.data.status == 'success') {
-          //关闭对话框
+      this.editForm
+      ).then(result => {
+        console.log(result)
+        if(result.data.status !== 'fail') {
           this.editDialogVisible = false;
-          this.getList();//修改之后再次获取一下订单列表
-          this.$message.success('修改成功o(*￣▽￣*)ブ')}
+          this.getGoodsList();
+          this.$message.success('修改成功o(*￣▽￣*)ブ')
+          }  
         else return this.$message.error('修改失败了！')
       })
+      // this.getList();//修改之后再次获取一下订单列表
     },
     // 根据id删除对应的用户信息
     async removeGoodsById(id) {
@@ -436,16 +466,19 @@ export default {
       //if(res.meta.status !== 200) {
       //  return this.$message.error('删除商品失败！')
       //}
+      this.editForm.operation = 'delete'
+      this.editForm.comId = id
+      console.log(this.editForm)
       this.$http.post('/merchant/updateCommodity.php',
-      {
-        operation: "delete",
-        comId: this.editForm.id
-      }).then(function(result) {
-        if(result.data.status == 'success') {
+      this.editForm
+      ).then(result => {
+        if(result.data.status !== 'fail') {
           //关闭对话框
+          console.log("delete1")
           this.editDialogVisible = false;
-          this.getList();//删除之后再次获取一下订单列表
-          this.$message.success('删除成功o(*￣▽￣*)ブ')}
+          this.getGoodsList();//删除之后再次获取一下订单列表
+          this.$message.success('删除成功o(*￣▽￣*)ブ')
+          console.log("delete2")}
         else return this.$message.error('删除失败了！')
       })
       //this.$message.success('删除商品成功！')
@@ -459,8 +492,13 @@ export default {
     },  
     addDomain() {
       this.editForm.domains.push({
-        value: '',
+        name: '',
         sort_inventory: '',
+        sort_price: '',
+        //sort_name: '',
+        //sort_standards: '',
+        //sort_sales: '',
+        //sort_comId: '',
         key: Date.now()
       });
     },
@@ -474,6 +512,11 @@ export default {
       this.addForm.domains.push({
         value: '',
         sort_inventory: '',
+        sort_price: '',
+        //sort_name: '',
+        //sort_standards: '',
+        //sort_sales: '',
+        //sort_comId: '',88
         key: Date.now()
       });
     },
@@ -489,6 +532,7 @@ export default {
         key: Date.now()
       });
     },
+
     /*chooseImg () {          //上传照片时将图片转为base64
 
           let file = this.file1   //file1是绑定的file对象
@@ -502,6 +546,8 @@ export default {
             this.addForm.domains_pic.picture = reader.result
           }
     }*/
+
+  //}
 
   }
 }

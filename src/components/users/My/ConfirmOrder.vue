@@ -219,10 +219,7 @@ export default {
           cost: this.$store.getters.getTotalPrice,
           payment: this.$store.getters.getTotalPrice,
           addNum: this.confirmAddress,
-          items:[
-            {num : "3",
-            itemId : "3"},
-          ]
+          items:this.$store.getters.getitems
         })
         .then(res => {
           console.log(res);
