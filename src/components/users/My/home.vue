@@ -71,7 +71,7 @@
       </div>
       <div class="box-bd">
         <div class="list">
-          <MyList :list="accessory" :isMore="true"></MyList>
+          <MyList :list="accessoryList" :isMore="true"></MyList>
         </div>
       </div>
     </div>
@@ -88,30 +88,30 @@ export default {
       queryList: {
         name: "",
         label: "", //空字符串则全label
-        uprice: 10 ^ 6, //不用就设置为int上限
+        uprice: 10000000, //不用就设置为int上限
         lprice: -1,
         sortfor: 1, //1:销量，2:平均分，3:价格,0:无   降序输出
         isDecent: 0, //0降序，1升序,soetfor是0的话这个无所谓
         suid: "", //传就是店铺内搜索，空字符串就是不(这里是字符串)
       },
 
-      manClothesList: "", //男装商品展示列表
-      manClothesHotList: "", //男装上衣
-      manUpperList: "", //男装上衣
-      manPantsList: "", //男装裤子
-      manSuitList: "", //男装套装
+      manClothesList: ["happy"], //男装商品展示列表
+      manClothesHotList: [], //男装上衣
+      manUpperList: [], //男装上衣
+      manPantsList: [], //男装裤子
+      manSuitList: [], //男装套装
 
-      womanClothesList: "", //女装商品展示列表
-      womanClothesHotList: "", //热门
-      womanUpperList: "", //女装上衣
-      womanPantsList: "", //女装裤子
-      womanSuitList: "", //女装套装
+      womanClothesList: [], //女装商品展示列表
+      womanClothesHotList: [], //热门
+      womanUpperList: [], //女装上衣
+      womanPantsList: [], //女装裤子
+      womanSuitList: [], //女装套装
 
-      accessoryList: "", //鞋包配饰列表
-      accessoryHotList: "", //热门
-      accessoryShoesList: "", //鞋列表
-      accessoryBagList: "", //包列表
-      accessoryOtherList: "", //配饰
+      accessoryList: [], //鞋包配饰列表
+      accessoryHotList: [], //热门
+      accessoryShoesList: [], //鞋列表
+      accessoryBagList: [], //包列表
+      accessoryOtherList: [], //配饰
 
       manClothesActive: 1, // 男装当前选中的商品分类
       womanClothesActive: 1, // 女装当前选中的商品分类
@@ -206,7 +206,7 @@ export default {
     // 获取轮播图数据
     this.$http.get("/member/Shopping/rcmds.php").then((res) => {
       this.carousel = res.data;
-      console.log(res);
+     // console.log(res);
     });
     // '1', '男上装', '男的上装'
     // '2', '男下装', '男的下装'
@@ -253,8 +253,12 @@ export default {
       this.$http
         .post("/member/Shopping/queryComList.php", this.queryList)
         .then((res) => {
-          this[val] = res.data;
-          console.log();
+          console.log(res);
+          console.log(this["manClothesList"]);
+          for(let i=1;i<8;i++){
+            this[val].push(res.data[i]);
+          }
+          console.log(this[val]);
         });
     },
   },
@@ -320,8 +324,9 @@ export default {
 }
 
 .box-bd .promo-list {
-  float: left;
-  height: 615px;
+  //float: left;
+  margin: 0 auto;
+  height: 1225px;
   width: 234px;
 }
 
