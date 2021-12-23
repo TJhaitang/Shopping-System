@@ -13,24 +13,37 @@
       </div>
      <!-- 面包屑END -->
       <div class="highSearch" >
-        <el-collapse v-model="searchQuery" >
+        <el-collapse v-model="inputQuery" >
           <el-collapse-item title="高级筛选" name="1">
              <div class="filter-container"> 
-                <el-input v-model="orderQuery.id" placeholder="订单id" style="width: 200px;margin-right:15px;margin-bottom:15px;"   />
-                <el-input v-model="orderQuery.uid" placeholder="会员id" style="width: 200px;margin-right:15px;"   />
-                <el-select v-model="orderQuery.status"  placeholder="订单状态" style="margin-right:15px;">
-                <el-option label="待审核" value="1"></el-option>
-                <el-option label="待发货" value="2"></el-option>
-                <el-option label="待收货" value="3"></el-option>
-                <el-option label="交易完成" value="4"></el-option>
-            </el-select>
-      <el-button v-waves  type="primary" icon="el-icon-search"   >
-        搜索
-      </el-button>
-      <el-button v-waves  type="primary" icon="el-icon-delete"   >
-        清空
-      </el-button>
-    </div>
+                <el-input 
+                v-model="inputQuery.lprice" 
+                placeholder="价格最小值" 
+                style="width: 200px;margin-right:15px;margin-bottom:15px;"
+                type="number"
+                onKeypress="return(/^[0-9]*$/.test(String.fromCharCode(event.keyCode)))"   />
+                <el-input 
+                v-model="inputQuery.uprice" 
+                placeholder="价格最大值" 
+                style="width: 200px;margin-right:15px;"   
+                type="number"
+                onKeypress="return(/^[0-9]*$/.test(String.fromCharCode(event.keyCode)))"/>
+                <el-select v-model="inputQuery.sortfor"  placeholder="排序对象" style="margin-right:15px;">
+                  <el-option label="销量" value=1></el-option>
+                  <el-option label="平均评分" value=2></el-option>
+                  <el-option label="价格" value=3></el-option>
+                </el-select>
+                <el-select v-model="inputQuery.isDecent"  placeholder="顺序" style="margin-right:15px;">
+                  <el-option label="降序排序" value=0></el-option>
+                  <el-option label="升序排序" value=1></el-option>
+                </el-select>
+                <el-button v-waves  type="primary" icon="el-icon-search"  @click="getData" >
+                  确定
+                </el-button>
+                <el-button v-waves  type="primary" icon="el-icon-delete"  @click="resetQuery" >
+                  清空
+                </el-button>
+              </div>
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -40,12 +53,11 @@
       <div class="product-nav">
         <div class="title">分类</div>
         <el-tabs v-model="activeName" type="card">
-        <!-- category name这些参数有米有呀 -->
           <el-tab-pane
             v-for="item in categoryList"
-            :key="item.category_id"
-            :label="item.category_name"
-            :name="''+item.category_id"
+            :key="item.id"
+            :label="item.name"
+            :name="''+item.id"
           />
         </el-tabs>
       </div>
@@ -55,7 +67,7 @@
     <!-- 主要内容区 -->
     <div class="main">
       <div class="list">
-        <MyList :list="productList" v-if="product.length > 0"></MyList>
+        <MyList :list="product" v-if="productList.length > 0"></MyList>
         <div v-else class="none-product">抱歉没有找到相关的商品，请看看其他的商品捏</div>
       </div>
       <!-- 分页 -->
@@ -77,17 +89,34 @@
 export default {
   data() {
     return {
-      categoryList: "", //分类列表
+      categoryList: [], //分类列表
+      labelNum: "", //分类标签个数
       categoryID: [], // 分类id
-      product: "", // 商品列表
-      productList: "",
+      product:[], // 当前页商品列表
+      productList:[], //所有商品列表
       total: 0, // 商品总量
       pageSize: 15, // 每页显示的商品数量
       currentPage: 1, //当前页码
       maxPage: 1, //最大页数（总页码）
       activeName: "-1", // 分类列表当前选中的id
       search: "", // 搜索条件
-      searchQuery: "" // 筛选条件
+      searchQuery: // 筛选条件
+      {
+        name:"",
+        label:"",//空字符串则全label
+        uprice:10000000.15,//不用就设置为int上限
+        lprice:-1,
+        sortfor:0,//1:销量，2:平均分，3:价格,0:无   降序输出
+        isDecent:0,//0降序，1升序,soetfor是0的话这个无所谓
+        suid:"",//传就是店铺内搜索，空字符串就是不(这里是字符串)
+      },
+      inputQuery: //高级检索输入内容
+      {
+        uprice: "",
+        lprice: "",
+        sortfor: 0,
+        isDecent: 0
+      }
     };
   },
   created() {
@@ -137,11 +166,11 @@ export default {
       });
     },
     // 监听搜索条件，响应相应的商品
-    search: function(val) {
-      if (val != "") {
-        this.getProductBySearch(val);
-      }
-    },
+    // search: function(val) {
+    //   if (val != "") {
+    //     this.getProductBySearch(val);
+    //   }
+    // },
     // 监听分类id，响应相应的商品
     categoryID: function() {
       this.getData();
@@ -185,72 +214,65 @@ export default {
     // 向后端请求分类列表数据
     getCategory() {
       this.$http
-        .post("/api/product/getCategory", {})
+        .get("/member/Shopping/getLabelList.php")
         .then(res => {
-          const val = {
-            category_id: 0,
-            category_name: "全部"
-          };
-          const cate = res.data.category;
-          cate.unshift(val);
-          this.categoryList = cate;
+          this.labelNum = res.data.labelNum;
+          for(let i=1;i<=this.labelNum;i++){
+            this.categoryList.push(res.data[i]);
+          }//存储label list
+          console.log(this.categoryList)
         });
     },
     // 向后端请求全部商品或分类商品数据
     getData() {
-      // 如果分类列表为空则请求全部商品数据，否则请求分类商品数据
-      const api =
-        this.categoryID.length == 0
-          ? "/api/product/getAllProduct"
-          : "/api/product/getProductByCategory";
-      this.$http
-        .post(api, {
-          categoryID: this.categoryID,
-        //  currentPage: this.currentPage,
-        //  pageSize: this.pageSize
-        })
-        .then(res => {
-          this.product = res.data.Product;
-          this.total = res.data.total;
+      this.searchQuery.name = this.search //这个search其实是名字啦
+      //这里应该把高级检索框框里的数据也传到这个 query里
+      if(this.inputQuery.uprice!= "")
+      this.searchQuery.uprice = this.inputQuery.uprice;
+      else this.searchQuery.uprice = 1000000;
+      if(this.inputQuery.lprice!= "")
+      this.searchQuery.lprice = this.inputQuery.lprice;
+      else this.searchQuery.lprice = -1;
+      this.searchQuery.sortfor = this.inputQuery.sortfor;
+      this.searchQuery.isDecent = this.inputQuery.isDecent;
 
-          //分页
-          dividePage(res);
-        });
+      this.$http.post("/member/Shopping/queryComList.php",this.searchQuery)
+      .then(res =>{
+        this.total = res.data.comNum;
+        let len = res.data.comNum;
+        for(let i=1;i<=len;i++){
+          this.productList.push(res.data[i]);
+        }
+        console.log(this);
+        this.dividePage();
+        // console.log(this.productList);
+      })
     },
-    // 通过搜索条件向后端请求商品数据
-    getProductBySearch() {
-      this.$axios
-        .post("/api/product/getProductBySearch", {
-          search: this.search,
-          //currentPage: this.currentPage,
-          //pageSize: this.pageSize
-        })
-        .then(res => {
-          this.product = res.data.Product;
-          this.total = res.data.total;
+   // 分页封装
+    dividePage() {
+      // console.log("******");
+      if((this.total/this.pageSize) > parseInt(this.total/this.pageSize)){   
+          this.maxpage=parseInt(this.total/this.pageSize)+1;   
           
-          //分页
-          dividePage(res);
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+      }else{   
+          this.maxpage=parseInt(this.total/this.pageSize);   
+      } 
+      // console.log("******");
+      //取出当前页面中应该显示的数据，赋值给orderList
+      var startRow = (this.currentPage- 1) * this.pageSize; 
+      var endRow = this.currentPage * this.pageSize; 
+      // console.log("******");
+      endRow = (endRow > this.total)? this.total: endRow;  
+      // console.log("******");
+      this.product = this.productList.slice(startRow, endRow);
+      // console.log("*****");
+      console.log(this.product);
     },
-    dividePage(res) {
-      this.total = res.data.orderNum 
-       if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
-            this.maxpage=parseInt(this.total/this.pageSize)+1;   
-           
-       }else{   
-           this.maxpage=parseInt(this.total/this.pageSize);   
-       } 
-
-       //取出当前页面中应该显示的数据，赋值给orderList
-        var startRow = (this.pageNum - 1) * this.pageSize; 
-        var endRow = this.pageNum * this.pageSize; 
-        console.log(startRow)
-        endRow = (endRow > this.total)? this.total: endRow;  
-        this.productList = this.product.slice(startRow, endRow);
+    resetQuerty() {
+      this.inputQuery.uprice = "";
+      this.inputQuery.lprice = "";
+      this.inputQuery.sortfor = "";
+      this.inputQuery.isDecent = "";
     }
   }
 };
@@ -292,6 +314,13 @@ export default {
   float: left;
 }
 /* 分类标签CSS END */
+
+/* 高级搜索的css 我真尼玛css不会弄啊 谁弄一下*/
+.highSearch {
+  margin:0 auto;
+  background-color: white;
+}
+
 /* 主要内容区CSS */
 .goods .main {
   margin: 0 auto;
