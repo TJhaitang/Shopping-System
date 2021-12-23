@@ -58,7 +58,7 @@
             class="del"
           >{{productDetails.product_price}}元</span>-->
         </div>
-         <div class="sortChoose_buttons">
+         <!-- <div class="sortChoose_buttons">
           <el-radio-group v-model="radio">
              <el-radio-button v-for="(domain,index) in domains "
              :label=domains[index].id
@@ -66,7 +66,7 @@
              @change="changeSort(index)"
              ></el-radio-button>
           </el-radio-group>
-        </div>
+        </div> -->
         <div class="pro-list">
           <!-- <span class="pro-name">{{productDetails.product_name}}</span> -->
           <span class="pro-name">{{productName}}</span>
@@ -250,11 +250,11 @@ export default {
           return Promise.reject(err);
         });
     },
-    changeSort(index){
-      this.price = result.data.domains[index].sort_price
-      console.log("price")
-      console.log(this.price)
-    }
+    // changeSort(index){
+    //   this.price = result.data.domains[index].sort_price
+    //   console.log("price")
+    //   console.log(this.price)
+    // }
   }
 };
 </script>
