@@ -123,13 +123,61 @@ export default {
       //设置商家信息
       setMerchants(state,data){
         let length = data.carNum;
-          for(let i = 1;i<=length;i++){
-            if(!state.merchants.includes(data[i].merchantId)){
-              state.merchants.push(data[i].merchantId)
+        let mer=data[1].merchantId;
+        state.merchants.push({mer,check})
+        let check=false;
+          for(let i = 2;i<=length;i++){
+            let mer=data[i].merchantId;
+            let check=false;
+            let k=0;
+            for(let j=0;j<state.merchants.length;j++){
+              if(data[i].merchantId===state.merchants[j].mer){
+                k=1;
+              }
+            };
+            if(k===0){
+              state.merchants.push({mer,check})
           }
         }
         console.log(state.merchants)
       },
+      updateAllCheck2(state,id){
+        //设置店铺是否全选
+        let check=true;
+        for (let i = 0; i < state.shoppingCart.length; i++) {
+           const temp = state.shoppingCart[i];
+           // 只要有一个商品没有勾选立即return;
+           if(temp.merchantId==id){
+             if (!temp.check) {
+               check=false;
+             }
+           }
+         }
+         for (let j = 0; j < state.merchants.length;j++){
+           const temp=state.merchants[j];
+           if(temp.mer===id){
+             temp.check=check;
+           }
+         }
+        },
+        updateAllCheck(state,id){
+          //设置某店铺下商品全部全选
+          let k=0;
+            for (let j = 0; j < state.merchants.length;j++){
+              const temp=state.merchants[j];
+              if(temp.mer===id){
+                temp.check=!temp.check;
+                k=j;
+              }
+            }
+            for (let i = 0; i < state.shoppingCart.length; i++) {
+              const temp = state.shoppingCart[i];
+              // 只要有一个商品没有勾选立即勾选;
+              if(temp.merchantId*1==id){
+                temp.check=state.merchants[k].check;
+                }
+              }
+          },
       unshiftShoppingCart (state, data) {
         // 添加购物车
         // 用于在商品详情页点击添加购物车,后台添加成功后，更新vuex状态
@@ -188,6 +236,12 @@ export default {
       },
       setMerchants({commit},data){
         commit('setMerchants',data)
+      },
+      updateAllCheck({commit},id){
+        commit('updateAllCheck',id)
+      },
+      updateAllCheck2({commit},id){
+        commit('updateAllCheck2',id)
       },
       unshiftShoppingCart ({ commit }, data) {
         commit('unshiftShoppingCart', data);

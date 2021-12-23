@@ -20,7 +20,7 @@
         <li class="header">
           <div class="pro-check">
             <!--全选按钮-->
-            <el-checkbox v-model="isAllCheck">全选</el-checkbox>
+            <el-checkbox :value=merchant.check @change="checkChange2(merchant.mer)">全选</el-checkbox>
           </div>
           <!--购物车列表的列名-->
           <div class="pro-img">商品图片</div>
@@ -34,9 +34,9 @@
 
         <!-- 购物车列表 -->
         <li  v-for="(item,index) in getShoppingCart" :key="item.carId">
-          <div class="product-list" v-if="item.merchantId==merchant">
+          <div class="product-list" v-if="item.merchantId==merchant.mer">
           <div class="pro-check">
-            <el-checkbox :value=item.check @change="checkChange($event,index)"></el-checkbox>
+            <el-checkbox :value=item.check @change="checkChange($event,index,merchant.mer)"></el-checkbox>
           </div>
           <div class="pro-img"> 
             <img :src="item.image" />
@@ -114,7 +114,7 @@ import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   data() {
-    return {};
+    return {check:false};
   },
   // created(){
   //   let length = this.$store.getters.getShoppingCart.length;
@@ -130,7 +130,7 @@ export default {
   // },
   methods: {
     //Vuex中的函数
-    ...mapActions(["updateShoppingCart", "deleteShoppingCart", "checkAll"]),
+    ...mapActions(["updateShoppingCart","updateAllCheck2", "deleteShoppingCart", "checkAll","updateAllCheck"]),
     // 修改商品数量的时候调用该函数
     handleChange(currentValue, key, carid) {
       // 当修改数量时，默认勾选
@@ -168,9 +168,15 @@ export default {
           return Promise.reject(err);
         });
     },
-    checkChange(val, key) {
+    checkChange(val, key,merchant) {
       // 更新vuex中购物车商品是否勾选的状态
       this.updateShoppingCart({ key: key, prop: "check", val: val });
+      this.updateAllCheck2(merchant)//每次选择一个商品，都判断一下这个店铺有没有全选
+      
+    },
+    checkChange2(merchant){
+      //改变全选按钮
+      this.updateAllCheck(merchant);
     },
     // 向后端发起删除购物车的数据库信息请求
     deleteItem(e, id, productID) {
@@ -214,16 +220,16 @@ export default {
       "getTotalPrice",
       "getNum",
       "getcarID",
-      "getMerchants"
+      "getMerchants",
     ]),
-    isAllCheck: {
-      get() {
-        return this.$store.getters.getIsAllCheck;
-      },
-      set(val) {
-        this.checkAll(val);
-      }
-    }
+    // isAllCheck: {
+    //   get() {
+    //     return this.$store.getters.getIsAllCheck;
+    //   },
+    //   set(val) {
+    //     this.checkAll(val);
+    //   }
+    // }
   }
 };
 </script>
