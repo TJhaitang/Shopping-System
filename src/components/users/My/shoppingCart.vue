@@ -13,8 +13,9 @@
     <!-- 购物车头部END -->
 
     <!-- 购物车主要内容区 -->
-    <div class="content" v-if="getShoppingCart.length>0">
+    <div  v-if="getShoppingCart.length>0">
       <div v-for="(merchant,index) in getMerchants" :key="index">
+        <div class="content">
       <ul>
         <!-- 购物车表头 -->
         <li class="header">
@@ -70,6 +71,7 @@
         <!-- 购物车列表END -->
       </ul>
       </div>
+      </div>
       <div style="height:20px;background-color: #f5f5f5"></div>
       <!-- 购物车底部导航条 -->
       <div class="cart-bar">
@@ -103,7 +105,7 @@
     <div v-else class="cart-empty">
       <div class="empty">
         <h2>您的购物车还是空的！</h2>
-        <router-link to="/">快去逛逛吧</router-link>
+        <router-link to="/home">快去逛逛吧</router-link>
       </div>
     </div>
     <!-- 购物车为空的时候显示的内容END -->
