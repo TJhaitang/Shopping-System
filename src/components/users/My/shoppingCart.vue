@@ -23,7 +23,7 @@
             <el-checkbox :value=merchant.check @change="checkChange2(merchant.mer)">全选</el-checkbox>
           </div>
           <!--购物车列表的列名-->
-          <div class="pro-img">商品图片</div>
+          <div class="pro-img">商家编号：{{merchant.mer}}</div>
           <div class="pro-name">商品名称</div>
           <div class="pro-price">单价</div>
           <div class="pro-num">数量</div>
