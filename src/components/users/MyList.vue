@@ -49,7 +49,7 @@ export default {
       let categoryID = [];
       if (this.list != "") {
         for (let i = 0; i < this.list.length; i++) {
-          const id = this.list[i].slabel;
+          const id = this.list[i].slabel
           if (!categoryID.includes(id)) {
             categoryID.push(id);
           }

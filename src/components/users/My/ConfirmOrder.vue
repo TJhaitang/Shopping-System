@@ -230,7 +230,30 @@ export default {
               for (let i = 0; i < products.length; i++) {
                 const temp = products[i];
                 // 删除已经结算的购物车商品
-                this.deleteShoppingCart(temp.id);
+                this.$http
+                .post("/member/Shopping/updateCar.php", {//改记得，改了
+                  carId: temp.carId,
+                  operation: 'delete',
+                })
+                .then(res => {
+          switch (res.data.status) {
+            case "success":
+              // “success” 删除成功
+              // 更新vuex状态
+              this.deleteShoppingCart(temp.carId);
+              this.$router.go(0)
+              // 提示删除成功信息
+              this.$notify({
+                message: '删除成功'
+              });
+              break;
+            default:
+              // 提示删除失败信息
+              this.$notify({
+                message: '删除失败'
+              });
+          }
+        })
               }
               // 提示结算结果
               this.$message.success('付款好啦！');
