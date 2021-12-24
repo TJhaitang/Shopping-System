@@ -37,7 +37,7 @@
                   <el-option label="降序排序" value=0></el-option>
                   <el-option label="升序排序" value=1></el-option>
                 </el-select>
-                <el-button v-waves  type="primary" icon="el-icon-search"  @click="getData" >
+                <el-button v-waves  type="primary" icon="el-icon-search"  @click="filterGo" >
                   确定
                 </el-button>
                 <el-button v-waves  type="primary" icon="el-icon-delete"  @click="resetQuery" >
@@ -133,16 +133,6 @@ export default {
       this.activeName = "0";
       return;
     }
-    // 如果路由传递了categoryID，则显示对应的分类商品
-    if (this.$route.query.categoryID != undefined) {
-      this.categoryID = this.$route.query.categoryID;
-      if (this.categoryID.length == 1) {
-        //这是撒子捏
-        this.activeName = "" + this.categoryID[0];
-      }
-      return;
-    }
-    // 如果路由传递了search，则为搜索，显示对应的分类商品
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
     }
@@ -164,6 +154,7 @@ export default {
         path: "/goods",
         query: { categoryID: this.categoryID }
       });
+      this.getData();
     },
     // 监听搜索条件，响应相应的商品
     // search: function(val) {
@@ -174,12 +165,11 @@ export default {
     // 监听分类id，响应相应的商品
     categoryID: function() {
       this.getData();
-      this.search = "";
     },
     // 监听路由变化，更新路由传递了搜索条件
     $route: function(val) {
       if (val.path == "/goods") {
-        if (val.query.search != undefined) {
+        if (val.query.search != undefined ) {
           this.activeName = "-1";
           this.currentPage = 1;
           this.total = 0;
@@ -199,16 +189,13 @@ export default {
         if (top === 0) {
           clearInterval(timer);
         }
-      }, 20);
+      }, 30);
     },
     // 页码变化调用currentChange方法
     currentChange(currentPage) {
       this.currentPage = currentPage;
-      if (this.search != "") {
-        this.getProductBySearch();
-      } else {
-        this.getData();
-      }
+      if(this.search != "")
+      this.searchQuery.name = this.search;
       this.backtop();
     },
     // 向后端请求分类列表数据
@@ -220,7 +207,6 @@ export default {
           for(let i=1;i<=this.labelNum;i++){
             this.categoryList.push(res.data[i]);
           }//存储label list
-          console.log(this.categoryList)
         });
     },
     // 向后端请求全部商品或分类商品数据
@@ -233,6 +219,8 @@ export default {
       if(this.inputQuery.lprice!= "")
       this.searchQuery.lprice = this.inputQuery.lprice;
       else this.searchQuery.lprice = -1;
+      if(this.categoryID!= [])
+      this.searchQuery.label = "(" + this.categoryID[0] + ")"
       this.searchQuery.sortfor = this.inputQuery.sortfor;
       this.searchQuery.isDecent = this.inputQuery.isDecent;
 
@@ -240,39 +228,40 @@ export default {
       .then(res =>{
         this.total = res.data.comNum;
         let len = res.data.comNum;
+        this.productList = [];
         for(let i=1;i<=len;i++){
           this.productList.push(res.data[i]);
         }
-        console.log(this);
         this.dividePage();
         // console.log(this.productList);
       })
+      
     },
    // 分页封装
     dividePage() {
-      // console.log("******");
       if((this.total/this.pageSize) > parseInt(this.total/this.pageSize)){   
           this.maxpage=parseInt(this.total/this.pageSize)+1;   
           
       }else{   
           this.maxpage=parseInt(this.total/this.pageSize);   
       } 
-      // console.log("******");
-      //取出当前页面中应该显示的数据，赋值给orderList
+      //取出当前页面中应该显示的数据，赋值给product
       var startRow = (this.currentPage- 1) * this.pageSize; 
       var endRow = this.currentPage * this.pageSize; 
-      // console.log("******");
       endRow = (endRow > this.total)? this.total: endRow;  
-      // console.log("******");
       this.product = this.productList.slice(startRow, endRow);
-      // console.log("*****");
-      console.log(this.product);
     },
-    resetQuerty() {
+    resetQuery() {
       this.inputQuery.uprice = "";
       this.inputQuery.lprice = "";
       this.inputQuery.sortfor = "";
       this.inputQuery.isDecent = "";
+      this.getData();
+    },
+    filterGo() {
+      this.currentPage = 1;
+      this.currentChange(1);
+      this.getData();
     }
   }
 };
@@ -297,6 +286,15 @@ export default {
   margin: 0 auto;
 }
 /* 面包屑CSS END */
+.goods .highSearch {
+  background-color: white;
+}
+.goods .highSearch .el-collapse {
+  width: 1225px;
+  line-height: 30px;
+  font-size: 16px;
+  margin: 0 auto;
+}
 /* 分类标签CSS */
 .goods .nav {
   background-color: white;
