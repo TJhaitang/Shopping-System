@@ -24,7 +24,7 @@
     <!-- 主要内容 -->
     <div class="main">
       <!-- 左侧商品轮播图 -->
-      <div class="block">
+      <!-- <div class="block">
         <el-carousel height="560px" v-if="productPicture.length>1">
           <el-carousel-item v-for="item in productPicture" :key="item.id">
             <img style="height:560px;" :src="$target + item.product_picture" :alt="item.intro" />
@@ -35,6 +35,19 @@
             style="height:560px;"
             :src="$target + productPicture[0].product_picture"
             :alt="productPicture[0].intro"
+          >
+        </div>
+      </div> -->
+      <div class="block">
+        <el-carousel height="560px" v-if="pictures.length>1">
+          <el-carousel-item v-for="item in pictures" :key="item.id">
+            <img style="height:560px;" :src="item.sort_picture">
+          </el-carousel-item>
+        </el-carousel>
+        <div v-if="pictures.length==1">
+          <img
+            style="height:560px;"
+            :src="pictures[0].sort_picture"
           >
         </div>
       </div>
@@ -58,14 +71,15 @@
             class="del"
           >{{productDetails.product_price}}元</span>-->
         </div>
-          <div class="sortChoose_buttons">
-          <el-radio-group v-model="radio">
-             <el-radio-button v-for="(domain,index) in domains "
-             :label=domains[index].sort_name
-             :key="domain.key"
-             @change="changeSort(index)"
-             ></el-radio-button>
-          </el-radio-group>
+        <div class = "changesort_button">
+          <el-button-group>
+            <el-button type="primary" 
+             v-for="(domain,index) in domains"
+            :key="domain.key"
+            @click="changeSort(index)" 
+            >{{domains[index].sort_name}}</el-button> 
+          </el-button-group>
+          <!-- <el-button type="primary" @click="changeSort(index)">{{domains[index].sort_id}}</el-button> -->
         </div> 
         <div class="pro-list">
           <!-- <span class="pro-name">{{productDetails.product_name}}</span> -->
@@ -78,11 +92,12 @@
               class="pro-del"
             >{{productDetails.product_price}}元</span>
           </span>
-          <p class="price-sum">总计 : {{price}}元</p>
+          <p class="price-sum">总计 : {{domains[this.index_present].sort_price}}元</p>
           
         </div>
         <!-- 内容区底部按钮 -->
         <div class="button">
+          <el-input-number v-model="num_addcart" @change="handleChange" :min="1" :max="10" label="选择数量"></el-input-number>
           <el-button class="shop-cart" :disabled="dis" @click="addShoppingCart">加入购物车</el-button>
           <el-button class="like" @click="addCollect">收藏</el-button>
         </div>
@@ -107,6 +122,16 @@
       <!-- 右侧内容区END -->
     </div>
     <!-- 主要内容END -->
+    <div class='comments'>
+      <el-table :data="comments" border stripe>
+        <el-table-column prop="comment_score" label="评分" width="50">
+        </el-table-column>
+        <el-table-column prop="comment_content" label="评论内容" width="300">
+        </el-table-column>
+        <el-table-column prop="comment_addtime" label="评论时间" width="300">
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -119,9 +144,14 @@ export default {
       productDetails: "", // 商品详细信息
       productPicture: "", // 商品图片
       productName: "",
-      price: "",
+      //price: "",
+      index_present:"",
       domains: [],
-      radio: ''
+      pictures: [],
+      commentNum: "",
+      comments: [],
+      Avg_score: "",
+      num_addcart: 1,
     };
   },
   // 通过路由获取商品id
@@ -140,6 +170,7 @@ export default {
   },
   created(){
       this.getDetails()
+      this.getComments()
     },
   methods: {
     ...mapActions(["unshiftShoppingCart", "addShoppingCartNum"]),
@@ -162,69 +193,65 @@ export default {
                sort_price:result.data.domains[i+1].price,
                sort_standards:result.data.domains[i+1].standards,
                sort_stock:result.data.domains[i+1].stock,
-               sort_sales:result.data.domains[i+1].sales
+               sort_sales:result.data.domains[i+1].sales,
               })
             }
           }
+
+           if(result.data.pictures.picNum>0){
+             for(let i=0;i<result.data.pictures.picNum;i++){
+              this.pictures.push({
+                sort_picture: result.data.pictures[i+1].photo,
+              })
+              console.log(result.data.pictures[i+1].photo)
+            }
+          }
           console.log('成功辽')
-          this.price = result.data.domains[1].price
-          this.radio = result.data.domains[1].id
-          console.log("ratio")
-          console.log(this.radio)
-          //console.log(result.data.domains[1].name)
+          this.index_present = 0;
         }
         else return this.$message.error('获取商品信息失败！')
       })
     },
-    // 获取商品图片
-    getDetailsPicture(val) {
-      this.$axios
-        .post("/api/product/getDetailsPicture", {
-          productID: val
-        })
-        .then(res => {
-          this.productPicture = res.data.ProductPicture;
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+    getComments(){
+      this.$http.post('/member/Shopping/getComments.php',
+      {
+        commodityId:'1231231231'
+      }).then(result=>{
+        console.log(result)
+        if(result.data.status !== 'fail'){
+          console.log("comment_success")
+          this.commentNum = result.data.commentNum
+          this.Avg_score = result.data.avgScore
+          if(this.commentNum>0){
+            for(let i = 0;i<this.commentNum;i++)
+            {
+              this.comments.push({
+                comment_content: result.data[i+1].content,
+                comment_userid: result.data[i+1].user_id,
+                comment_itemid: result.data[i+1].item_id,
+                comment_addtime: result.data[i+1].addTime,
+                comment_score: result.data[i+1].score,
+              })
+            }
+        }
+      }
+      console.log("comment_finish")
+      })
     },
     // 加入购物车
     addShoppingCart() {
-      // 判断是否登录,没有登录则显示登录组件
-      if (!this.$store.getters.getUser) {
-        this.$store.dispatch("setShowLogin", true);
-        return;
-      }
-      this.$axios
-        .post("/api/user/shoppingCart/addShoppingCart", {
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: this.productID
-        })
-        .then(res => {
-          switch (res.data.code) {
-            case "001":
-              // 新加入购物车成功
-              this.unshiftShoppingCart(res.data.shoppingCartData[0]);
-              this.notifySucceed(res.data.msg);
-              break;
-            case "002":
-              // 该商品已经在购物车，数量+1
-              this.addShoppingCartNum(this.productID);
-              this.notifySucceed(res.data.msg);
-              break;
-            case "003":
-              // 商品数量达到限购数量
-              this.dis = true;
-              this.notifyError(res.data.msg);
-              break;
-            default:
-              this.notifyError(res.data.msg);
-          }
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+      console.log("shoppingcart")
+      this.$http.post('/member/Shopping/insertCar.php',
+      {
+        num:this.num_addcart,
+        item_id:this.domains[this.index_present].sort_id
+      }).then(result=>{
+        console.log("add")
+        console.log(this.num_addcart)
+        console.log(this.domains[this.index_present].sort_id)
+        console.log(result)
+      })
+      
     },
     addCollect() {
       // 判断是否登录,没有登录则显示登录组件
@@ -250,11 +277,16 @@ export default {
           return Promise.reject(err);
         });
     },
-    // changeSort(index){
-    //   this.price = result.data.domains[index].sort_price
-    //   console.log("price")
-    //   console.log(this.price)
-    // }
+     changeSort(index){
+       //this.price = this.domains[index].sort_price
+       this.index_present = index
+       console.log("index_present")
+       console.log(this.index_present)
+       console.log(this.domains[this.index_present].sort_price)
+    },
+    handleChange(value) {
+        console.log(value);
+      }
   }
 };
 </script>

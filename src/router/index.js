@@ -58,7 +58,7 @@ router.beforeEach((to, from, next) => {
       return next('/login');
     }
   }
-  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart' ){
+  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart' || to.path === '/good_detail'){
     if(localStorage.getItem('userToken')){
       next();
     }
