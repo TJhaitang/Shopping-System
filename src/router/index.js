@@ -16,7 +16,6 @@ import shoppingCart from '../components/users/My/shoppingCart.vue'
 import good_detail from '../components/users/My/Good_details.vue'
 import confirmOrder from '../components/users/My/ConfirmOrder.vue'
 import goods from '../components/users/My/goods.vue'
-import merchant from '../components/users/My/merchants.vue'
 
 Vue.use(VueRouter)
 
@@ -39,8 +38,7 @@ const router = new VueRouter( {
   { path: '/good_detail',component: good_detail},
   { path: '/collect',component: collect},
   { path:'/confirmOrder',component:confirmOrder},
-  { path: '/goods',component: goods},
-  { path: '/merchants',component:merchant}]},
+  { path: '/goods',component: goods}]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -50,7 +48,7 @@ router.beforeEach((to, from, next) => {
   // from: 从哪个路径跳转而来
   // next: 放行函数
   // next() 放行； next('/login') 强制跳转（没有token的时候）
-  if(to.path === '/login' || to.path === '/signUp'  || to.path === '/' || to.path === '/home'||to.path==='/order'||to.path==='/confirmOrder' || to.path==='/goods'||to.path==='/merchants') return next();
+  if(to.path === '/login' || to.path === '/signUp'  || to.path === '/' || to.path === '/home'||to.path==='/order'||to.path==='/confirmOrder' || to.path==='/goods') return next();
   //拿出token
   else if(to.path === '/my' || to.path === '/orders' || to.path === '/Commodity' || to.path === '/info'){
     if(localStorage.getItem('merchantToken')){
