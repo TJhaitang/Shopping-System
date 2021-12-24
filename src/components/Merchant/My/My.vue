@@ -16,21 +16,17 @@
    <el-header style="height: 100px; border: 1px solid #eee;position:relative"> 
     <!--<p class="span1">昵称：{{this.$store.getters.getnick}}</p>
     <p class="span2">个性签名：{{this.$store.getters.getsig}}</p>-->
-    <p class="span1">昵称：{{this.username}}</p>
+    <p class="span1">昵称：{{this.info.username}}</p>
     <p class="span2">个性签名：{{this.signature}}</p>
     </el-header>
-    <div class="avatar_select">
-    	<img :src="userphoto" alt="" />
-      <!--图片地址动态绑定-->
-    </div>
-    <el-header style="font-size: 12px;position:absolute;right:30px;height:50px;top:30px">
+    <el-header style="font-size: 12px;position:absolute;right:30px;height:50px;top:30px">
       <el-dropdown trigger="click">
         <i class="el-icon-setting" style="margin-right: 15px;text-align: right;width:50px"></i>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item  @click.native="quit">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <span style="display:inline-block;font-size:20px">店名</span>
+      <span style="display:inline-block;font-size:20px">店名:{{this.info.uid}}</span>
     </el-header>
     
     <el-main>
@@ -49,27 +45,22 @@
   import url3 from '../lanyangyang.png';
   import url4 from '../feiyangyang.png';
   import url5 from '../nuanyangyang.png';
+  import { mapActions } from "vuex";
+  import { mapGetters } from "vuex";
   export default {
     data(){
       return{
-        userphoto:url3,
-        username: '',
-        uid: '',
-        email: '',
-        phone: '',
-        addr: '',
-        gender: '',
-        signature: '',
-        avatar: '',
-        identity: '',
-        name: '',
-        province: '',
+        info:[]
       }
     },
     created(){
-      this.getMerchantInfo()
+      this.getMerchantInfo();
     },
+    computed: {
+    ...mapGetters(["getinfo","getUser"])
+  },
     methods: {
+      ...mapActions(["setinfo"]),
       quit() {
         localStorage.clear();
         this.$router.push('/login');
@@ -78,21 +69,13 @@
         // let jwt = localStorage.getItem("token");
         // this.$http.defaults.headers.common["X-token"] = jwt;
       const {data: res} = await this.$http.get('/merchant/getInfo.php')
-      console.log(res)
       if (res.status == 'TokenNotValid'){
         return this.$message.error('获取商家信息失败（╥﹏╥）')
       }
       else{
-        this.username = res.username
-        this.uid = res.uid
-        this.email = res.email
-        this.phone = res.phone
-        this.name = res.name
-        this.addr = res.addr
-        this.gender = res.gender
-        this.province = res.province
-        this.avatar = res.avatar
-        this.identity = res.identity
+        this.setinfo(res);
+        this.info=res;
+        console.log(this.info)
       }
 
     },

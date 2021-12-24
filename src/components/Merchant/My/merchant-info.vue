@@ -9,7 +9,7 @@
           <span>个人中心</span>
         </div>
         <div class="name-role">
-          <span class="sender">名称 - {{dataForm.nickName}}</span>  
+          <span class="sender">名称 - {{this.$store.getters.getinfo.username}}</span>  
         </div>
        	<div class="avatar_select" id="img0">
         	<img :src="dataForm.userphoto" alt="" />
@@ -17,13 +17,13 @@
       	</div> 
         <el-divider></el-divider>
         <div class="personal-relation">
-          <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{dataForm.phone}}</div></div>
+          <div class="relation-item">手机号:  <div style="float: right; padding-right:20px;">{{this.$store.getters.getinfo.phone}}</div></div>
         </div>
         <div class="personal-relation">
-          <div class="relation-item">个性签名： <div style="float: right; padding-right:20px;">{{dataForm.self}}</div></div> 
+          <div class="relation-item">个性签名： <div style="float: right; padding-right:20px;">{{this.$store.getters.getinfo.signature}}</div></div> 
         </div>
         <div class="personal-relation">
-          <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{dataForm.addr}}</div></div>      
+          <div class="relation-item">发货地址:  <div style="float: right; padding-right:20px;">{{this.$store.getters.getinfo.addr}}</div></div>      
         </div>
         <!-- 修改按钮 -->
         <el-button type="primary" @click="showCurrent()">修改个人信息</el-button>
@@ -98,10 +98,13 @@
   import url3 from '../lanyangyang.png';
   import url4 from '../feiyangyang.png';
   import url5 from '../nuanyangyang.png';
+  import { mapActions } from "vuex";
+  import { mapGetters } from "vuex";
 	export default {
 		data() {
 			return {
-				dataForm:{nickName:'超级管理员',phone: '88888888888',addr: '人大',self:'当个好老板',email:'88888@qq.com',userphoto:url4,gender:'女'},
+				dataForm:{userphoto:url4},
+        info:[],
         //控制修改商家信息对话框的显示与隐藏
         changeinfo:false,
         //控制修改头像对话框的显示与隐藏
@@ -138,47 +141,37 @@
         }
 			}
 		},
-    created(){
-      this.getinfo2();
-    },
-		
+    // created(){
+    //   this.getinfo();
+    // },
+		computed: {
+    ...mapGetters(["getinfo","getUser"])
+  },
 		methods: {
 			closeDialog() {
 			this.dialogVisible = false
 			},
 
       //获取当前用户信息，显示在我们的界面上
-      async getinfo(){
-        this.loading = true
-        const {data:result} = await this.$http.get('/merchant/getInfo.php')
+      // getinfo(){
+      // //   this.loading = true
+      // //   // 
+      //    this.info=this.getinfo;
+      //    console.log(this.info)
 
-        //检验获取数据是否成功
-        if(result.meta.status !== 200){
-          return this.$message.error('获取信息失败惹（╥﹏╥）')
-        }
-
-        //读取得到用户信息
-        this.nickName=result.username
-        this.phone=result.phone
-        this.addr=result.addr
-        this.email=result.email
-        this.gender=result.gender
-        this.self=result.signature
-        this.userphoto=result.avatar
-
-        //传信息给store
-        this.setnick(this.nickName)
-        this.setsig(this.self)
-      },
+      // //   //传信息给store
+      // //   this.setnick(this.nickName)
+      // //   this.setsig(this.self)
+      // },
 
       //点击修改按钮后要显示当前信息
       showCurrent(){
-        this.editForm.gender=this.dataForm.gender,
-        this.editForm.nickName=this.dataForm.nickName,
-        this.editForm.phone=this.dataForm.phone,
-        this.editForm.addr=this.dataForm.addr,
-        this.editForm.email=this.dataForm.email,
-        this.editForm.self=this.dataForm.self,
+        this.editForm.gender=this.$store.getters.getinfo.gender,
+        this.editForm.nickName=this.$store.getters.getinfo.username,
+        this.editForm.phone=this.$store.getters.getinfo.phone,
+        this.editForm.addr=this.$store.getters.getinfo.addr,
+        this.editForm.email=this.$store.getters.getinfo.email,
+        this.editForm.self=this.info.signature,
         this.changeinfo=true
       },
 
