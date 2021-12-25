@@ -57,8 +57,9 @@
 
           <!-- 搜索框框部分 -->
           <div class="so" style="display: flex;">
-            <el-input placeholder="请输入搜索内容" v-model="search" style="width:300px;">
-              <el-button slot="append" icon="el-icon-search" @click="searchClick"></el-button>
+            <el-input clearable placeholder="请输入搜索内容" v-model="search" style="width:300px;">
+              <el-button slot="append" icon="el-icon-search" @click="searchClick" style="margin-right:5px"></el-button>
+              <el-button slot="append" icon="el-icon-delete" @click="searchDelete"></el-button>
             </el-input>
           </div>
           <!-- 搜索部分结束 -->
@@ -191,13 +192,27 @@ export default {
     },
     // 点击搜索按钮
     searchClick() {
-      if (this.search != "" && this.$route == "/home") {
+      console.log(this.search);
+      if (this.search != "" && (this.$route.path == "/home" || this.$route.path =="/goods")) {
         // 跳转到全部商品页面,并传递搜索条件
         this.$router.push({ path: "/goods", query: { search: this.search } });
         this.search = "";
-      }else if (this.search != "" && this.$route == "/merchant_detail"){
-        this.$router.push({ path: "/merchant_detail", query: { search: this.search } });
+      }else if (this.search != "" && this.$route.path == "/merchant_detail"){
+        this.$router.push({ path: "/merchant_detail", query: { search: this.search } });  
         this.search = "";
+      }
+    },
+    searchDelete() {
+      console.log(this.search);
+      if (this.$route.path == "/home" || this.$route.path =="/goods") {
+        // 跳转到全部商品页面,并传递搜索条件
+        this.search = "";
+        this.$router.push({ path: "/goods", query: { search: this.search } });
+        
+      }else if ( this.$route.path == "/merchant_detail"){
+        this.search = "";
+        this.$router.push({ path: "/merchant_detail", query: { search: this.search } });  
+        
       }
     }
   }
@@ -297,7 +312,7 @@ a:hover {
 }
 .el-header .so {
   margin-top: 10px;
-  float: right;
+  float: right; 
 }
 /* 顶栏容器CSS END */
 /* 底栏容器CSS */
