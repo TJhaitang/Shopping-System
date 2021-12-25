@@ -13,7 +13,7 @@
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
         </el-popover>
 
-        <router-link :to="{ path: '/goods/details', query: {productID:item.commodityId} }">
+        <router-link :to="{ path: '/good_detail', query: {productID:item.commodityId} }">
           <img :src="item.photo" alt />
           <h2>{{item.name}}</h2>
           <h3>{{item.discription}}</h3>

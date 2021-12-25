@@ -120,7 +120,8 @@ export default {
     };
   },
   created() {
-    // 获取分类列表this.getCategory();
+     //获取分类列表
+     this.getCategory();
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
       this.getData();
@@ -140,8 +141,8 @@ export default {
     }
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
-      this.getData();
     }
+    this.getData();
   },
   watch: {
     // 监听点击了哪个分类标签，通过修改分类id，响应相应的商品
@@ -200,6 +201,7 @@ export default {
       this.currentPage = currentPage;
       if(this.search != "")
       this.searchQuery.name = this.search;
+      this.getData();
       this.backtop();
     },
     // 向后端请求分类列表数据

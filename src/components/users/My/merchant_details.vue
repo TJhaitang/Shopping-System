@@ -95,11 +95,7 @@
 export default {
   data() {
     return {
-      merchantInfo: {
-          username: "小狗饼干",
-          avgScore: 5.0,
-          province: "Beijing"
-      },
+      merchantInfo: "",
       categoryList: [], //分类列表
       labelNum: "", //分类标签个数
       categoryID: [], // 分类id
@@ -111,6 +107,7 @@ export default {
       maxPage: 1, //最大页数（总页码）
       activeName: "-1", // 分类列表当前选中的id
       search: "", // 搜索条件
+      suid:"",
       searchQuery: // 筛选条件
       {
         name:"",
@@ -133,11 +130,13 @@ export default {
   created() {
     // 获取分类列表
     this.getCategory();
-    this.searchQuery.suid = this.$$route.query.merchantID;
+    this.suid = this.$route.query.merchantID;
+    console.log(this.searchQuery.suid);
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
-      this.getData();
   }
+  this.getInfo();
+  this.getData();
     
   },
   activated() {
@@ -168,7 +167,8 @@ export default {
       // 更新地址栏链接，方便刷新页面可以回到原来的页面
       this.$router.push({
         path: "/merchant_detail",
-        query: { categoryID: this.categoryID }
+        query: { categoryID: this.categoryID , 
+                 merchantID:this.suid }
       });
       this.getData();
     },
@@ -185,6 +185,7 @@ export default {
     // 监听路由变化，更新路由传递了搜索条件
     $route: function(val) {
       if (val.path == "/merchant_detail") {
+          this.suid = val.query.merchantID;
         if (val.query.search != undefined ) {
           this.activeName = "";
           this.currentPage = 1;
@@ -213,6 +214,8 @@ export default {
       this.currentPage = currentPage;
       if(this.search != "")
       this.searchQuery.name = this.search;
+      this.searchQuery.suid = this.suid;
+      this.getData();
       this.backtop();
     },
     // 向后端请求分类列表数据
@@ -247,9 +250,11 @@ export default {
       else this.searchQuery.label = "";
       this.searchQuery.sortfor = this.inputQuery.sortfor;
       this.searchQuery.isDecent = this.inputQuery.isDecent;
+      this.searchQuery.suid = this.suid;
 
       this.$http.post("/member/Shopping/queryComList.php",this.searchQuery)
       .then(res =>{
+          console.log(res);
         this.total = res.data.comNum;
         let len = res.data.comNum;
         this.productList = [];
@@ -260,6 +265,13 @@ export default {
         // console.log(this.productList);
       })
       
+    },
+    getInfo() {
+        this.$http.post("/member/Shopping/getMerchantInfo.php",{suid:this.suid})
+        .then(res => {
+            this.merchantInfo = res.data;
+            console.log(this.merchantInfo);
+        })
     },
    // 分页封装
     dividePage() {

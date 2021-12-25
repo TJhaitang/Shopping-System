@@ -13,7 +13,7 @@
               <router-link to>参数</router-link>
             </li>
             <li>
-              <router-link to>用户评价</router-link>
+              <router-link :to="{path:'/merchant_detail',query:{merchantID:this.suid}}">进店逛逛</router-link>
             </li>
           </ul>
         </div>
@@ -23,21 +23,6 @@
 
     <!-- 主要内容 -->
     <div class="main">
-      <!-- 左侧商品轮播图 -->
-      <!-- <div class="block">
-        <el-carousel height="560px" v-if="productPicture.length>1">
-          <el-carousel-item v-for="item in productPicture" :key="item.id">
-            <img style="height:560px;" :src="$target + item.product_picture" :alt="item.intro" />
-          </el-carousel-item>
-        </el-carousel>
-        <div v-if="productPicture.length==1">
-          <img
-            style="height:560px;"
-            :src="$target + productPicture[0].product_picture"
-            :alt="productPicture[0].intro"
-          >
-        </div>
-      </div> -->
       <div class="block">
         <el-carousel height="560px" v-if="pictures.length>1">
           <el-carousel-item v-for="item in pictures" :key="item.id">
@@ -57,29 +42,18 @@
       <div class="content">
         <h1 class="name">{{productName}}</h1>
         <p class="intro">{{productDetails}}</p> 
-        <!-- <p class="store">店铺</p>  -->
-        <!--<h1 class="name">{{productDetails.product_name}}</h1>
-        <p class="intro">{{productDetails.product_intro}}</p>
-        <p class="store">{{productDetails.product_shop}}</p>-->
-        <!-- <h1 class="name">小米手机</h1>
-        <p class="intro">商品介绍</p>
-        <p class="store">官方旗舰店</p> -->
         <div class="price">
           <span>{{domains[0].sort_price}}元</span>
-          <!--<span
-            v-show="productDetails.product_price != productDetails.product_selling_price"
-            class="del"
-          >{{productDetails.product_price}}元</span>-->
         </div>
         <div class = "changesort_button">
-          <el-button-group>
+          <el-button-group style="margin-top:20px">
             <el-button type="primary" 
              v-for="(domain,index) in domains"
             :key="domain.key"
             @click="changeSort(index)" 
+            style="margin-right:20px"
             >{{domains[index].sort_name}}</el-button> 
           </el-button-group>
-          <!-- <el-button type="primary" @click="changeSort(index)">{{domains[index].sort_id}}</el-button> -->
         </div> 
         <div class="pro-list">
           <!-- <span class="pro-name">{{productDetails.product_name}}</span> -->
@@ -96,10 +70,9 @@
           
         </div>
         <!-- 内容区底部按钮 -->
-        <div class="button">
-          <el-input-number v-model="num_addcart" @change="handleChange" :min="1" :max="10" label="选择数量"></el-input-number>
-          <el-button class="shop-cart" :disabled="dis" @click="addShoppingCart">加入购物车</el-button>
-          <el-button class="like" @click="addCollect">收藏</el-button>
+        <div class="button" >
+          <el-input-number style="float: left;size:big" v-model="num_addcart" @change="handleChange" :min="1" :max="10" label="选择数量"></el-input-number>
+          <el-button style="margin-left:20px;float: left;" class="shop-cart" :disabled="dis" @click="addShoppingCart">加入购物车</el-button>
         </div>
         <!-- 内容区底部按钮END -->
         <div class="pro-policy">
@@ -152,13 +125,13 @@ export default {
       comments: [],
       Avg_score: "",
       num_addcart: 1,
+      suid:""
     };
   },
   // 通过路由获取商品id
   activated() {
     if (this.$route.query.productID != undefined) {
-      // this.productID = this.$route.query.productID 
-      this.productID = '11639229009'
+      this.productID = this.$route.query.productID
     }
   },
   watch: {
@@ -169,6 +142,10 @@ export default {
     }
   },
   created(){
+    if (this.$route.query.productID != undefined) {
+      this.productID = this.$route.query.productID
+    }
+      console.log(this.$route.query.productID);
       this.getDetails()
       this.getComments()
     },
@@ -178,14 +155,16 @@ export default {
     getDetails() {
       this.$http.post('/member/Shopping/getCommodityInfo.php',
       {
-        comId:'11639229009'
+        comId:this.productID
       }).then(result=>{
         console.log(result.data)
         if(result.data.status !== 'fail'){
           this.productDetails = result.data.description
           this.productName = result.data.name
-          
+          this.suid = result.data.suid
+          console.log(this.suid);
           if(result.data.domains.stdNum >0){
+            this.domains = [];
             for(let i=0;i<result.data.domains.stdNum;i++){
               this.domains.push({
                sort_name: result.data.domains[i+1].name,
@@ -199,6 +178,7 @@ export default {
           }
 
            if(result.data.pictures.picNum>0){
+             this.pictures = [];
              for(let i=0;i<result.data.pictures.picNum;i++){
               this.pictures.push({
                 sort_picture: result.data.pictures[i+1].photo,
@@ -215,7 +195,7 @@ export default {
     getComments(){
       this.$http.post('/member/Shopping/getComments.php',
       {
-        commodityId:'1231231231'
+        commodityId:this.productID
       }).then(result=>{
         console.log(result)
         if(result.data.status !== 'fail'){
@@ -225,6 +205,7 @@ export default {
           if(this.commentNum>0){
             for(let i = 0;i<this.commentNum;i++)
             {
+              this.comments = [];
               this.comments.push({
                 comment_content: result.data[i+1].content,
                 comment_userid: result.data[i+1].user_id,
@@ -246,36 +227,11 @@ export default {
         num:this.num_addcart,
         item_id:this.domains[this.index_present].sort_id
       }).then(result=>{
-        console.log("add")
-        console.log(this.num_addcart)
-        console.log(this.domains[this.index_present].sort_id)
-        console.log(result)
+        if(result.data.status == "success"){
+          this.$message.success("添加成功~在购物车等你！");
+        }
       })
       
-    },
-    addCollect() {
-      // 判断是否登录,没有登录则显示登录组件
-      if (!this.$store.getters.getUser) {
-        this.$store.dispatch("setShowLogin", true);
-        return;
-      }
-      this.$axios
-        .post("/api/user/collect/addCollect", {
-          user_id: this.$store.getters.getUser.user_id,
-          product_id: this.productID
-        })
-        .then(res => {
-          if (res.data.code == "001") {
-            // 添加收藏成功
-            this.notifySucceed(res.data.msg);
-          } else {
-            // 添加收藏失败
-            this.notifyError(res.data.msg);
-          }
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
     },
      changeSort(index){
        //this.price = this.domains[index].sort_price
