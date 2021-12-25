@@ -229,6 +229,7 @@ export default {
       }).then(result=>{
         if(result.data.status == "success"){
           this.$message.success("添加成功~在购物车等你！");
+          this.$router.go(0)
         }
       })
       

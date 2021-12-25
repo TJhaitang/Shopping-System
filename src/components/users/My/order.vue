@@ -31,6 +31,7 @@
           </li>
           <li class="header">
             <div class="pro-img"></div>
+            <div class="pro-name">商品名称</div>
             <div class="pro-size">商品规格</div>
             <div class="pro-num">数量</div>
             <div class="pro-comment">评价</div>
@@ -82,6 +83,7 @@
             <div class="pro-img">
                 <img :src="commodity.picture" />
             </div>
+            <div class="pro-name">{{commodity.comName}}</div>
             <div class="pro-size">{{commodity.commodityId}}</div>
             <div class="pro-num">{{commodity.quantity}}</div>
             <div class="pro-comment">
@@ -316,17 +318,22 @@ export default {
 .order .content ul .pro-img {
   float: left;
   height: 85px;
-  width: 120px;
+  width: 100px;
   padding-left: 35px;
 }
 .order .content ul .pro-img img {
   height: 80px;
   width: 80px;
 }
+.order .content ul .pro-name {
+  float: left;
+  width: 500px;
+  padding-left: 20px;
+}
 .order .content ul .pro-size {
   float: left;
-  width: 280px;
-  padding-left: 70px;
+  width: 70px;
+  padding-left: 150px;
 }
 .order .content ul .pro-size a {
   color: #424242;
@@ -336,15 +343,16 @@ export default {
 }
 .order .content ul .pro-num {
   float: left;
-  width: 190px;
+  width: 50px;
   text-align: center;
+  padding-left: 70px;
 }
 .order .content ul .pro-total-in {
   color: #ff6700;
 }
 .order .content ul .pro-comment {
   float: left;
-  padding-left: 300px;
+  padding-left: 70px;
 }
 .order .content ul .pro-back {
   float: left;
