@@ -120,13 +120,18 @@ export default {
     };
   },
   created() {
-    // 获取分类列表
-    this.getCategory();
+    // 获取分类列表this.getCategory();
+    if (this.$route.query.search != undefined) {
+      this.search = this.$route.query.search;
+      this.getData();
+  }
+    
   },
   activated() {
-    this.activeName = "-1"; // 初始化分类列表当前选中的id为-1
+    this.activeName = "0"; // 初始化分类列表当前选中的id为-1
     this.total = 0; // 初始化商品总量为0
     this.currentPage = 1; //初始化当前页码为1
+    console.log(this.$route.query.search);
     // 如果路由没有传递参数，默认为显示全部商品
     if (Object.keys(this.$route.query).length == 0) {
       this.categoryID = [];
@@ -135,17 +140,15 @@ export default {
     }
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
+      this.getData();
     }
   },
   watch: {
     // 监听点击了哪个分类标签，通过修改分类id，响应相应的商品
     activeName: function(val) {
-      if (val == 0) {
-        this.categoryID = [];
-      }
-      if (val > 0) {
+      
         this.categoryID = [Number(val)];
-      }
+      
       // 初始化商品总量和当前页码
       this.total = 0;
       this.currentPage = 1;
@@ -170,10 +173,11 @@ export default {
     $route: function(val) {
       if (val.path == "/goods") {
         if (val.query.search != undefined ) {
-          this.activeName = "-1";
+          this.activeName = "";
           this.currentPage = 1;
           this.total = 0;
           this.search = val.query.search;
+          this.getData();
         }
       }
     }
@@ -208,9 +212,15 @@ export default {
             this.categoryList.push(res.data[i]);
           }//存储label list
         });
+        this.categoryList.push({
+          id:0,
+          name:"全部",
+          comment:"就是所有所有的商品"
+          })
     },
     // 向后端请求全部商品或分类商品数据
     getData() {
+      console.log(this.categoryID[0]);
       this.searchQuery.name = this.search //这个search其实是名字啦
       //这里应该把高级检索框框里的数据也传到这个 query里
       if(this.inputQuery.uprice!= "")
@@ -219,8 +229,9 @@ export default {
       if(this.inputQuery.lprice!= "")
       this.searchQuery.lprice = this.inputQuery.lprice;
       else this.searchQuery.lprice = -1;
-      if(this.categoryID!= [])
+      if(this.categoryID[0]!= 0)
       this.searchQuery.label = "(" + this.categoryID[0] + ")"
+      else this.searchQuery.label = "";
       this.searchQuery.sortfor = this.inputQuery.sortfor;
       this.searchQuery.isDecent = this.inputQuery.isDecent;
 

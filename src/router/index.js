@@ -16,6 +16,7 @@ import shoppingCart from '../components/users/My/shoppingCart.vue'
 import good_detail from '../components/users/My/Good_details.vue'
 import confirmOrder from '../components/users/My/ConfirmOrder.vue'
 import goods from '../components/users/My/goods.vue'
+import merchant_detail from '../components/users/My/merchant_details.vue'
 
 Vue.use(VueRouter)
 
@@ -38,7 +39,9 @@ const router = new VueRouter( {
   { path: '/good_detail',component: good_detail},
   { path: '/collect',component: collect},
   { path:'/confirmOrder',component:confirmOrder},
-  { path: '/goods',component: goods}]},
+  { path: '/goods',component: goods},
+  { path: '/merchant_detail',component: merchant_detail}
+]},
 ]})
 
 //挂载路由导航守卫之后再暴露路由
@@ -58,7 +61,7 @@ router.beforeEach((to, from, next) => {
       return next('/login');
     }
   }
-  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart' || to.path === '/good_detail'){
+  else if(to.path === '/order' || to.path === '/collect' || to.path === '/shoppingCart' || to.path === '/good_detail' || to.path === '/merchant_detail'){
     if(localStorage.getItem('userToken')){
       next();
     }

@@ -191,9 +191,12 @@ export default {
     },
     // 点击搜索按钮
     searchClick() {
-      if (this.search != "") {
+      if (this.search != "" && this.$route == "/home") {
         // 跳转到全部商品页面,并传递搜索条件
         this.$router.push({ path: "/goods", query: { search: this.search } });
+        this.search = "";
+      }else if (this.search != "" && this.$route == "/merchant_detail"){
+        this.$router.push({ path: "/merchant_detail", query: { search: this.search } });
         this.search = "";
       }
     }
