@@ -95,7 +95,7 @@ export default {
         suid: "", //传就是店铺内搜索，空字符串就是不(这里是字符串)
       },
 
-      manClothesList: ["happy"], //男装商品展示列表
+      manClothesList: [], //男装商品展示列表
       manClothesHotList: [], //男装上衣
       manUpperList: [], //男装上衣
       manPantsList: [], //男装裤子

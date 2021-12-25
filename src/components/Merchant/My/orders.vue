@@ -12,10 +12,10 @@
         <el-option label="待收货" value="3"></el-option>
         <el-option label="交易完成" value="4"></el-option>
       </el-select>
-      <el-button v-waves  type="primary" icon="el-icon-search"   >
+      <el-button v-waves  type="primary" icon="el-icon-search" @click="getList"  >
         搜索
       </el-button>
-      <el-button v-waves  type="primary" icon="el-icon-delete"   >
+      <el-button v-waves  type="primary" icon="el-icon-delete" @click="resetQuery"  >
         清空
       </el-button>
     </div>
@@ -94,11 +94,12 @@
 
         orderQuery: {
         //查询数据预先设置
-        id: undefined,
-        uid: undefined,
-        status: undefined,
-       
+        id: "",
+        uid: "",
+        status: "",
       },
+      orderList: [],
+      orders:[],
       pageNum: 1,
       pageSize: 10,
       maxPage: 1,
@@ -115,22 +116,33 @@
     }
   },
   created() {
-    this.getList()
+    this.getList();
   },
   methods: {
 
     async getList() {
       this.loading = true
-      const {data:result} = await this.$http.get('路径',
+      const {data:result} = await this.$http.get('/merchant/getOrderList.php',
           this.orderQuery
       )
-     if(result.meta.status !== 200){
-          return this.$message.error('获取订单失败惹（╥ ﹏ ╥）')
-      }  
-     
+    //  if(result.meta.status !== 200){
+    //       return this.$message.error('获取订单失败惹（╥ ﹏ ╥）')
+    //   }  
+       
+     //数据赋值
+     this.total = result.orderNum;
+     this.orderList = [];
+     for(let i = 1;i<=result.orderNum;i++){
+       this.orderList.push(result[i]);
+       console.log(this.orderList[i-1]);
+        if(this.orderList[i-1].status == "1") {  this.orderList[i].status = '待审核' }
+        else if(this.orderList[i].status == "2"){this.orderList[i].status = '待发货'}
+        else if(this.orderList[i].status == "3"){this.orderList[i].status = '待收货'}
+        else {this.orderList[i].status = '订单完成'}
+       
+      }
+      console.log(this.orderList)
       //分页
-      //总页数
-      this.total = result.orderNum 
        if(this.total/this.pageSize > parseInt(this.total/this.pageSize)){   
             this.maxpage=parseInt(this.total/this.pageSize)+1;   
            
@@ -143,16 +155,15 @@
         var endRow = this.pageNum * this.pageSize; 
         console.log(startRow)
         endRow = (endRow > this.total)? this.total: endRow;  
-        this.orderList = this.orders.slice(startRow, endRow);
+        this.orders = this.orderList.slice(startRow, endRow);
         
-      //map方法处理订单状态显示 
-      this.orderList.map(function (val){
-        if(val.status == 1) {val.status = '待审核' }
-        else if(val.status == 2){val.status = '待发货'}
-        else if(val.status == 3){val.status = '待收货'}
-        else {val.status = '订单完成'}
-      })
-      console.log(result) 
+  
+    },
+    resetQuery() {
+      this.orderQuery.id = "";
+      this.orderQuery.uid = "";
+      this.orderQuery.status = "";
+      this.getList();
     },
 
     showEditDialog(row) {
