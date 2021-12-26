@@ -131,9 +131,10 @@ export default {
       ], // 订单列表
       commentDialogVisible: false,
 
-      commentForm : {
+      commentForm : 
+      {
         product_name:"",
-        item_id:3, 
+        item_id:"", 
         score:"", //分数
         content: "" //评价
       }
@@ -177,8 +178,8 @@ export default {
   }, 
   methods: {
     showCommentDialog(row) {
-      this.commentForm.product_name = row.product_name;
-      this.commentForm.item_id = 3;
+      this.commentForm.product_name = row.comName;
+      this.commentForm.item_id = row.commodityId;
       this.commentForm.score = 0;
       this.commentForm.content = "";
       this.commentDialogVisible = true;
