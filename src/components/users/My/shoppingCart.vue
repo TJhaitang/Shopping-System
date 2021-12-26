@@ -311,6 +311,10 @@ export default {
 .shoppingCart .content ul .pro-name {
   float: left;
   width: 350px;
+  overflow:hidden; /*溢出的部分隐藏*/
+  white-space: nowrap; /*文本不换行*/
+  text-overflow:ellipsis;/*ellipsis:文本溢出显示省略号（...）；clip：不显示省略标记（...），而是简单的裁切*/
+
 }
 .shoppingCart .content ul .pro-name a {
   color: #424242;
