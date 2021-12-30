@@ -343,6 +343,8 @@ export default {
           domainlength: 0,
           label_: '',
           minus_: '',
+          ifActivity1: '',
+          ifActivity2: '',
           domains: [],
         });
         this.goodslist[i-1].id = res.data.data[i].commodityId
@@ -361,10 +363,26 @@ export default {
         if(this.goodslist[i-1].label == '7') this.goodslist[i-1].label_ = '鞋'
         if(this.goodslist[i-1].label == '8') this.goodslist[i-1].label_ = '包'
         if(this.goodslist[i-1].label == '9') this.goodslist[i-1].label_ = '其他'
-        if(this.goodslist[i-1].minus == '0') this.goodslist[i-1].minus_ = '无活动'
-        if(this.goodslist[i-1].minus == '1') this.goodslist[i-1].minus_ = '满200-30'
-        if(this.goodslist[i-1].minus == '2') this.goodslist[i-1].minus_ = '满300-60'
-        if(this.goodslist[i-1].minus == '3') this.goodslist[i-1].minus_ = '满200-30，满300-60'
+        if(this.goodslist[i-1].minus == '0'){
+          this.goodslist[i-1].minus_ = '无活动'
+          this.goodslist[i-1].ifActivity1 = false
+          this.goodslist[i-1].ifActivity2 = false
+        }
+        if(this.goodslist[i-1].minus == '1'){
+          this.goodslist[i-1].minus_ = '满200-30'
+          this.goodslist[i-1].ifActivity1 = true
+          this.goodslist[i-1].ifActivity2 = false
+        }
+        if(this.goodslist[i-1].minus == '2'){
+          this.goodslist[i-1].minus_ = '满300-60'
+          this.goodslist[i-1].ifActivity1 = false
+          this.goodslist[i-1].ifActivity2 = true
+        } 
+        if(this.goodslist[i-1].minus == '3'){
+          this.goodslist[i-1].minus_ = '满200-30，满300-60'
+          this.goodslist[i-1].ifActivity1 = true
+          this.goodslist[i-1].ifActivity2 = true
+        } 
         //this.goodslist[i-1].
         //console.log(res.data.data[i].domains)
         if(res.data.data[i].domains.stdNum > 0){
