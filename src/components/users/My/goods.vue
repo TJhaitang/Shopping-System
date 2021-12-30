@@ -34,8 +34,8 @@
                   <el-option label="价格" value=3></el-option>
                 </el-select>
                 <el-select v-model="inputQuery.isDecent"  placeholder="顺序" style="margin-right:15px;">
-                  <el-option label="降序排序" value=0></el-option>
-                  <el-option label="升序排序" value=1></el-option>
+                  <el-option label="降序排序" value=1></el-option>
+                  <el-option label="升序排序" value=0></el-option>
                 </el-select>
                 <el-button v-waves  type="primary" icon="el-icon-search"  @click="filterGo" >
                   确定
