@@ -220,17 +220,21 @@ export default {
     // 加入购物车
     addShoppingCart() {
       console.log("shoppingcart")
-      this.$http.post('/member/Shopping/insertCar.php',
-      {
-        num:this.num_addcart,
-        item_id:this.domains[this.index_present].sort_id
-      }).then(result=>{
-        if(result.data.status == "success"){
-          this.$message.success("添加成功~在购物车等你！");
-          this.$router.go(0)
-        }
-      })
-      
+      if (localStorage.getItem("user")){
+        this.$http.post('/member/Shopping/insertCar.php',
+        {
+          num:this.num_addcart,
+          item_id:this.domains[this.index_present].sort_id
+        }).then(result=>{
+          if(result.data.status == "success"){
+            this.$message.success("添加成功~在购物车等你！");
+            this.$router.go(0)
+          }
+        })
+      }
+      else{
+        this.$message.error("请您先登录哦~")
+      }
     },
      changeSort(index){
        //this.price = this.domains[index].sort_price
