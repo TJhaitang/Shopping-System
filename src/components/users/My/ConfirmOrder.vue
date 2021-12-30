@@ -126,7 +126,7 @@
       <!-- 结算导航END -->
 
       <!-- 添加地址对话框 -->
-    <el-dialog title='添加一个收获地址~' 
+    <el-dialog title='添加一个收货地址~' 
     :visible.sync = 'addAddressDialogVisible' 
     width = '50%'
     @close="addAddressDialogClosed">

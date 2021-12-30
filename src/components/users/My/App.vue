@@ -184,7 +184,7 @@ export default {
             console.log(res.data);
           } else {
             // 提示失败信息
-            this.$message.error("没获取到购物车信息 呜呜");
+            //this.$message.error("没获取到购物车信息 呜呜");
           }
         });
       }
