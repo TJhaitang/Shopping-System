@@ -17,17 +17,17 @@
           <el-table :data="goodslist" border stripe>
             <el-table-column prop="name" label="商品名称" width="150">
             </el-table-column>
-            <el-table-column prop="label" label="商品标签" width="60">
+            <el-table-column prop="label_" label="商品标签" width="150">
             </el-table-column>
             <el-table-column prop="description" label="商品详细信息" width="200">
             </el-table-column>
-            <el-table-column prop="minus" label="商品活动" width="100">
+            <el-table-column prop="minus_" label="商品活动" width="200">
             </el-table-column>
             <!--<el-table-column prop="activity" label="商品活动" width="100">
             </el-table-column>-->
-            <el-table-column label="操作" width="240px">
+            <el-table-column label="操作" width="150px">
               <template slot-scope="scope">
-                <el-button type="text" @click="domainDialogVisible = true">查看商品分类</el-button>
+                <!-- <el-button type="text" @click="domainDialogVisible = true">查看商品分类</el-button> -->
                 <!-- 修改按钮 -->
                 <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
                 <!-- 删除按钮 -->
@@ -46,7 +46,7 @@
           </el-pagination> -->
         </el-card>
 
-        <el-dialog
+        <!-- <el-dialog
           title="提示"
           :visible.sync="dialogVisible"
           width="30%"
@@ -55,7 +55,7 @@
           <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
           </span>
-        </el-dialog>
+        </el-dialog> -->
 
 
         <!-- 添加商品的对话框 -->
@@ -118,8 +118,8 @@
              v-model="addForm.ifActivity1"
              active-color="#13ce66"
              inactive-color="#eee"
-             active-text="不参与满300-60活动"
-             inactive-text="参与满300-60活动">
+             active-text="参与满200-30活动"
+             inactive-text="不参与满200-30活动">
             </el-switch> 
             </el-row>
             <el-row></el-row>
@@ -128,8 +128,8 @@
              v-model="addForm.ifActivity2"
              active-color="#13ce66"
              inactive-color="#eee"
-             active-text="不参与满200-30活动"
-             inactive-text="参与满200-30活动">
+             active-text="参与满300-60活动"
+             inactive-text="不参与满300-60活动">
             </el-switch> 
             </el-row>
           </el-form>
@@ -149,7 +149,7 @@
             <el-form-item label="商品名称" prop="name" label-width="100px">
               <el-input v-model="editForm.name"></el-input>
             </el-form-item>
-            <el-form-item label="商品活动" prop="label" label-width="100px">
+            <el-form-item label="商品标签" prop="label" label-width="100px">
               <el-input v-model="editForm.label"></el-input>
             </el-form-item>
             <el-form-item label="详细信息" prop="description" label-width="100px">
@@ -188,8 +188,8 @@
              v-model="editForm.ifActivity1"
              active-color="#13ce66"
              inactive-color="#eee"
-             active-text="不参与满300-60活动"
-             inactive-text="参与满300-60活动">
+             active-text="参与满200-30活动"
+             inactive-text="不参与满200-30活动">
             </el-switch> 
             </el-row>
             <el-row>
@@ -197,8 +197,8 @@
              v-model="editForm.ifActivity2"
              active-color="#13ce66"
              inactive-color="#eee"
-             active-text="不参与满200-30活动"
-             inactive-text="参与满200-30活动">
+             active-text="参与满300-60活动"
+             inactive-text="不参与满300-60活动">
             </el-switch> 
             </el-row>
             
@@ -341,6 +341,8 @@ export default {
           minus: '',
           label: '',
           domainlength: 0,
+          label_: '',
+          minus_: '',
           domains: [],
         });
         this.goodslist[i-1].id = res.data.data[i].commodityId
@@ -349,6 +351,20 @@ export default {
         this.goodslist[i-1].description = res.data.data[i].description
         this.goodslist[i-1].minus = res.data.data[i].minus
         this.goodslist[i-1].suid = res.data.data[i].suid
+        if(this.goodslist[i-1].label == '-1') this.goodslist[i-1].label_ = '测试商品'
+        if(this.goodslist[i-1].label == '1') this.goodslist[i-1].label_ = '男上装'
+        if(this.goodslist[i-1].label == '2') this.goodslist[i-1].label_ = '男下装'
+        if(this.goodslist[i-1].label == '3') this.goodslist[i-1].label_ = '男套装'
+        if(this.goodslist[i-1].label == '4') this.goodslist[i-1].label_ = '女上装'
+        if(this.goodslist[i-1].label == '5') this.goodslist[i-1].label_ = '女下装'
+        if(this.goodslist[i-1].label == '6') this.goodslist[i-1].label_ = '女套装'
+        if(this.goodslist[i-1].label == '7') this.goodslist[i-1].label_ = '鞋'
+        if(this.goodslist[i-1].label == '8') this.goodslist[i-1].label_ = '包'
+        if(this.goodslist[i-1].label == '9') this.goodslist[i-1].label_ = '其他'
+        if(this.goodslist[i-1].minus == '0') this.goodslist[i-1].minus_ = '无活动'
+        if(this.goodslist[i-1].minus == '1') this.goodslist[i-1].minus_ = '满200-30'
+        if(this.goodslist[i-1].minus == '2') this.goodslist[i-1].minus_ = '满300-60'
+        if(this.goodslist[i-1].minus == '3') this.goodslist[i-1].minus_ = '满200-30，满300-60'
         //this.goodslist[i-1].
         //console.log(res.data.data[i].domains)
         if(res.data.data[i].domains.stdNum > 0){
@@ -396,6 +412,16 @@ export default {
     // 添加新商品
     addGoods(){
       console.log(this.addForm)
+      if(this.addForm.label ==  '测试商品') this.addForm.label = '-1'
+      if(this.addForm.label ==  '男上装') this.addForm.label = '1'
+      if(this.addForm.label ==  '男下装') this.addForm.label = '2'
+      if(this.addForm.label ==  '男套装') this.addForm.label = '3'
+      if(this.addForm.label ==  '女上装') this.addForm.label = '4'
+      if(this.addForm.label ==  '女下装') this.addForm.label = '5'
+      if(this.addForm.label ==  '女套装') this.addForm.label = '6'
+      if(this.addForm.label ==  '鞋') this.addForm.label = '7'
+      if(this.addForm.label ==  '包') this.addForm.label = '8'
+      if(this.addForm.label ==  '其他') this.addForm.label = '9'
       this.$http.post('/merchant/insertCommodity.php',this.addForm
       ).then(result=>{
         console.log("addGoods")
@@ -404,6 +430,8 @@ export default {
           //关闭对话框
           this.addDialogVisible = false;
           this.addForm.domains = []
+          this.addForm.ifActivity1 = false;
+          this.addForm.ifActivity2 = false;
           this.getGoodsList();//添加之后再次获取一下订单列表
           this.$message.success('添加成功o(*￣▽￣*)ブ')}
         else return this.$message.error('添加失败了！')
@@ -416,7 +444,7 @@ export default {
       //this.editForm.minus = row.minus
       this.editForm.description = row.description
       this.editForm.comId = row.id
-      this.editForm.label = row.label
+      this.editForm.label = row.label_
       this.editForm.ifActivity1 = row.ifActivity1
       this.editForm.ifActivity2 = row.ifActivity2
       if(row.domainlength>0){
@@ -431,8 +459,8 @@ export default {
             //sort_sales: '',
             stdId: '',
           })
-          console.log("std")
-          console.log(row.domains[i].value)
+          //console.log("std")
+          //console.log(row.domains[i].value)
           this.editForm.domains[i].name= row.domains[i].name
           this.editForm.domains[i].sort_inventory = row.domains[i].sort_inventory
           this.editForm.domains[i].sort_price = row.domains[i].sort_price
@@ -453,6 +481,16 @@ export default {
     // 修改信息并提交
     editGoodsInfo() {
       console.log(this.editForm)
+      if(this.editForm.label ==  '测试商品') this.editForm.label = '-1'
+      if(this.editForm.label ==  '男上装') this.editForm.label = '1'
+      if(this.editForm.label ==  '男下装') this.editForm.label = '2'
+      if(this.editForm.label ==  '男套装') this.editForm.label = '3'
+      if(this.editForm.label ==  '女上装') this.editForm.label = '4'
+      if(this.editForm.label ==  '女下装') this.editForm.label = '5'
+      if(this.editForm.label ==  '女套装') this.editForm.label = '6'
+      if(this.editForm.label ==  '鞋') this.editForm.label = '7'
+      if(this.editForm.label ==  '包') this.editForm.label = '8'
+      if(this.editForm.label ==  '其他') this.editForm.label = '9'
       this.$http.post('/merchant/updateCommodity.php',
       this.editForm
       ).then(result => {
