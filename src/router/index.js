@@ -32,7 +32,7 @@ const router = new VueRouter( {
 },
   { path: '/signUp',component: signUp},
   { path: '/signUp_u',component: signUp_u},
-  { path: '/',component: App,
+  { path: '/',component: App, redirect:"/home",
   children:[{ path: '/shoppingCart',component: shoppingCart},
   { path: '/order',component: order},
   { path: '/home',component: home},

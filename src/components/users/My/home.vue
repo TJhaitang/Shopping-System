@@ -1,18 +1,20 @@
 <template>
-  <div class="home" id="home" name="home">
+  <div class="home" id="home" name="home" >
     <!-- 轮播图 -->
-    <div class="block">
-      <el-carousel height="460px">
+    <div class="block" >
+      <el-carousel :interval="4000" type="card" height="460px">
         <el-carousel-item v-for="item in carousel" :key="item.commodityId">
           <!-- :alt是什么玩意？？不晓得 -->
-          <img style="height: 460px" :src="item.photo" :alt="item.price" />
+          <img style="height: 460px;margin-left:100px" :src="item.photo" :alt="item.price" />
         </el-carousel-item>
       </el-carousel>
+      
     </div>
     <!-- 轮播图END -->
-
-    <!-- 男装展示区域 -->
-    <div class="manClothes" id="promo-menu">
+  <div class="main-box" >
+   <div class="main">
+      <!-- 男装展示区域 -->
+    <div class="man" id="promo-menu">  
       <div class="box-hd">
         <div class="title">男装</div>
         <!-- 更多卡片 -->
@@ -34,7 +36,7 @@
     <!-- 男装商品展示区域END -->
 
     <!-- 女装展示区域 -->
-    <div class="womanClothes" id="promo-menu">
+    <div class="woman" id="promo-menu">
       <div class="box-hd">
         <div class="title">女装</div>
         <!-- 更多卡片 -->
@@ -76,6 +78,8 @@
       </div>
     </div>
     <!-- 鞋包配饰商品展示区域END -->
+    </div>
+  </div>
   </div>
 </template>
 
@@ -83,7 +87,7 @@
 export default {
   data() {
     return {
-      carousel: "", // 轮播图数据:登录的用户喜欢并且热卖的商品
+      carousel: [], // 轮播图数据:登录的用户喜欢并且热卖的商品
 
       queryList: {
         name: "",
@@ -204,10 +208,15 @@ export default {
   },
   created() {
     // 获取轮播图数据
-    this.$http.get("/member/Shopping/rcmds.php").then((res) => {
-      this.carousel = res.data;
-     // console.log(res);
-    });
+    this.queryList.label = "";
+   this.$http
+        .post("/member/Shopping/queryComList.php", this.queryList)
+        .then((res) => {
+          for(let i=1;i<5;i++){
+            this.carousel.push(res.data[i]);
+          }
+          console.log(this[val]);
+        });
     // '1', '男上装', '男的上装'
     // '2', '男下装', '男的下装'
     // '3', '男套装', '男的套装'
@@ -255,7 +264,7 @@ export default {
         .then((res) => {
           console.log(res);
           console.log(this["manClothesList"]);
-          for(let i=1;i<8;i++){
+          for(let i=1;i<10;i++){
             this[val].push(res.data[i]);
           }
           console.log(this[val]);
@@ -274,20 +283,21 @@ export default {
 .main {
   margin: 0 auto;
   max-width: 1225px;
+  background-color: #f5f5f5;
 }
 
 /* 轮播图CSS */
 .block {
   margin: 0 auto;
-  max-width: 1225px;
+  max-width: 1000px;
 }
 
 .el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+  background-color: #ffffff;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
+  background-color: #ffffff;
 }
 
 /* 轮播图CSS END */
@@ -327,7 +337,7 @@ export default {
   //float: left;
   margin: 0 auto;
   height: 1225px;
-  width: 234px;
+  width: 220px;
 }
 
 .box-bd .promo-list li {
@@ -359,6 +369,6 @@ export default {
 .box-bd .list {
   float: left;
   height: 615px;
-  width: 991px;
+  width: 1225px;
 }
 </style>

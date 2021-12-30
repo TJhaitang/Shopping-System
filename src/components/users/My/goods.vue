@@ -122,6 +122,7 @@ export default {
   created() {
      //获取分类列表
      this.getCategory();
+     this.activeName = "0"; 
     if (this.$route.query.search != undefined) {
       this.search = this.$route.query.search;
       this.getData();
@@ -222,7 +223,6 @@ export default {
     },
     // 向后端请求全部商品或分类商品数据
     getData() {
-      console.log(this.categoryID[0]);
       this.searchQuery.name = this.search //这个search其实是名字啦
       //这里应该把高级检索框框里的数据也传到这个 query里
       if(this.inputQuery.uprice!= "")
@@ -231,7 +231,7 @@ export default {
       if(this.inputQuery.lprice!= "")
       this.searchQuery.lprice = this.inputQuery.lprice;
       else this.searchQuery.lprice = -1;
-      if(this.categoryID[0]!= 0)
+      if(this.categoryID[0]!= undefined && this.categoryID[0]!= 0)
       this.searchQuery.label = "(" + this.categoryID[0] + ")"
       else this.searchQuery.label = "";
       this.searchQuery.sortfor = this.inputQuery.sortfor;
@@ -240,6 +240,7 @@ export default {
       this.$http.post("/member/Shopping/queryComList.php",this.searchQuery)
       .then(res =>{
         this.total = res.data.comNum;
+        console.log(this.total);
         let len = res.data.comNum;
         this.productList = [];
         for(let i=1;i<=len;i++){
