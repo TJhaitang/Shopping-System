@@ -91,18 +91,20 @@
         </div>
       </div> 
       <!-- 右侧内容区END -->
-    </div>
-    <!-- 主要内容END -->
-    <div class='comments'>
+      <div class='comments'>
       <el-table :data="comments" border stripe>
         <el-table-column prop="comment_score" label="评分" width="50">
         </el-table-column>
-        <el-table-column prop="comment_content" label="评论内容" width="300">
+        <el-table-column prop="comment_content" label="评论内容" width="600">
         </el-table-column>
         <el-table-column prop="comment_addtime" label="评论时间" width="300">
         </el-table-column>
       </el-table>
+      <p>平均得分:{{Avg_score}}</p>
+      </div>
     </div>
+    <!-- 主要内容END -->
+    
   </div>
 </template>
 <script>
@@ -145,7 +147,7 @@ export default {
     }
       console.log(this.$route.query.productID);
       this.getDetails()
-      this.getComments()
+      //this.getComments()
     },
   methods: {
     ...mapActions(["unshiftShoppingCart", "addShoppingCartNum"]),
@@ -188,9 +190,11 @@ export default {
           this.index_present = 0;
         }
         else return this.$message.error('获取商品信息失败！')
+        this.getComments();
       })
     },
     getComments(){
+      console.log("comments.")
       this.$http.post('/member/Shopping/getComments.php',
       {
         commodityId:this.productID
@@ -201,9 +205,9 @@ export default {
           this.commentNum = result.data.commentNum
           this.Avg_score = result.data.avgScore
           if(this.commentNum>0){
+            this.comments = [];
             for(let i = 0;i<this.commentNum;i++)
             {
-              this.comments = [];
               this.comments.push({
                 comment_content: result.data[i+1].content,
                 comment_userid: result.data[i+1].user_id,
@@ -239,9 +243,9 @@ export default {
      changeSort(index){
        //this.price = this.domains[index].sort_price
        this.index_present = index
-       console.log("index_present")
-       console.log(this.index_present)
-       console.log(this.domains[this.index_present].sort_price)
+      //  console.log("index_present")
+      //  console.log(this.index_present)
+      //  console.log(this.domains[this.index_present].sort_price)
     },
     handleChange(value) {
         console.log(value);
@@ -390,5 +394,6 @@ export default {
   margin-right: 20px;
   color: #b0b0b0;
 }
+
 /* 主要内容CSS END */
 </style>
