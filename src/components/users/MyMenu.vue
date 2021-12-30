@@ -41,7 +41,7 @@ export default {
 #myMenu li {
   float: left;
   margin-left: 30px;
-  
+  margin-top: 20px;
 }
 #myMenu a:hover {
   color: #ff6700;
