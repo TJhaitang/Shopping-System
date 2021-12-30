@@ -356,6 +356,7 @@ export default {
   width: 1225px;
   height: 50px;
   line-height: 50px;
+  margin-left: 5%;
   background-color: #fff;
 }
 .shoppingCart .cart-bar .cart-bar-left {

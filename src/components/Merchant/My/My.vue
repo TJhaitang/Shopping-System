@@ -17,7 +17,6 @@
     <!--<p class="span1">昵称：{{this.$store.getters.getnick}}</p>
     <p class="span2">个性签名：{{this.$store.getters.getsig}}</p>-->
     <p class="span1">昵称：{{this.info.username}}</p>
-    <p class="span2">个性签名：{{this.signature}}</p>
     </el-header>
     <el-header style="font-size: 12px;position:absolute;right:30px;height:50px;top:30px">
       <el-dropdown trigger="click">

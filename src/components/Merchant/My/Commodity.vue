@@ -37,13 +37,13 @@
             </el-table-column>
           </el-table>
           <!-- 分页器 -->
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+          <!-- <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
             :current-page="queryInfo.pagenum"
             :page-sizes="[1, 2, 5, 10]"
             :page-size="queryInfo.pagesize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
-          </el-pagination>
+          </el-pagination> -->
         </el-card>
 
         <el-dialog
@@ -90,15 +90,25 @@
             <el-row>
             <el-form-item
              v-for="(domain, index) in addForm.domains"
-             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存)'"
+             :label="'类别' + (index+1)"
              :key="domain.key"
              :prop="'domains.' + index + '.add_sort'"
-             label-width="300px"
+             label-width="50px"
             >
-             <el-input v-model="domain.name"></el-input>
+            <el-form-item label="类别名" prop="sort_name" label-width="100px">
+              <el-input v-model="domain.name"></el-input>
+            </el-form-item>
+            <el-form-item label="价格" prop="sort_price" label-width="100px">
+              <el-input v-model="domain.sort_price"></el-input>
+            </el-form-item>
+            <el-form-item label="库存" prop="sort_inventory" label-width="100px">
+              <el-input v-model="domain.sort_inventory"></el-input>
+              <el-button @click.prevent="removeDomain1(domain)">删除</el-button>
+            </el-form-item>
+             <!-- <el-input v-model="domain.name"></el-input>
              <el-input v-model="domain.sort_price"></el-input>
-             <el-input v-model="domain.sort_inventory"></el-input>
-             <el-button @click.prevent="removeDomain1(domain)">删除</el-button>
+             <el-input v-model="domain.sort_inventory"></el-input> -->
+            
             
             </el-form-item>
             <el-form-item>
@@ -147,18 +157,28 @@
             </el-form-item>
             <el-form-item
              v-for="(domain, index) in editForm.domains"
-             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存、规格与活动)'"
+             :label="'类别' + (index+1)"
              :key="domain.key"
              :prop="'domains.' + index + '.edit_sort'"
              :rules="{
              //required: true, message: '类别名不能为空', trigger: 'blur' 
              }"
-             label-width="300px"
+             label-width="50px"
             >
-             <el-input v-model="domain.name"></el-input>
+             <!-- <el-input v-model="domain.name"></el-input>
              <el-input v-model="domain.sort_price"></el-input>
              <el-input v-model="domain.sort_inventory"></el-input>
-             <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+             <el-button @click.prevent="removeDomain(domain)">删除</el-button> -->
+             <el-form-item label="类别名" prop="sort_name" label-width="100px">
+              <el-input v-model="domain.name"></el-input>
+            </el-form-item>
+            <el-form-item label="价格" prop="sort_price" label-width="100px">
+              <el-input v-model="domain.sort_price"></el-input>
+            </el-form-item>
+            <el-form-item label="库存" prop="sort_inventory" label-width="100px">
+              <el-input v-model="domain.sort_inventory"></el-input>
+              <el-button @click.prevent="removeDomain(domain)">删除</el-button>
+            </el-form-item>
             </el-form-item>
             <el-form-item>
              <el-button @click="addDomain">新增类别</el-button>
