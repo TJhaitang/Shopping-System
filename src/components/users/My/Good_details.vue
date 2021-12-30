@@ -47,7 +47,7 @@
         </div>
         <div class = "changesort_button">
           <el-button-group style="margin-top:20px">
-            <el-button type="primary" 
+            <el-button
              v-for="(domain,index) in domains"
             :key="domain.key"
             @click="changeSort(index)" 
@@ -59,14 +59,12 @@
           <!-- <span class="pro-name">{{productDetails.product_name}}</span> -->
           <span class="pro-name">{{productName}}</span>
           <span class="pro-price">
-             <!-- <span>{{domains[0].sort_price}}元</span> -->
-            <!-- <span>9999元</span> -->
             <span
               v-show="productDetails.product_price != productDetails.product_selling_price"
               class="pro-del"
             >{{productDetails.product_price}}元</span>
           </span>
-          <p class="price-sum">总计 : {{domains[this.index_present].sort_price}}元</p>
+          <p class="price-sum">总计 : {{domains[this.index_present].sort_price*this.num_addcart}}元</p>
           
         </div>
         <!-- 内容区底部按钮 -->
@@ -78,13 +76,13 @@
         <div class="pro-policy">
           <ul>
             <li>
-              <i class="el-icon-circle-check"></i> 很不靠谱
+              <i class="el-icon-circle-check"></i> 品质保障
             </li>
             <li>
-              <i class="el-icon-circle-check"></i> 可能不会发货
+              <i class="el-icon-circle-check"></i> 准时发货
             </li>
             <li>
-              <i class="el-icon-circle-check"></i> 7天无退货理由
+              <i class="el-icon-circle-check"></i> 7天无理由退货
             </li>
             <li>
               <i class="el-icon-circle-check"></i> 7天价格保护
@@ -222,17 +220,21 @@ export default {
     // 加入购物车
     addShoppingCart() {
       console.log("shoppingcart")
-      this.$http.post('/member/Shopping/insertCar.php',
-      {
-        num:this.num_addcart,
-        item_id:this.domains[this.index_present].sort_id
-      }).then(result=>{
-        if(result.data.status == "success"){
-          this.$message.success("添加成功~在购物车等你！");
-          this.$router.go(0)
-        }
-      })
-      
+      if (localStorage.getItem("user")){
+        this.$http.post('/member/Shopping/insertCar.php',
+        {
+          num:this.num_addcart,
+          item_id:this.domains[this.index_present].sort_id
+        }).then(result=>{
+          if(result.data.status == "success"){
+            this.$message.success("添加成功~在购物车等你！");
+            this.$router.go(0)
+          }
+        })
+      }
+      else{
+        this.$message.error("请您先登录哦~")
+      }
     },
      changeSort(index){
        //this.price = this.domains[index].sort_price
