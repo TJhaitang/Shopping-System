@@ -77,9 +77,7 @@
              :label="'图片' + (index+1)"
              :key="domain.key"
              :prop="'domains.' + index + '.picture'"
-             :rules="{
-             required: true, message: '类别名不能为空', trigger: 'blur' 
-             }"
+             
              label-width="300px"
             >
             <img-inputer v-model="domain.picture" theme="light" size="3px" type="file" accept="image/*" placeholder="请上传商品图片！" :on-change="chooseImg" />
@@ -92,15 +90,12 @@
             <el-row>
             <el-form-item
              v-for="(domain, index) in addForm.domains"
-             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存、与活动)'"
+             :label="'类别' + (index+1)+'(请依次输入类别名、价格、库存)'"
              :key="domain.key"
              :prop="'domains.' + index + '.add_sort'"
-             :rules="{
-             required: true, message: '类别名不能为空', trigger: 'blur' 
-             }"
              label-width="300px"
             >
-             <el-input v-model="domain.value"></el-input>
+             <el-input v-model="domain.name"></el-input>
              <el-input v-model="domain.sort_price"></el-input>
              <el-input v-model="domain.sort_inventory"></el-input>
              <el-button @click.prevent="removeDomain1(domain)">删除</el-button>
@@ -213,8 +208,8 @@ export default {
           pagenum: 1,
           pagesize: 2
       },
-      pageNum: 1,
-      pageSize: 10,
+      //pageNum: 1,
+      //pageSize: 10,
       goodslist: [],
            //先增添一些默认的user
       total: 3,
@@ -303,6 +298,7 @@ export default {
   methods: {
     getGoodsList(){
       console.log("getGoodsList")
+      this.goodslist = []
       this.$http.post("/merchant/getComList.php",{})
       .then(res => {
       //this.goodslist = res.data;
@@ -340,10 +336,10 @@ export default {
           for(let j=0;j<res.data.data[i].domains.stdNum;j++)
           {
             this.goodslist[i-1].domains.push({
-              value: '',
+              //value: '',
               sort_inventory: '',
               sort_price: '',
-              //sort_name: '',
+              name: '',
               //sort_standards: '',
               //sort_sales: '',
               //sort_comId: '',
@@ -352,7 +348,7 @@ export default {
             this.goodslist[i-1].domains[j].value = res.data.data[i].domains[j+1].id
             this.goodslist[i-1].domains[j].sort_inventory =  res.data.data[i].domains[j+1].stock
             this.goodslist[i-1].domains[j].sort_price = res.data.data[i].domains[j+1].price
-            this.goodslist[i-1].domains[j].sort_name = res.data.data[i].domains[j+1].name
+            this.goodslist[i-1].domains[j].name = res.data.data[i].domains[j+1].name
             this.goodslist[i-1].domains[j].sort_sales = res.data.data[i].domains[j+1].sales 
             this.goodslist[i-1].domains[j].sort_standards = res.data.data[i].domains[j+1].standards 
             this.goodslist[i-1].domains[j].sort_comId = res.data.data[i].domains[j+1].commodityId
@@ -366,12 +362,12 @@ export default {
     },
     handleSizeChange(newSize) {
       // console.log(newSize)
-      this.Pagesize = newSize
+      query.pagesize = newSize
       this.getGoodsList()
     },
     handleCurrentChange(newPage) {
       // console.log(newPage)
-      this.Pagenum = newPage
+      query.pagenum = newPage
       this.getGoodsList()
     },
     addDialogClosed() {
@@ -387,6 +383,7 @@ export default {
         if(result.status !== 'fail'){
           //关闭对话框
           this.addDialogVisible = false;
+          this.addForm.domains = []
           this.getGoodsList();//添加之后再次获取一下订单列表
           this.$message.success('添加成功o(*￣▽￣*)ブ')}
         else return this.$message.error('添加失败了！')
@@ -403,6 +400,7 @@ export default {
       this.editForm.ifActivity1 = row.ifActivity1
       this.editForm.ifActivity2 = row.ifActivity2
       if(row.domainlength>0){
+        this.editForm.domains = []
         for(let i=0;i<row.domainlength;i++){
           this.editForm.domains.push({
             name: '',
@@ -415,7 +413,7 @@ export default {
           })
           console.log("std")
           console.log(row.domains[i].value)
-          this.editForm.domains[i].name= row.domains[i].value
+          this.editForm.domains[i].name= row.domains[i].name
           this.editForm.domains[i].sort_inventory = row.domains[i].sort_inventory
           this.editForm.domains[i].sort_price = row.domains[i].sort_price
           //this.editForm.domains[i].sort_name = row.domains[i].sort_name
@@ -455,17 +453,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).catch(err => err)
-      // 确认删除，返回confirm
-      // 取消删除，返回cancel
-      // console.log(confirmResult)
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除')
       }
-      // 发起删除商品的请求
-      //const { data: res } = await this.$http.delete('users/' + id)
-      //if(res.meta.status !== 200) {
-      //  return this.$message.error('删除商品失败！')
-      //}
       this.editForm.operation = 'delete'
       this.editForm.comId = id
       console.log(this.editForm)
@@ -510,13 +500,13 @@ export default {
     },
     addDomain1() {
       this.addForm.domains.push({
-        value: '',
+        name: '',
         sort_inventory: '',
         sort_price: '',
         //sort_name: '',
         //sort_standards: '',
         //sort_sales: '',
-        //sort_comId: '',88
+        //sort_comId: '',
         key: Date.now()
       });
     },
