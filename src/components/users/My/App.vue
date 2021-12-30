@@ -53,7 +53,6 @@
           </div>
           <el-menu-item index="/home">首页</el-menu-item>
           <el-menu-item index="/goods">全部商品</el-menu-item>
-          <el-menu-item index="/merchants">关于我们</el-menu-item>
 
           <!-- 搜索框框部分 -->
           <div class="so" style="display: flex;">
@@ -133,6 +132,7 @@ export default {
   },
   created() {
     // 获取浏览器localStorage，判断用户是否已经登录
+    
     if (localStorage.getItem("user")) {
       // 如果已经登录，设置vuex登录状态
       // 啊 为啥要用jason.parse呢
